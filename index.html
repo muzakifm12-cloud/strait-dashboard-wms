@@ -1,0 +1,2752 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>STRAIT&CO — Warehouse Management System v2</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --maroon:#7A1624;--maroon-dark:#5A0F1A;--maroon-mid:#8B1C2A;--maroon-light:#A52535;
+  --accent:#C0392B;--gold:#D4A853;--bg:#F5EFE8;--bg2:#EDE4DA;--surface:#FFFFFF;
+  --text:#1A0A0A;--muted:#7A6060;--border:#DDD0C8;--success:#2E7D32;--warn:#E65100;
+  --error:#B71C1C;--maroon-soft:#F9EDEC;--sidebar-w:240px;--topbar-h:56px;
+  --radius:14px;--radius-sm:9px;
+}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);font-size:13px;line-height:1.5;overflow:hidden;height:100vh;}
+a{color:inherit;text-decoration:none;}
+button{font-family:inherit;cursor:pointer;border:none;background:none;}
+input,select,textarea{font-family:inherit;font-size:inherit;}
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+::-webkit-scrollbar-thumb:hover{background:var(--maroon-light);}
+
+.shell{display:grid;grid-template-columns:var(--sidebar-w) 1fr;height:100vh;}
+.sidebar{background:var(--maroon-dark);display:flex;flex-direction:column;overflow-y:auto;z-index:100;transition:transform 0.3s cubic-bezier(.4,0,.2,1);}
+.logo{padding:18px 16px 14px;border-bottom:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;gap:10px;}
+.logo-mark{width:36px;height:36px;border-radius:10px;overflow:hidden;flex-shrink:0;}
+.logo-mark img{width:100%;height:100%;object-fit:cover;}
+.logo-text{font-family:'Playfair Display',serif;font-size:14px;letter-spacing:0.05em;color:#fff;line-height:1.2;}
+.logo-text span{color:var(--gold);font-size:9.5px;display:block;letter-spacing:0.1em;font-family:'DM Sans',sans-serif;font-weight:400;}
+.nav{padding:12px 8px;flex:1;overflow-y:auto;}
+.nav-section{font-size:10px;font-weight:600;letter-spacing:0.12em;color:rgba(255,255,255,0.3);text-transform:uppercase;padding:12px 10px 5px;}
+.nav-item{display:flex;align-items:center;gap:9px;padding:8px 11px;border-radius:var(--radius-sm);cursor:pointer;color:rgba(255,255,255,0.55);transition:all 0.2s;font-size:12px;font-weight:400;margin-bottom:1px;user-select:none;}
+.nav-item:hover{background:rgba(255,255,255,0.08);color:#fff;}
+.nav-item.active{background:rgba(255,255,255,0.12);color:#fff;font-weight:600;}
+.nav-item.active i{color:var(--gold);}
+.nav-item i{font-size:15px;width:17px;flex-shrink:0;}
+.nav-badge{margin-left:auto;background:rgba(212,168,83,0.2);color:var(--gold);font-size:10px;font-weight:600;padding:1px 6px;border-radius:20px;}
+.nav-badge.red{background:rgba(183,28,28,0.3);color:#ff8a80;}
+.user-card{padding:12px 14px;border-top:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;gap:9px;}
+.avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--maroon-light),var(--gold));display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;}
+.user-info p:first-child{font-size:12px;font-weight:600;color:#fff;}
+.user-info p:last-child{font-size:10.5px;color:rgba(255,255,255,0.4);}
+
+.main{display:flex;flex-direction:column;overflow:hidden;min-width:0;}
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:0 22px;height:var(--topbar-h);display:flex;align-items:center;gap:12px;flex-shrink:0;}
+.topbar-title{font-family:'Playfair Display',serif;font-size:15px;font-weight:600;letter-spacing:0.04em;white-space:nowrap;color:var(--maroon-dark);}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:8px;}
+.search-box{display:flex;align-items:center;gap:6px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:6px 11px;font-size:12px;color:var(--muted);width:190px;transition:border-color 0.2s;}
+.search-box:focus-within{border-color:var(--maroon-light);}
+.search-box input{border:none;background:none;outline:none;font-size:12px;color:var(--text);width:100%;}
+.search-box input::placeholder{color:var(--muted);}
+.btn-icon{width:32px;height:32px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted);position:relative;transition:all 0.2s;}
+.btn-icon:hover{border-color:var(--maroon-light);color:var(--maroon);}
+.notif-dot{position:absolute;top:5px;right:5px;width:7px;height:7px;background:var(--error);border-radius:50%;border:1.5px solid var(--surface);}
+.date-badge{font-size:11px;color:var(--muted);background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:5px 10px;white-space:nowrap;}
+.content{padding:20px 22px;flex:1;overflow-y:auto;overflow-x:hidden;animation:fadeIn 0.25s ease-out;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(5px);}to{opacity:1;transform:translateY(0);}}
+
+/* KPI */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:18px;}
+.kpi-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;position:relative;overflow:hidden;transition:transform 0.2s,box-shadow 0.2s;}
+.kpi-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(122,22,36,0.08);}
+.kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.kpi-card.maroon::before{background:linear-gradient(90deg,var(--maroon),var(--maroon-light));}
+.kpi-card.gold::before{background:linear-gradient(90deg,var(--gold),#e8c878);}
+.kpi-card.green::before{background:var(--success);}
+.kpi-card.warn::before{background:var(--warn);}
+.kpi-card.err::before{background:var(--error);}
+.kpi-card.blue::before{background:linear-gradient(90deg,#1565C0,#1976D2);}
+.kpi-label{font-size:10.5px;color:var(--muted);font-weight:500;letter-spacing:0.03em;margin-bottom:6px;display:flex;align-items:center;gap:4px;}
+.kpi-label i{font-size:12px;}
+.kpi-value{font-size:22px;font-weight:700;color:var(--text);letter-spacing:-0.02em;line-height:1;}
+.kpi-change{font-size:10.5px;margin-top:5px;display:flex;align-items:center;gap:3px;}
+.up{color:var(--success);}.down{color:var(--error);}
+.kpi-sub{font-size:10px;color:var(--muted);}
+
+/* GRID */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+.grid-3{display:grid;grid-template-columns:2fr 1fr;gap:14px;margin-bottom:14px;}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:14px;}
+
+/* WIDGET */
+.widget{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;transition:box-shadow 0.2s;margin-bottom:0;}
+.widget:hover{box-shadow:0 2px 12px rgba(122,22,36,0.04);}
+.widget-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:6px;}
+.widget-title{font-size:13px;font-weight:600;color:var(--text);display:flex;align-items:center;gap:6px;}
+.widget-title i{font-size:14px;color:var(--maroon);}
+.widget-action{font-size:11px;color:var(--maroon);cursor:pointer;font-weight:500;display:flex;align-items:center;gap:3px;}
+
+/* CHART BARS */
+.chart-bar-wrap{display:flex;flex-direction:column;gap:7px;}
+.chart-row{display:flex;align-items:center;gap:7px;}
+.chart-label{font-size:11px;color:var(--muted);width:76px;text-align:right;flex-shrink:0;}
+.chart-track{flex:1;height:9px;background:var(--bg);border-radius:5px;overflow:hidden;}
+.chart-fill{height:100%;border-radius:5px;transition:width 0.8s cubic-bezier(.4,0,.2,1);}
+.chart-fill.maroon{background:linear-gradient(90deg,var(--maroon),var(--maroon-light));}
+.chart-fill.gold{background:linear-gradient(90deg,var(--gold),#e8c878);}
+.chart-fill.green{background:var(--success);}
+.chart-fill.blue{background:#1976D2;}
+.chart-fill.warn{background:var(--warn);}
+.chart-val{font-size:11px;font-weight:600;color:var(--text);width:60px;}
+
+/* TABLE */
+.table-wrap{overflow-x:auto;margin:0 -16px;padding:0 16px;}
+.data-table{width:100%;border-collapse:collapse;min-width:500px;}
+.data-table th{font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;padding:7px 10px;border-bottom:2px solid var(--border);text-align:left;white-space:nowrap;position:sticky;top:0;background:var(--surface);}
+.data-table td{padding:9px 10px;font-size:12px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:middle;}
+.data-table tr:last-child td{border-bottom:none;}
+.data-table tr:hover td{background:var(--maroon-soft);}
+.sku-tag{font-family:'SF Mono',Monaco,monospace;font-size:10px;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:2px 5px;color:var(--muted);}
+
+/* STATUS PILLS */
+.status-pill{display:inline-flex;align-items:center;gap:3px;font-size:10.5px;font-weight:500;padding:2px 9px;border-radius:20px;white-space:nowrap;}
+.pill-success{background:#E8F5E9;color:#2E7D32;}
+.pill-warn{background:#FFF3E0;color:#E65100;}
+.pill-err{background:#FFEBEE;color:#B71C1C;}
+.pill-blue{background:#E3F2FD;color:#1565C0;}
+.pill-maroon{background:#FCE4EC;color:#880E4F;}
+.pill-gold{background:#FFF8E1;color:#F57F17;}
+.pill-muted{background:var(--bg);color:var(--muted);border:1px solid var(--border);}
+.pill-purple{background:#F3E5F5;color:#6A1B9A;}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:var(--radius-sm);font-size:12px;font-weight:500;transition:all 0.2s;border:1px solid transparent;cursor:pointer;}
+.btn-primary{background:var(--maroon);color:#fff;border-color:var(--maroon);}
+.btn-primary:hover{background:var(--maroon-light);box-shadow:0 3px 12px rgba(122,22,36,0.3);}
+.btn-secondary{background:var(--surface);color:var(--text);border-color:var(--border);}
+.btn-secondary:hover{border-color:var(--maroon);color:var(--maroon);}
+.btn-gold{background:var(--gold);color:#fff;border-color:var(--gold);}
+.btn-gold:hover{background:#c49440;}
+.btn-sm{padding:4px 9px;font-size:11px;}
+.btn-danger{background:#FFEBEE;color:#B71C1C;border-color:#FFCDD2;}
+.btn-success{background:#E8F5E9;color:#2E7D32;border-color:#C8E6C9;}
+
+/* FILTER BAR */
+.filter-bar{display:flex;align-items:center;gap:8px;margin-bottom:16px;flex-wrap:wrap;}
+.filter-input{display:flex;align-items:center;gap:5px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:6px 10px;font-size:12px;color:var(--text);transition:border-color 0.2s;}
+.filter-input:focus-within{border-color:var(--maroon-light);}
+.filter-input input,.filter-input select{border:none;background:none;outline:none;font-size:12px;color:var(--text);min-width:90px;}
+.filter-input i{font-size:13px;color:var(--muted);}
+
+/* TABS */
+.tabs{display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:16px;}
+.tab{padding:7px 16px;font-size:12px;font-weight:500;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all 0.2s;}
+.tab:hover{color:var(--text);}
+.tab.active{color:var(--maroon);border-bottom-color:var(--maroon);font-weight:600;}
+
+/* SECTION HEADER */
+.section-header{margin-bottom:16px;}
+.section-title{font-family:'Playfair Display',serif;font-size:17px;font-weight:600;color:var(--maroon-dark);}
+.section-sub{font-size:11.5px;color:var(--muted);margin-top:2px;}
+
+/* FORM */
+.form-group{margin-bottom:12px;}
+.form-label{display:block;font-size:11px;font-weight:600;color:var(--muted);margin-bottom:4px;letter-spacing:0.03em;text-transform:uppercase;}
+.form-control{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:7px 11px;font-size:12px;color:var(--text);outline:none;transition:border-color 0.2s;}
+.form-control:focus{border-color:var(--maroon-light);background:var(--surface);}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.form-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
+
+/* STOCK ITEM */
+.stock-item{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:var(--bg);border-radius:var(--radius-sm);border:1px solid var(--border);margin-bottom:7px;transition:all 0.2s;}
+.stock-item:hover{border-color:var(--maroon-light);background:var(--maroon-soft);}
+.stock-left{display:flex;align-items:center;gap:9px;}
+.stock-icon{width:34px;height:34px;border-radius:8px;background:var(--maroon-soft);display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--maroon);flex-shrink:0;}
+.stock-name{font-size:12px;font-weight:600;color:var(--text);}
+.stock-sku{font-size:10px;color:var(--muted);font-family:monospace;}
+.stock-right{display:flex;align-items:center;gap:10px;}
+.stock-qty{font-size:17px;font-weight:700;color:var(--text);}
+.stock-unit{font-size:10px;color:var(--muted);}
+
+/* ACTIVITY */
+.activity-list{display:flex;flex-direction:column;gap:8px;}
+.activity-item{display:flex;align-items:flex-start;gap:9px;padding:8px 0;border-bottom:1px solid var(--border);}
+.activity-item:last-child{border-bottom:none;}
+.activity-dot{width:7px;height:7px;border-radius:50%;background:var(--maroon);margin-top:5px;flex-shrink:0;}
+.activity-dot.gold{background:var(--gold);}
+.activity-dot.green{background:var(--success);}
+.activity-dot.blue{background:#1976D2;}
+.activity-body{flex:1;}
+.activity-text{font-size:11.5px;color:var(--text);}
+.activity-time{font-size:10px;color:var(--muted);margin-top:2px;}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:999;display:none;align-items:center;justify-content:center;backdrop-filter:blur(3px);}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--surface);border-radius:var(--radius);width:min(540px,95vw);max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.15);}
+.modal-header{padding:18px 20px 0;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--surface);z-index:10;padding-bottom:14px;border-bottom:1px solid var(--border);}
+.modal-title{font-family:'Playfair Display',serif;font-size:15px;font-weight:600;color:var(--maroon-dark);}
+.modal-close{width:28px;height:28px;border-radius:7px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted);}
+.modal-close:hover{border-color:var(--maroon);color:var(--maroon);}
+.modal-body{padding:16px 20px 20px;}
+
+/* TOAST */
+.toast-wrap{position:fixed;top:16px;right:16px;z-index:9999;display:flex;flex-direction:column;gap:7px;}
+.toast{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 14px;font-size:12px;color:var(--text);box-shadow:0 4px 18px rgba(0,0,0,0.1);display:flex;align-items:center;gap:7px;min-width:240px;animation:toastIn 0.3s ease;}
+@keyframes toastIn{from{opacity:0;transform:translateX(20px);}to{opacity:1;transform:translateX(0);}}
+.toast-success{border-left:3px solid var(--success);}
+.toast-err{border-left:3px solid var(--error);}
+.toast-warn{border-left:3px solid var(--warn);}
+
+/* PAGE TOGGLE */
+.page{display:none;}
+.page.active{display:block;}
+
+/* HAMBURGER */
+.hamburger{display:none;width:34px;height:34px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface);align-items:center;justify-content:center;cursor:pointer;color:var(--muted);}
+
+/* DIVIDER */
+.divider{height:1px;background:var(--border);margin:14px 0;}
+
+/* EMPTY */
+.empty-state{text-align:center;padding:36px 20px;color:var(--muted);}
+.empty-state i{font-size:36px;margin-bottom:8px;display:block;opacity:0.4;}
+.empty-state p{font-size:12.5px;}
+
+/* IOQ SPECIFIC */
+.ioq-highlight{background:linear-gradient(135deg,var(--maroon-dark),var(--maroon));border-radius:var(--radius);padding:18px;color:#fff;position:relative;overflow:hidden;margin-bottom:14px;}
+.ioq-highlight::after{content:'';position:absolute;top:-40px;right:-40px;width:140px;height:140px;border-radius:50%;background:rgba(255,255,255,0.04);}
+.ioq-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(212,168,83,0.2);border:1px solid rgba(212,168,83,0.4);border-radius:20px;padding:3px 10px;font-size:10.5px;font-weight:600;color:var(--gold);margin-bottom:10px;}
+.ioq-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;}
+.ioq-item{background:rgba(255,255,255,0.08);border-radius:10px;padding:12px;}
+.ioq-item-label{font-size:10px;color:rgba(255,255,255,0.55);margin-bottom:5px;text-transform:uppercase;letter-spacing:0.05em;}
+.ioq-item-val{font-size:20px;font-weight:700;color:#fff;}
+.ioq-item-sub{font-size:10px;color:rgba(255,255,255,0.5);margin-top:2px;}
+.ioq-editable{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:7px;padding:5px 9px;color:#fff;font-size:13px;font-weight:600;width:100%;margin-top:4px;outline:none;}
+.ioq-editable:focus{border-color:var(--gold);}
+
+/* PRODUCTION FLOW */
+.prod-flow{display:flex;flex-direction:column;gap:0;}
+.prod-step{display:flex;gap:12px;position:relative;}
+.prod-step:not(:last-child)::after{content:'';position:absolute;left:18px;top:38px;bottom:-2px;width:2px;background:var(--border);}
+.prod-step-dot{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;border:2px solid var(--border);background:var(--surface);}
+.prod-step-dot.done{background:var(--success);border-color:var(--success);color:#fff;}
+.prod-step-dot.active{background:var(--maroon);border-color:var(--maroon);color:#fff;}
+.prod-step-dot.pending{background:var(--bg);color:var(--muted);}
+.prod-step-dot.warn{background:var(--warn);border-color:var(--warn);color:#fff;}
+.prod-step-content{flex:1;padding:8px 0 16px;}
+.prod-step-title{font-size:12.5px;font-weight:600;color:var(--text);}
+.prod-step-meta{font-size:11px;color:var(--muted);margin-top:2px;}
+.prod-step-compare{display:flex;gap:10px;margin-top:6px;flex-wrap:wrap;}
+.prod-compare-item{font-size:10.5px;padding:3px 8px;border-radius:5px;}
+.est{background:#E3F2FD;color:#1565C0;}
+.aktual-ok{background:#E8F5E9;color:#2E7D32;}
+.aktual-late{background:#FFEBEE;color:#B71C1C;}
+.aktual-early{background:#F3E5F5;color:#6A1B9A;}
+
+/* VENDOR CARD */
+.vendor-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;transition:all 0.2s;}
+.vendor-card:hover{border-color:var(--maroon-light);box-shadow:0 4px 16px rgba(122,22,36,0.06);}
+.vendor-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:12px;}
+.vendor-header{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.vendor-avatar{width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,var(--maroon),var(--maroon-light));display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff;font-weight:700;flex-shrink:0;}
+.vendor-name{font-size:13px;font-weight:700;color:var(--text);}
+.vendor-material{font-size:11px;color:var(--muted);margin-top:2px;}
+.vendor-meta{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:10px;}
+.vendor-meta-item{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--muted);}
+.vendor-meta-item i{font-size:12px;color:var(--maroon);}
+.stars{display:flex;align-items:center;gap:2px;}
+.star{font-size:13px;color:#E0D0C0;cursor:pointer;transition:color 0.15s;line-height:1;}
+.star.filled{color:var(--gold);}
+.rating-val{font-size:11.5px;font-weight:700;color:var(--text);margin-left:4px;}
+.rating-count{font-size:10.5px;color:var(--muted);margin-left:2px;}
+.po-mini-table{width:100%;border-collapse:collapse;font-size:11.5px;}
+.po-mini-table th{font-size:9.5px;text-transform:uppercase;letter-spacing:0.06em;color:var(--muted);font-weight:600;padding:5px 7px;border-bottom:1px solid var(--border);text-align:left;}
+.po-mini-table td{padding:6px 7px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:middle;}
+.po-mini-table tr:last-child td{border-bottom:none;}
+.vendor-tabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:12px;}
+.vendor-tab{padding:6px 14px;font-size:11.5px;font-weight:500;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all 0.2s;}
+.vendor-tab:hover{color:var(--text);}
+.vendor-tab.active{color:var(--maroon);border-bottom-color:var(--maroon);font-weight:600;}
+.vendor-body{display:none;}
+.vendor-body.active{display:block;}
+
+/* INVENTORY CATEGORY */
+.inv-category{margin-bottom:20px;}
+.inv-category-header{display:flex;align-items:center;gap:8px;padding:10px 14px;background:var(--maroon-dark);border-radius:var(--radius-sm);margin-bottom:10px;color:#fff;}
+.inv-category-icon{font-size:16px;color:var(--gold);}
+.inv-category-title{font-size:13px;font-weight:600;}
+.inv-category-count{margin-left:auto;font-size:11px;color:rgba(255,255,255,0.6);}
+
+/* PROGRESS */
+.progress-bar{height:7px;background:var(--bg);border-radius:4px;overflow:hidden;margin:4px 0;}
+.progress-fill{height:100%;border-radius:4px;transition:width 0.8s ease;}
+.progress-fill.maroon{background:linear-gradient(90deg,var(--maroon),var(--maroon-light));}
+.progress-fill.gold{background:linear-gradient(90deg,var(--gold),#e8c878);}
+.progress-fill.green{background:var(--success);}
+.progress-fill.warn{background:var(--warn);}
+.progress-fill.err{background:var(--error);}
+
+/* DIGITAL */
+.digital-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:14px;}
+.digital-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;transition:all 0.2s;}
+.digital-card:hover{border-color:var(--maroon-light);box-shadow:0 4px 16px rgba(122,22,36,0.06);}
+.digital-card-icon{width:38px;height:38px;border-radius:9px;background:var(--maroon-soft);display:flex;align-items:center;justify-content:center;font-size:17px;color:var(--maroon);margin-bottom:9px;}
+.digital-card-title{font-size:12px;font-weight:600;color:var(--text);margin-bottom:3px;}
+.digital-card-val{font-size:20px;font-weight:700;color:var(--maroon);}
+.digital-card-sub{font-size:10.5px;color:var(--muted);margin-top:2px;}
+
+/* TIER */
+.tier-card{background:linear-gradient(135deg,var(--maroon-dark),var(--maroon));border-radius:var(--radius);padding:18px;color:#fff;position:relative;overflow:hidden;}
+.tier-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(212,168,83,0.2);border:1px solid rgba(212,168,83,0.4);border-radius:20px;padding:3px 10px;font-size:10.5px;font-weight:600;color:var(--gold);margin-bottom:10px;}
+
+/* ALERT BOX */
+.alert-box{padding:10px 14px;border-radius:var(--radius-sm);display:flex;align-items:flex-start;gap:8px;font-size:12px;margin-bottom:10px;}
+.alert-warn{background:#FFF8E1;border:1px solid #FFE082;color:#E65100;}
+.alert-success{background:#E8F5E9;border:1px solid #A5D6A7;color:#2E7D32;}
+.alert-err{background:#FFEBEE;border:1px solid #EF9A9A;color:#B71C1C;}
+.alert-blue{background:#E3F2FD;border:1px solid #90CAF9;color:#1565C0;}
+.alert-box i{font-size:15px;margin-top:1px;flex-shrink:0;}
+
+/* IOQ MONTHLY TABLE */
+.ioq-month-table{width:100%;border-collapse:collapse;font-size:11.5px;}
+.ioq-month-table th{font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;padding:6px 8px;border-bottom:2px solid var(--border);text-align:left;background:var(--surface);white-space:nowrap;}
+.ioq-month-table td{padding:7px 8px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:middle;}
+.ioq-month-table tr:hover td{background:var(--maroon-soft);}
+.ioq-month-table .ioq-val{font-weight:700;color:var(--maroon);}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  .shell{grid-template-columns:1fr;}
+  .sidebar{position:fixed;left:0;top:0;bottom:0;width:var(--sidebar-w);transform:translateX(-100%);}
+  .sidebar.open{transform:translateX(0);}
+  .hamburger{display:flex;}
+  .grid-2,.grid-3,.grid-4{grid-template-columns:1fr;}
+  .form-row,.form-row-3{grid-template-columns:1fr;}
+}
+@media(max-width:600px){
+  .kpi-grid{grid-template-columns:1fr 1fr;}
+  .content{padding:14px;}
+  .topbar{padding:0 14px;}
+}
+</style>
+</head>
+<body>
+<div class="toast-wrap" id="toastWrap"></div>
+
+<!-- ══ MODAL: SETTINGS IOQ ══ -->
+<div class="modal-overlay" id="modalIOQSettings">
+  <div class="modal" style="width:min(500px,95vw);">
+    <div class="modal-header">
+      <div class="modal-title">⚙️ Konfigurasi Parameter IOQ</div>
+      <button class="modal-close" onclick="closeModal('modalIOQSettings')"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="alert-box alert-blue"><i class="ti ti-info-circle"></i> Parameter ini digunakan untuk menghitung IOQ dinamis. Ubah sesuai kondisi bisnis aktual Anda.</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">HPP per Unit (Rp) <span style="color:var(--error)">*</span></label>
+          <input class="form-control" id="cfg-hpp" type="number" value="349000">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Harga Jual per Unit (Rp)</label>
+          <input class="form-control" id="cfg-harga-jual" type="number" value="549000">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Biaya Pesan per PO (Rp) <span style="color:var(--error)">*</span></label>
+          <input class="form-control" id="cfg-ordering-cost" type="number" value="200000">
+          <div style="font-size:10.5px;color:var(--muted);margin-top:4px;">Biaya admin, transfer bank, komunikasi vendor</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Holding Cost (% HPP/bulan)</label>
+          <input class="form-control" id="cfg-holding-pct" type="number" value="2" step="0.1" min="0.5" max="10">
+          <div style="font-size:10.5px;color:var(--muted);margin-top:4px;">Biaya simpan, listrik, risiko kerusakan</div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Demand Harian Baseline (unit)</label>
+          <input class="form-control" id="cfg-daily-demand" type="number" value="7">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Safety Stock (unit)</label>
+          <input class="form-control" id="cfg-safety-stock" type="number" value="30">
+          <div style="font-size:10.5px;color:var(--muted);margin-top:4px;">Stok penyangga untuk antisipasi lonjakan</div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Lead Time Rata-rata (hari)</label>
+          <input class="form-control" id="cfg-lead-time" type="number" value="14">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Growth Rate Tahun 2 (%)</label>
+          <input class="form-control" id="cfg-growth2" type="number" value="50">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Growth Rate Tahun 3 (%)</label>
+        <input class="form-control" id="cfg-growth3" type="number" value="33">
+        <div style="font-size:10.5px;color:var(--muted);margin-top:4px;">Relatif terhadap Tahun 2</div>
+      </div>
+      <div class="divider"></div>
+      <div style="display:flex;gap:8px;justify-content:flex-end;">
+        <button class="btn btn-secondary" onclick="closeModal('modalIOQSettings')">Batal</button>
+        <button class="btn btn-primary" onclick="saveIOQConfig()"><i class="ti ti-device-floppy"></i> Simpan & Hitung Ulang</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL: TAMBAH / EDIT VENDOR ══ -->
+<div class="modal-overlay" id="modalTambahVendor">
+  <div class="modal" style="width:min(600px,95vw);">
+    <div class="modal-header">
+      <div class="modal-title" id="modalVendorTitle">Tambah Vendor Baru</div>
+      <button class="modal-close" onclick="closeModal('modalTambahVendor')"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="editVendorIdx" value="">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Nama Vendor / Supplier <span style="color:var(--error)">*</span></label>
+          <input class="form-control" id="v-name" placeholder="CV Mitra Tekstil">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Inisial (2 huruf) <span style="color:var(--error)">*</span></label>
+          <input class="form-control" id="v-initial" placeholder="CM" maxlength="2" style="text-transform:uppercase;">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Material / Produk yang Disuplai <span style="color:var(--error)">*</span></label>
+        <input class="form-control" id="v-material" placeholder="Kemeja Jadi, Kain Bahan">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">No. Telepon <span style="color:var(--error)">*</span></label>
+          <input class="form-control" id="v-phone" placeholder="0812-XXXX-XXXX">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input class="form-control" id="v-email" placeholder="vendor@email.com" type="email">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Kota / Lokasi <span style="color:var(--error)">*</span></label>
+          <input class="form-control" id="v-location" placeholder="Bandung, Jabar">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Alamat Lengkap</label>
+          <input class="form-control" id="v-address" placeholder="Jl. Industri No. 12">
+        </div>
+      </div>
+      <div class="form-row-3">
+        <div class="form-group">
+          <label class="form-label">Lead Time (hari) <span style="color:var(--error)">*</span></label>
+          <input class="form-control" id="v-leadtime" type="number" placeholder="7" min="1">
+        </div>
+        <div class="form-group">
+          <label class="form-label">MOQ (unit/pcs) <span style="color:var(--error)">*</span></label>
+          <input class="form-control" id="v-moq" type="number" placeholder="50">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Harga Satuan (Rp)</label>
+          <input class="form-control" id="v-price" type="number" placeholder="349000">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Ongkos Kirim per Pengiriman (Rp)</label>
+          <input class="form-control" id="v-shipping" type="number" placeholder="250000">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Ekspedisi / Kurir</label>
+          <input class="form-control" id="v-courier" placeholder="JNE, SiCepat, TIKI...">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Metode Pembayaran</label>
+          <select class="form-control" id="v-payment">
+            <option>Transfer Bank (NET 30)</option>
+            <option>Transfer Langsung</option>
+            <option>COD</option>
+            <option>Termin 50/50</option>
+            <option>NET 14</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Status</label>
+          <select class="form-control" id="v-status">
+            <option value="Aktif">Aktif</option>
+            <option value="Tidak Aktif">Tidak Aktif</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Lead Time Produksi (hari) — setelah material siap</label>
+        <input class="form-control" id="v-prodtime" type="number" placeholder="Cutting 2h + Jahit 5h + QC 1h = 8">
+        <div style="font-size:10.5px;color:var(--muted);margin-top:4px;">Estimasi total hari dari bahan diterima hingga produk jadi</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Rating Awal (1–5)</label>
+        <div id="v-rating-input" style="display:flex;gap:4px;padding:6px 0;">
+          <span class="star filled" onclick="setNewVendorRating(1)">★</span>
+          <span class="star filled" onclick="setNewVendorRating(2)">★</span>
+          <span class="star filled" onclick="setNewVendorRating(3)">★</span>
+          <span class="star" onclick="setNewVendorRating(4)">★</span>
+          <span class="star" onclick="setNewVendorRating(5)">★</span>
+        </div>
+        <input type="hidden" id="v-rating" value="3">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Catatan</label>
+        <textarea class="form-control" id="v-note" rows="2" placeholder="Opsional…"></textarea>
+      </div>
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:4px;">
+        <button class="btn btn-secondary" onclick="closeModal('modalTambahVendor')">Batal</button>
+        <button class="btn btn-primary" onclick="saveVendor()"><i class="ti ti-device-floppy"></i> Simpan Vendor</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL: BUAT PO ══ -->
+<div class="modal-overlay" id="modalBuatPO">
+  <div class="modal" style="width:min(560px,95vw);">
+    <div class="modal-header">
+      <div class="modal-title">Buat Purchase Order</div>
+      <button class="modal-close" onclick="closeModal('modalBuatPO')"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <div style="display:flex;align-items:center;gap:9px;padding:10px 12px;background:var(--maroon-soft);border-radius:var(--radius-sm);margin-bottom:14px;">
+        <div id="po-vendor-avatar" style="width:34px;height:34px;border-radius:8px;background:linear-gradient(135deg,var(--maroon),var(--maroon-light));display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;font-weight:700;flex-shrink:0;"></div>
+        <div><div id="po-vendor-name" style="font-size:12.5px;font-weight:700;color:var(--maroon-dark);"></div>
+        <div id="po-vendor-material" style="font-size:11px;color:var(--muted);"></div></div>
+        <input type="hidden" id="po-vendor-idx">
+        <div style="margin-left:auto;text-align:right;">
+          <div style="font-size:10px;color:var(--muted);">Ongkir</div>
+          <div id="po-vendor-ongkir" style="font-size:12px;font-weight:600;color:var(--maroon);"></div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">No. PO (auto)</label>
+          <input class="form-control" id="po-number" readonly style="background:var(--bg);color:var(--muted);">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Tanggal Order</label>
+          <input class="form-control" id="po-date" type="date">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Material / Item <span style="color:var(--error)">*</span></label>
+          <input class="form-control" id="po-material" placeholder="Kemeja Jadi">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Jumlah (unit) <span style="color:var(--error)">*</span></label>
+          <input class="form-control" id="po-qty" type="number" placeholder="100" oninput="calcPOTotal()">
+          <div style="font-size:10px;color:var(--muted);margin-top:3px;" id="po-moq-hint"></div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Harga Satuan (Rp) <span style="color:var(--error)">*</span></label>
+          <input class="form-control" id="po-price" type="number" placeholder="349000" oninput="calcPOTotal()">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Total Nilai PO</label>
+          <input class="form-control" id="po-total" readonly style="background:var(--bg);font-weight:700;color:var(--maroon);">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Lead Time (hari)</label>
+          <input class="form-control" id="po-eta" type="number" placeholder="14">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Estimasi Tgl Tiba</label>
+          <input class="form-control" id="po-eta-date" readonly style="background:var(--bg);color:var(--muted);">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Metode Pembayaran</label>
+          <select class="form-control" id="po-payment">
+            <option>Transfer Bank (NET 30)</option><option>Transfer Langsung</option><option>COD</option><option>Termin 50/50</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Ongkir (Rp)</label>
+          <input class="form-control" id="po-shipping-cost" type="number" placeholder="250000" oninput="calcPOTotal()">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Catatan / Spesifikasi</label>
+        <textarea class="form-control" id="po-note" rows="2" placeholder="Warna, ukuran, spesifikasi khusus…"></textarea>
+      </div>
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:4px;">
+        <button class="btn btn-secondary" onclick="closeModal('modalBuatPO')">Batal</button>
+        <button class="btn btn-primary" onclick="submitPO()"><i class="ti ti-file-invoice"></i> Buat PO</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL: RATING VENDOR ══ -->
+<div class="modal-overlay" id="modalRating">
+  <div class="modal" style="width:min(440px,95vw);">
+    <div class="modal-header">
+      <div class="modal-title">Beri Rating Vendor</div>
+      <button class="modal-close" onclick="closeModal('modalRating')"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <div style="text-align:center;padding:6px 0 16px;">
+        <div id="rating-vendor-avatar" style="width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,var(--maroon),var(--maroon-light));display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff;font-weight:700;margin:0 auto 8px;"></div>
+        <div id="rating-vendor-name" style="font-size:14px;font-weight:700;color:var(--maroon-dark);"></div>
+        <div id="rating-vendor-material" style="font-size:11px;color:var(--muted);margin-top:2px;"></div>
+        <input type="hidden" id="rating-vendor-idx">
+      </div>
+      <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:14px;">
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span style="font-size:12px;font-weight:600;">Kualitas Produk</span><span id="lbl-kualitas" style="font-size:12px;font-weight:700;color:var(--gold);">★ 4</span></div>
+          <div style="display:flex;gap:5px;" id="stars-kualitas">
+            <span class="star filled" onclick="setRatingStar('kualitas',1)">★</span><span class="star filled" onclick="setRatingStar('kualitas',2)">★</span><span class="star filled" onclick="setRatingStar('kualitas',3)">★</span><span class="star filled" onclick="setRatingStar('kualitas',4)">★</span><span class="star" onclick="setRatingStar('kualitas',5)">★</span>
+          </div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span style="font-size:12px;font-weight:600;">Ketepatan Waktu Produksi</span><span id="lbl-waktu" style="font-size:12px;font-weight:700;color:var(--gold);">★ 4</span></div>
+          <div style="display:flex;gap:5px;" id="stars-waktu">
+            <span class="star filled" onclick="setRatingStar('waktu',1)">★</span><span class="star filled" onclick="setRatingStar('waktu',2)">★</span><span class="star filled" onclick="setRatingStar('waktu',3)">★</span><span class="star filled" onclick="setRatingStar('waktu',4)">★</span><span class="star" onclick="setRatingStar('waktu',5)">★</span>
+          </div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span style="font-size:12px;font-weight:600;">Harga & Nilai</span><span id="lbl-harga" style="font-size:12px;font-weight:700;color:var(--gold);">★ 4</span></div>
+          <div style="display:flex;gap:5px;" id="stars-harga">
+            <span class="star filled" onclick="setRatingStar('harga',1)">★</span><span class="star filled" onclick="setRatingStar('harga',2)">★</span><span class="star filled" onclick="setRatingStar('harga',3)">★</span><span class="star filled" onclick="setRatingStar('harga',4)">★</span><span class="star" onclick="setRatingStar('harga',5)">★</span>
+          </div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span style="font-size:12px;font-weight:600;">Responsivitas</span><span id="lbl-respon" style="font-size:12px;font-weight:700;color:var(--gold);">★ 4</span></div>
+          <div style="display:flex;gap:5px;" id="stars-respon">
+            <span class="star filled" onclick="setRatingStar('respon',1)">★</span><span class="star filled" onclick="setRatingStar('respon',2)">★</span><span class="star filled" onclick="setRatingStar('respon',3)">★</span><span class="star filled" onclick="setRatingStar('respon',4)">★</span><span class="star" onclick="setRatingStar('respon',5)">★</span>
+          </div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span style="font-size:12px;font-weight:600;">Lama Proses Produksi</span><span id="lbl-prodspeed" style="font-size:12px;font-weight:700;color:var(--gold);">★ 4</span></div>
+          <div style="display:flex;gap:5px;" id="stars-prodspeed">
+            <span class="star filled" onclick="setRatingStar('prodspeed',1)">★</span><span class="star filled" onclick="setRatingStar('prodspeed',2)">★</span><span class="star filled" onclick="setRatingStar('prodspeed',3)">★</span><span class="star filled" onclick="setRatingStar('prodspeed',4)">★</span><span class="star" onclick="setRatingStar('prodspeed',5)">★</span>
+          </div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Lead Time Aktual (hari)</label>
+          <input class="form-control" id="rating-actual-lead" type="number" placeholder="Hari yg sebenarnya">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Lead Time Estimasi (hari)</label>
+          <input class="form-control" id="rating-est-lead" type="number" placeholder="Dari PO">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Komentar / Ulasan</label>
+        <textarea class="form-control" id="rating-comment" rows="2" placeholder="Ceritakan pengalaman kerja sama…"></textarea>
+      </div>
+      <div style="display:flex;gap:8px;justify-content:flex-end;">
+        <button class="btn btn-secondary" onclick="closeModal('modalRating')">Batal</button>
+        <button class="btn btn-gold" onclick="submitRating()"><i class="ti ti-star"></i> Simpan Rating</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL: PRODUCTION TRACKING ══ -->
+<div class="modal-overlay" id="modalProdTrack">
+  <div class="modal" style="width:min(560px,95vw);">
+    <div class="modal-header">
+      <div class="modal-title">🏭 Tracking Proses Produksi</div>
+      <button class="modal-close" onclick="closeModal('modalProdTrack')"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body" id="prodTrackBody"></div>
+  </div>
+</div>
+
+<!-- ══ MODAL: INBOUND ══ -->
+<div class="modal-overlay" id="modalInbound">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Catat Stok Masuk (Inbound)</div>
+      <button class="modal-close" onclick="closeModal('modalInbound')"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Kategori Material</label>
+          <select class="form-control" id="inboundCat" onchange="updateInboundItems()">
+            <option value="fg">Barang Jadi (Finished Goods)</option>
+            <option value="rm">Bahan Mentah (Raw Material)</option>
+            <option value="pk">Packaging & Aksesoris</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Item Material</label>
+          <select class="form-control" id="inboundMaterial"></select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Jumlah</label>
+          <input class="form-control" type="number" id="inboundQty" placeholder="100" min="1">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Satuan</label>
+          <input class="form-control" id="inboundUnit" readonly style="background:var(--bg);">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Vendor / Supplier</label>
+          <select class="form-control" id="inboundVendor"></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">No. PO / Invoice</label>
+          <input class="form-control" type="text" id="inboundPO" placeholder="PO-2026-XXX">
+        </div>
+      </div>
+      <div class="form-group"><label class="form-label">Catatan</label><textarea class="form-control" id="inboundNote" rows="2" placeholder="Opsional…"></textarea></div>
+      <div style="display:flex;gap:8px;justify-content:flex-end;">
+        <button class="btn btn-secondary" onclick="closeModal('modalInbound')">Batal</button>
+        <button class="btn btn-primary" onclick="submitInbound()"><i class="ti ti-plus"></i> Catat Inbound</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL: SALES ══ -->
+<div class="modal-overlay" id="modalSales">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Catat Penjualan & Outbound</div>
+      <button class="modal-close" onclick="closeModal('modalSales')"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Channel</label>
+          <select class="form-control" id="salesChannel"><option>Shopee</option><option>Tokopedia</option><option>TikTok Shop</option><option>eBay</option><option>Website</option><option>Offline</option></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">SKU Produk</label>
+          <select class="form-control" id="salesSKU">
+            <option>STR-KMJ-NAV-S</option><option>STR-KMJ-NAV-M</option><option>STR-KMJ-NAV-L</option>
+            <option>STR-KMJ-CRM-M</option><option>STR-KMJ-BLK-M</option><option>STR-KMJ-MAR-M</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Jumlah (pcs)</label><input class="form-control" type="number" id="salesQty" placeholder="1" min="1"></div>
+        <div class="form-group"><label class="form-label">Harga Jual (Rp)</label><input class="form-control" type="number" id="salesPrice" placeholder="549000"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">No. Resi</label><input class="form-control" type="text" id="salesResi" placeholder="JNE-XXXXXX"></div>
+        <div class="form-group"><label class="form-label">Nama Customer</label><input class="form-control" type="text" id="salesCustomer"></div>
+      </div>
+      <div style="display:flex;gap:8px;justify-content:flex-end;">
+        <button class="btn btn-secondary" onclick="closeModal('modalSales')">Batal</button>
+        <button class="btn btn-primary" onclick="submitSalesModal()"><i class="ti ti-shopping-cart"></i> Catat Penjualan</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SHELL -->
+<div class="shell">
+  <div class="sidebar" id="sidebar">
+    <div class="logo">
+      <div class="logo-mark"><div style="width:36px;height:36px;background:linear-gradient(135deg,var(--maroon-light),var(--gold));border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:14px;color:#fff;font-weight:700;">S</div></div>
+      <div class="logo-text">STRAIT&CO <span>WAREHOUSE SYSTEM v2</span></div>
+    </div>
+    <nav class="nav">
+      <div class="nav-section">Overview</div>
+      <div class="nav-item active" onclick="showPage('dashboard',this)"><i class="ti ti-dashboard"></i> Dashboard</div>
+      <div class="nav-item" onclick="showPage('ioq',this)"><i class="ti ti-calculator"></i> IOQ & Produksi<span class="nav-badge">NEW</span></div>
+
+      <div class="nav-section">Operasional</div>
+      <div class="nav-item" onclick="showPage('inventory',this)"><i class="ti ti-packages"></i> Inventori Lengkap<span class="nav-badge red" id="nav-low-badge">3</span></div>
+      <div class="nav-item" onclick="showPage('inbound',this)"><i class="ti ti-package-import"></i> Stok Masuk</div>
+      <div class="nav-item" onclick="showPage('outbound',this)"><i class="ti ti-truck-delivery"></i> Penjualan & Outbound</div>
+      <div class="nav-item" onclick="showPage('production',this)"><i class="ti ti-tools"></i> Tracking Produksi</div>
+
+      <div class="nav-section">Digital</div>
+      <div class="nav-item" onclick="showPage('digital',this)"><i class="ti ti-qrcode"></i> Ekosistem Digital</div>
+      <div class="nav-item" onclick="showPage('loyalty',this)"><i class="ti ti-trophy"></i> S-Users Loyalty</div>
+
+      <div class="nav-section">Bisnis</div>
+      <div class="nav-item" onclick="showPage('finance',this)"><i class="ti ti-chart-bar"></i> Proyeksi Keuangan</div>
+      <div class="nav-item" onclick="showPage('vendor',this)"><i class="ti ti-building-store"></i> Manajemen Vendor</div>
+      <div class="nav-item" onclick="showPage('report',this)"><i class="ti ti-file-analytics"></i> Laporan Bulanan</div>
+    </nav>
+    <div class="user-card">
+      <div class="avatar">AD</div>
+      <div class="user-info"><p>Admin WMS</p><p>Warehouse Manager</p></div>
+    </div>
+  </div>
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:99;"></div>
+
+  <div class="main">
+    <div class="topbar">
+      <button class="hamburger" id="hamburger" onclick="toggleSidebar()"><i class="ti ti-menu-2"></i></button>
+      <div class="topbar-title" id="topbarTitle">Dashboard</div>
+      <div class="topbar-right">
+        <div class="search-box"><i class="ti ti-search" style="font-size:13px;color:var(--muted);"></i><input type="text" placeholder="Cari produk, SKU…"></div>
+        <button class="btn-icon" title="Notifikasi"><i class="ti ti-bell" style="font-size:15px;"></i><span class="notif-dot"></span></button>
+        <button class="btn-icon" title="Settings IOQ" onclick="openModal('modalIOQSettings')"><i class="ti ti-settings" style="font-size:15px;"></i></button>
+        <div class="date-badge" id="currentDate"></div>
+      </div>
+    </div>
+
+    <div class="content" id="mainContent">
+
+      <!-- ══════════ DASHBOARD ══════════ -->
+      <div class="page active" id="page-dashboard">
+        <div class="section-header">
+          <div class="section-title">Dashboard Overview</div>
+          <div class="section-sub">STRAIT&CO Warehouse Management System — Real-time monitoring</div>
+        </div>
+        <div class="kpi-grid">
+          <div class="kpi-card maroon">
+            <div class="kpi-label"><i class="ti ti-shirt"></i> Total Stok Kemeja</div>
+            <div class="kpi-value" id="kpi-stock">247</div>
+            <div class="kpi-change up"><i class="ti ti-trending-up"></i> +32 dari bulan lalu</div>
+            <div class="kpi-sub">unit barang jadi</div>
+          </div>
+          <div class="kpi-card gold">
+            <div class="kpi-label"><i class="ti ti-shopping-cart"></i> Penjualan Bulan Ini</div>
+            <div class="kpi-value" id="kpi-sales">186</div>
+            <div class="kpi-change up"><i class="ti ti-trending-up"></i> +18% dari target</div>
+            <div class="kpi-sub">unit terjual</div>
+          </div>
+          <div class="kpi-card green">
+            <div class="kpi-label"><i class="ti ti-currency-dollar"></i> Revenue (Juni)</div>
+            <div class="kpi-value">102,1Jt</div>
+            <div class="kpi-change up"><i class="ti ti-trending-up"></i> +12% MoM</div>
+            <div class="kpi-sub">186 × Rp549.000</div>
+          </div>
+          <div class="kpi-card blue">
+            <div class="kpi-label"><i class="ti ti-calculator"></i> IOQ Bulan Ini</div>
+            <div class="kpi-value" id="kpi-ioq-dash">--</div>
+            <div class="kpi-change" id="kpi-ioq-dash-sub">Menghitung...</div>
+            <div class="kpi-sub">rekomendasi order</div>
+          </div>
+          <div class="kpi-card warn">
+            <div class="kpi-label"><i class="ti ti-alert-triangle"></i> Stok Low Alert</div>
+            <div class="kpi-value">3</div>
+            <div class="kpi-change down"><i class="ti ti-alert-circle"></i> Perlu restock segera</div>
+            <div class="kpi-sub">SKU kritis</div>
+          </div>
+          <div class="kpi-card maroon">
+            <div class="kpi-label"><i class="ti ti-users"></i> S-Users Aktif</div>
+            <div class="kpi-value">892</div>
+            <div class="kpi-change up"><i class="ti ti-trending-up"></i> +64 pengguna baru</div>
+            <div class="kpi-sub">member terdaftar</div>
+          </div>
+        </div>
+
+        <!-- IOQ Alert Banner -->
+        <div id="ioq-alert-banner" style="display:none;" class="alert-box alert-warn" style="margin-bottom:14px;">
+          <i class="ti ti-alert-triangle"></i>
+          <div><b>IOQ Alert:</b> <span id="ioq-alert-text"></span> <a href="#" onclick="showPage('ioq',document.querySelector('.nav-item:nth-child(2)'));return false;" style="color:var(--warn);font-weight:600;">→ Lihat IOQ</a>
+        </div>
+
+        <div style="display:grid;grid-template-columns:2fr 1fr;gap:14px;margin-bottom:14px;">
+          <div class="widget">
+            <div class="widget-header">
+              <div class="widget-title"><i class="ti ti-chart-line"></i> Penjualan 7 Hari Terakhir</div>
+              <div class="widget-action">Detail <i class="ti ti-external-link"></i></div>
+            </div>
+            <canvas id="chartSales" height="130"></canvas>
+          </div>
+          <div class="widget">
+            <div class="widget-header"><div class="widget-title"><i class="ti ti-pie-chart"></i> Channel Penjualan</div></div>
+            <canvas id="chartChannel" height="130"></canvas>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="widget">
+            <div class="widget-header">
+              <div class="widget-title"><i class="ti ti-package"></i> Stok Barang Jadi</div>
+              <button class="btn btn-sm btn-primary" onclick="openModal('modalInbound')"><i class="ti ti-plus"></i> Inbound</button>
+            </div>
+            <div class="chart-bar-wrap">
+              <div class="chart-row"><div class="chart-label">Navy</div><div class="chart-track"><div class="chart-fill maroon" style="width:75%"></div></div><div class="chart-val">89 unit</div></div>
+              <div class="chart-row"><div class="chart-label">Cream</div><div class="chart-track"><div class="chart-fill gold" style="width:60%"></div></div><div class="chart-val">72 unit</div></div>
+              <div class="chart-row"><div class="chart-label">Black</div><div class="chart-track"><div class="chart-fill maroon" style="width:45%"></div></div><div class="chart-val">54 unit</div></div>
+              <div class="chart-row"><div class="chart-label">Maroon</div><div class="chart-track"><div class="chart-fill gold" style="width:26%"></div></div><div class="chart-val">32 unit</div></div>
+              <div class="chart-row"><div class="chart-label">Olive</div><div class="chart-track"><div class="chart-fill warn" style="width:0%"></div></div><div class="chart-val"><span class="status-pill pill-err">Habis</span></div></div>
+            </div>
+          </div>
+          <div class="widget">
+            <div class="widget-header"><div class="widget-title"><i class="ti ti-activity"></i> Aktivitas Terbaru</div></div>
+            <div class="activity-list" id="activityList">
+              <div class="activity-item"><div class="activity-dot green"></div><div class="activity-body"><div class="activity-text">Inbound 50 unit Kemeja Navy dari CV Mitra Tekstil</div><div class="activity-time">5 menit lalu · Gudang A</div></div></div>
+              <div class="activity-item"><div class="activity-dot maroon"></div><div class="activity-body"><div class="activity-text">Penjualan 3x STR-KMJ-CRM-M via Shopee — Resi JNE123456</div><div class="activity-time">22 menit lalu · Shopee</div></div></div>
+              <div class="activity-item"><div class="activity-dot gold"></div><div class="activity-body"><div class="activity-text">IOQ dihitung ulang: rekomendasi order 148 unit bulan ini</div><div class="activity-time">1 jam lalu · Sistem</div></div></div>
+              <div class="activity-item"><div class="activity-dot blue"></div><div class="activity-body"><div class="activity-text">Stok Olive size M mencapai level kritis (0 unit)</div><div class="activity-time">3 jam lalu · Alert</div></div></div>
+              <div class="activity-item"><div class="activity-dot maroon"></div><div class="activity-body"><div class="activity-text">PO-2026-022 dikirim ke PT Konveksi Prima — 200 unit</div><div class="activity-time">Kemarin · Pembelian</div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════ IOQ & PRODUKSI ══════════ -->
+      <div class="page" id="page-ioq">
+        <div class="section-header">
+          <div class="section-title">IOQ & Perencanaan Produksi</div>
+          <div class="section-sub">Ideal Order Quantity dinamis berbasis EOQ — 3 tahun, detail per bulan</div>
+        </div>
+
+        <!-- IOQ Config Card -->
+        <div class="ioq-highlight">
+          <div class="ioq-badge"><i class="ti ti-calculator"></i> Economic Order Quantity (EOQ)</div>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px;">
+            <div>
+              <div style="font-family:'Playfair Display',serif;font-size:18px;font-weight:700;">IOQ Dinamis STRAIT&CO</div>
+              <div style="font-size:11.5px;color:rgba(255,255,255,0.55);margin-top:2px;">Formula: √(2 × D × S / H) + Safety Stock · Diperbarui otomatis saat demand berubah</div>
+            </div>
+            <button class="btn btn-gold btn-sm" onclick="openModal('modalIOQSettings')"><i class="ti ti-settings"></i> Edit Parameter</button>
+          </div>
+          <div class="ioq-grid" id="ioq-summary-grid">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+
+        <!-- IOQ Alert -->
+        <div id="ioq-main-alert" class="alert-box alert-warn" style="margin-bottom:14px;display:none;">
+          <i class="ti ti-alert-triangle"></i><span id="ioq-main-alert-text"></span>
+        </div>
+
+        <!-- Turnover -->
+        <div class="widget" style="margin-bottom:14px;">
+          <div class="widget-header">
+            <div class="widget-title"><i class="ti ti-refresh"></i> Inventory Turnover & BM Produksi</div>
+            <span class="status-pill pill-blue">Diperbarui otomatis</span>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;" id="turnover-grid"></div>
+        </div>
+
+        <!-- Tab Year -->
+        <div class="tabs" id="ioq-year-tabs">
+          <div class="tab active" onclick="switchIOQYear(1,this)">Tahun 1 (Seed)</div>
+          <div class="tab" onclick="switchIOQYear(2,this)">Tahun 2 (Growth)</div>
+          <div class="tab" onclick="switchIOQYear(3,this)">Tahun 3 (Scale)</div>
+        </div>
+
+        <div id="ioq-year-content"></div>
+      </div>
+
+      <!-- ══════════ INVENTORY ══════════ -->
+      <div class="page" id="page-inventory">
+        <div class="section-header">
+          <div class="section-title">Inventori Lengkap</div>
+          <div class="section-sub">Semua kategori: Barang Jadi, Bahan Mentah, Packaging & Aksesoris</div>
+        </div>
+        <div class="filter-bar">
+          <div class="filter-input"><i class="ti ti-search"></i><input type="text" placeholder="Cari item, SKU, kategori…" oninput="filterInventory(this.value)"></div>
+          <div class="filter-input"><i class="ti ti-filter"></i>
+            <select id="inv-cat-filter" onchange="filterInventory()">
+              <option value="">Semua Kategori</option>
+              <option value="fg">Barang Jadi</option>
+              <option value="rm">Bahan Mentah</option>
+              <option value="pk">Packaging</option>
+            </select>
+          </div>
+          <div class="filter-input"><i class="ti ti-alert-triangle"></i>
+            <select id="inv-status-filter" onchange="filterInventory()">
+              <option value="">Semua Status</option>
+              <option value="ok">OK</option>
+              <option value="low">Low Stock</option>
+              <option value="out">Habis</option>
+            </select>
+          </div>
+          <div style="margin-left:auto;display:flex;gap:7px;">
+            <button class="btn btn-secondary btn-sm" onclick="exportCSV()"><i class="ti ti-download"></i> Export</button>
+            <button class="btn btn-primary btn-sm" onclick="openModal('modalInbound')"><i class="ti ti-plus"></i> Tambah Stok</button>
+          </div>
+        </div>
+
+        <!-- Barang Jadi -->
+        <div class="inv-category" id="inv-cat-fg">
+          <div class="inv-category-header">
+            <i class="ti ti-shirt inv-category-icon"></i>
+            <span class="inv-category-title">Barang Jadi (Finished Goods)</span>
+            <span class="inv-category-count" id="fg-count">12 SKU</span>
+          </div>
+          <div class="widget" style="padding:0;">
+            <div class="table-wrap" style="margin:0;padding:0;">
+              <table class="data-table" id="inventoryFGTable">
+                <thead><tr><th>SKU</th><th>Produk</th><th>Warna</th><th>Size</th><th>Stok</th><th>Reorder Pt.</th><th>IOQ Rec.</th><th>Status</th><th>Update</th><th>Aksi</th></tr></thead>
+                <tbody id="inventoryFGBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bahan Mentah -->
+        <div class="inv-category" id="inv-cat-rm">
+          <div class="inv-category-header">
+            <i class="ti ti-stack inv-category-icon"></i>
+            <span class="inv-category-title">Bahan Mentah (Raw Materials)</span>
+            <span class="inv-category-count" id="rm-count">-- item</span>
+          </div>
+          <div class="widget" style="padding:0;">
+            <div class="table-wrap" style="margin:0;padding:0;">
+              <table class="data-table" id="inventoryRMTable">
+                <thead><tr><th>Kode</th><th>Nama Material</th><th>Kategori</th><th>Stok</th><th>Satuan</th><th>Reorder Pt.</th><th>Harga/Satuan</th><th>Status</th><th>Supplier</th><th>Aksi</th></tr></thead>
+                <tbody id="inventoryRMBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Packaging -->
+        <div class="inv-category" id="inv-cat-pk">
+          <div class="inv-category-header">
+            <i class="ti ti-box inv-category-icon"></i>
+            <span class="inv-category-title">Packaging & Aksesoris</span>
+            <span class="inv-category-count" id="pk-count">-- item</span>
+          </div>
+          <div class="widget" style="padding:0;">
+            <div class="table-wrap" style="margin:0;padding:0;">
+              <table class="data-table" id="inventoryPKTable">
+                <thead><tr><th>Kode</th><th>Nama Item</th><th>Stok</th><th>Satuan</th><th>Reorder Pt.</th><th>Harga/pcs</th><th>Status</th><th>Aksi</th></tr></thead>
+                <tbody id="inventoryPKBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════ INBOUND ══════════ -->
+      <div class="page" id="page-inbound">
+        <div class="section-header">
+          <div class="section-title">Stok Masuk (Inbound)</div>
+          <div class="section-sub">Catat semua material masuk dari vendor — barang jadi, bahan mentah, packaging</div>
+        </div>
+        <div class="grid-2">
+          <div class="widget">
+            <div class="widget-header"><div class="widget-title"><i class="ti ti-package-import"></i> Form Inbound</div></div>
+            <div class="form-group">
+              <label class="form-label">Kategori</label>
+              <select class="form-control" id="ib-cat" onchange="updateIBItems()">
+                <option value="fg">Barang Jadi</option><option value="rm">Bahan Mentah</option><option value="pk">Packaging</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <div class="form-group"><label class="form-label">Item</label><select class="form-control" id="ib-item" onchange="updateIBUnit()"></select></div>
+              <div class="form-group"><label class="form-label">Satuan</label><input class="form-control" id="ib-unit" readonly style="background:var(--bg);"></div>
+            </div>
+            <div class="form-row">
+              <div class="form-group"><label class="form-label">Jumlah</label><input class="form-control" type="number" id="ib-qty" placeholder="0"></div>
+              <div class="form-group"><label class="form-label">Harga Satuan (Rp)</label><input class="form-control" type="number" id="ib-price" placeholder="0"></div>
+            </div>
+            <div class="form-row">
+              <div class="form-group"><label class="form-label">Vendor</label><select class="form-control" id="ib-vendor"></select></div>
+              <div class="form-group"><label class="form-label">No. PO</label><input class="form-control" type="text" id="ib-po" placeholder="PO-2026-001"></div>
+            </div>
+            <div class="form-group"><label class="form-label">Catatan</label><textarea class="form-control" id="ib-note" rows="2"></textarea></div>
+            <button class="btn btn-primary" style="width:100%;" onclick="submitInboundPage()"><i class="ti ti-plus"></i> Catat Stok Masuk</button>
+          </div>
+          <div class="widget">
+            <div class="widget-header"><div class="widget-title"><i class="ti ti-list"></i> Ringkasan Stok</div></div>
+            <div id="materialSummary"></div>
+          </div>
+        </div>
+        <div class="widget">
+          <div class="widget-header">
+            <div class="widget-title"><i class="ti ti-history"></i> Riwayat Inbound</div>
+            <button class="btn btn-secondary btn-sm" onclick="exportCSV()"><i class="ti ti-download"></i> Export</button>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead><tr><th>Tanggal</th><th>Kategori</th><th>Material</th><th>Qty</th><th>Harga/unit</th><th>Total</th><th>Vendor</th><th>No. PO</th></tr></thead>
+              <tbody id="inboundTableBody">
+                <tr><td>14/06/2026</td><td><span class="status-pill pill-maroon">Barang Jadi</span></td><td>Kemeja Jadi</td><td>50 unit</td><td>Rp349.000</td><td>Rp17.450.000</td><td>PT Konveksi Prima</td><td><span class="sku-tag">PO-2026-022</span></td></tr>
+                <tr><td>12/06/2026</td><td><span class="status-pill pill-blue">Packaging</span></td><td>Label QR + Hang Tag</td><td>200 pcs</td><td>Rp2.500</td><td>Rp500.000</td><td>Toko Label Digital</td><td><span class="sku-tag">PO-2026-021</span></td></tr>
+                <tr><td>10/06/2026</td><td><span class="status-pill pill-blue">Packaging</span></td><td>Packaging Box</td><td>100 pcs</td><td>Rp8.000</td><td>Rp800.000</td><td>Supplier Packaging</td><td><span class="sku-tag">PO-2026-020</span></td></tr>
+                <tr><td>07/06/2026</td><td><span class="status-pill pill-maroon">Barang Jadi</span></td><td>Kemeja Jadi</td><td>120 unit</td><td>Rp349.000</td><td>Rp41.880.000</td><td>CV Mitra Tekstil</td><td><span class="sku-tag">PO-2026-019</span></td></tr>
+                <tr><td>03/06/2026</td><td><span class="status-pill pill-gold">Bahan Mentah</span></td><td>Kain Oxford Premium</td><td>50 meter</td><td>Rp45.000</td><td>Rp2.250.000</td><td>CV Mitra Tekstil</td><td><span class="sku-tag">PO-2026-018</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════ OUTBOUND ══════════ -->
+      <div class="page" id="page-outbound">
+        <div class="section-header">
+          <div class="section-title">Penjualan & Outbound</div>
+          <div class="section-sub">Catat setiap transaksi — stok otomatis terpotong</div>
+        </div>
+        <div class="grid-2">
+          <div class="widget">
+            <div class="widget-header"><div class="widget-title"><i class="ti ti-shopping-cart"></i> Catat Penjualan Baru</div></div>
+            <div class="form-group"><label class="form-label">Channel</label>
+              <select class="form-control" id="ob-channel"><option>Shopee</option><option>Tokopedia</option><option>TikTok Shop</option><option>eBay</option><option>Website</option><option>Offline</option></select>
+            </div>
+            <div class="form-row">
+              <div class="form-group"><label class="form-label">SKU</label>
+                <select class="form-control" id="ob-sku"><option>STR-KMJ-NAV-S</option><option>STR-KMJ-NAV-M</option><option>STR-KMJ-NAV-L</option><option>STR-KMJ-CRM-M</option><option>STR-KMJ-BLK-M</option><option>STR-KMJ-MAR-M</option></select>
+              </div>
+              <div class="form-group"><label class="form-label">Jumlah</label><input class="form-control" type="number" id="ob-qty" placeholder="1" min="1"></div>
+            </div>
+            <div class="form-row">
+              <div class="form-group"><label class="form-label">Harga Jual (Rp)</label><input class="form-control" type="number" id="ob-price" placeholder="549000"></div>
+              <div class="form-group"><label class="form-label">No. Resi</label><input class="form-control" type="text" id="ob-resi"></div>
+            </div>
+            <div class="form-group"><label class="form-label">Customer</label><input class="form-control" type="text" id="ob-customer"></div>
+            <button class="btn btn-primary" style="width:100%;margin-top:4px;" onclick="submitSalesPage()"><i class="ti ti-truck-delivery"></i> Catat & Proses Outbound</button>
+          </div>
+          <div class="widget">
+            <div class="widget-header"><div class="widget-title"><i class="ti ti-chart-donut"></i> Performa Channel</div></div>
+            <canvas id="chartChannelPage" height="150"></canvas>
+            <div class="divider"></div>
+            <div class="chart-bar-wrap">
+              <div class="chart-row"><div class="chart-label">Shopee</div><div class="chart-track"><div class="chart-fill maroon" style="width:72%"></div></div><div class="chart-val">134 unit</div></div>
+              <div class="chart-row"><div class="chart-label">Tokopedia</div><div class="chart-track"><div class="chart-fill gold" style="width:32%"></div></div><div class="chart-val">60 unit</div></div>
+              <div class="chart-row"><div class="chart-label">TikTok</div><div class="chart-track"><div class="chart-fill blue" style="width:20%"></div></div><div class="chart-val">37 unit</div></div>
+              <div class="chart-row"><div class="chart-label">eBay</div><div class="chart-track"><div class="chart-fill green" style="width:8%"></div></div><div class="chart-val">15 unit</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="widget">
+          <div class="widget-header">
+            <div class="widget-title"><i class="ti ti-list"></i> Log Penjualan</div>
+            <button class="btn btn-secondary btn-sm" onclick="exportCSV()"><i class="ti ti-download"></i> Export CSV</button>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead><tr><th>Tanggal</th><th>SKU</th><th>Qty</th><th>Channel</th><th>Revenue</th><th>Resi</th><th>Customer</th><th>Status</th></tr></thead>
+              <tbody id="salesTableBody">
+                <tr><td>14/06/2026</td><td><span class="sku-tag">STR-KMJ-NAV-M</span></td><td>2</td><td><span class="status-pill pill-maroon">Shopee</span></td><td>Rp1.098.000</td><td>JNE221344</td><td>Fariz R.</td><td><span class="status-pill pill-success">Terkirim</span></td></tr>
+                <tr><td>14/06/2026</td><td><span class="sku-tag">STR-KMJ-CRM-M</span></td><td>1</td><td><span class="status-pill pill-blue">Tokopedia</span></td><td>Rp549.000</td><td>SiCepat98234</td><td>Luthfi A.</td><td><span class="status-pill pill-warn">Dikirim</span></td></tr>
+                <tr><td>13/06/2026</td><td><span class="sku-tag">STR-KMJ-BLK-L</span></td><td>3</td><td><span class="status-pill pill-maroon">Shopee</span></td><td>Rp1.647.000</td><td>JNE219944</td><td>Rizka D.</td><td><span class="status-pill pill-success">Terkirim</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════ PRODUCTION TRACKING ══════════ -->
+      <div class="page" id="page-production">
+        <div class="section-header">
+          <div class="section-title">Tracking Proses Produksi</div>
+          <div class="section-sub">Monitor setiap tahap — Estimasi vs Aktual per PO produksi</div>
+        </div>
+
+        <!-- Summary Stats -->
+        <div class="kpi-grid" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr));">
+          <div class="kpi-card maroon"><div class="kpi-label"><i class="ti ti-tools"></i> Batch Aktif</div><div class="kpi-value" id="prod-active-batch">2</div><div class="kpi-sub">sedang berjalan</div></div>
+          <div class="kpi-card green"><div class="kpi-label"><i class="ti ti-check"></i> Selesai Bulan Ini</div><div class="kpi-value">3</div><div class="kpi-sub">batch completed</div></div>
+          <div class="kpi-card gold"><div class="kpi-label"><i class="ti ti-clock"></i> Avg Lead Aktual</div><div class="kpi-value" id="prod-avg-actual">--</div><div class="kpi-sub">vs estimasi</div></div>
+          <div class="kpi-card warn"><div class="kpi-label"><i class="ti ti-alert-triangle"></i> Terlambat</div><div class="kpi-value" id="prod-late-count">1</div><div class="kpi-sub">batch delay</div></div>
+          <div class="kpi-card blue"><div class="kpi-label"><i class="ti ti-trending-up"></i> On-Time Rate</div><div class="kpi-value">80%</div><div class="kpi-sub">batch tepat waktu</div></div>
+        </div>
+
+        <!-- Active Productions -->
+        <div id="productionList"></div>
+
+        <!-- Vendor Production Compare -->
+        <div class="widget" style="margin-top:14px;">
+          <div class="widget-header">
+            <div class="widget-title"><i class="ti ti-chart-bar"></i> Perbandingan Kecepatan Produksi per Vendor</div>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table" id="vendorProdCompareTable">
+              <thead><tr><th>Vendor</th><th>Batch Selesai</th><th>Avg Estimasi</th><th>Avg Aktual</th><th>Delta</th><th>On-Time Rate</th><th>Rating Kecepatan</th></tr></thead>
+              <tbody id="vendorProdCompareBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════ DIGITAL ══════════ -->
+      <div class="page" id="page-digital">
+        <div class="section-header">
+          <div class="section-title">Ekosistem Digital STRAIT&CO</div>
+          <div class="section-sub">Phygital platform — kemeja fisik + pengalaman digital via QR</div>
+        </div>
+        <div class="digital-grid">
+          <div class="digital-card"><div class="digital-card-icon"><i class="ti ti-qrcode"></i></div><div class="digital-card-title">Total QR Aktif</div><div class="digital-card-val">1.240</div><div class="digital-card-sub">scan bulan ini</div></div>
+          <div class="digital-card"><div class="digital-card-icon"><i class="ti ti-users"></i></div><div class="digital-card-title">S-Users Terdaftar</div><div class="digital-card-val">892</div><div class="digital-card-sub">member aktif</div></div>
+          <div class="digital-card"><div class="digital-card-icon"><i class="ti ti-sparkles"></i></div><div class="digital-card-title">Styling Guide Views</div><div class="digital-card-val">3.410</div><div class="digital-card-sub">views bulan ini</div></div>
+          <div class="digital-card"><div class="digital-card-icon"><i class="ti ti-camera"></i></div><div class="digital-card-title">OOTD Diunggah</div><div class="digital-card-val">228</div><div class="digital-card-sub">postingan komunitas</div></div>
+        </div>
+        <div class="grid-2">
+          <div class="widget">
+            <div class="widget-header"><div class="widget-title"><i class="ti ti-scan"></i> Manajemen QR Code</div></div>
+            <div class="chart-bar-wrap">
+              <div class="chart-row"><div class="chart-label">Styling Guide</div><div class="chart-track"><div class="chart-fill maroon" style="width:82%"></div></div><div class="chart-val">1.020 scan</div></div>
+              <div class="chart-row"><div class="chart-label">Care Guide</div><div class="chart-track"><div class="chart-fill gold" style="width:54%"></div></div><div class="chart-val">672 scan</div></div>
+              <div class="chart-row"><div class="chart-label">Shop (Reorder)</div><div class="chart-track"><div class="chart-fill green" style="width:40%"></div></div><div class="chart-val">496 scan</div></div>
+              <div class="chart-row"><div class="chart-label">Loyalty Points</div><div class="chart-track"><div class="chart-fill blue" style="width:30%"></div></div><div class="chart-val">372 scan</div></div>
+              <div class="chart-row"><div class="chart-label">OOTD Upload</div><div class="chart-track"><div class="chart-fill warn" style="width:18%"></div></div><div class="chart-val">224 scan</div></div>
+            </div>
+          </div>
+          <div class="widget">
+            <div class="widget-header"><div class="widget-title"><i class="ti ti-chart-line"></i> Tren QR Scan (7 Hari)</div></div>
+            <canvas id="chartQR" height="170"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════ LOYALTY ══════════ -->
+      <div class="page" id="page-loyalty">
+        <div class="section-header">
+          <div class="section-title">S-Users Leveling System</div>
+          <div class="section-sub">Gamifikasi loyalitas — Bronze hingga Diamond</div>
+        </div>
+        <div class="kpi-grid">
+          <div class="kpi-card maroon"><div class="kpi-label"><i class="ti ti-users"></i> Total Member</div><div class="kpi-value">892</div><div class="kpi-change up">+64 bulan ini</div></div>
+          <div class="kpi-card gold"><div class="kpi-label"><i class="ti ti-coin"></i> Total Poin</div><div class="kpi-value">124K</div><div class="kpi-change up">+18.2K poin baru</div></div>
+          <div class="kpi-card green"><div class="kpi-label"><i class="ti ti-gift"></i> Reward Diklaim</div><div class="kpi-value">328</div><div class="kpi-change">redemptions bulan ini</div></div>
+          <div class="kpi-card blue"><div class="kpi-label"><i class="ti ti-repeat"></i> Repeat Purchase</div><div class="kpi-value">67%</div><div class="kpi-change up">+5% dari baseline</div></div>
+        </div>
+        <div class="tier-card" style="margin-bottom:14px;">
+          <div class="tier-badge"><i class="ti ti-diamond"></i> Distribusi Tier</div>
+          <div style="font-family:'Playfair Display',serif;font-size:18px;font-weight:700;margin-bottom:4px;">S-Users Membership</div>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:10px;">
+            <div style="text-align:center;"><div style="font-size:18px;margin-bottom:3px;">🥉</div><div style="font-size:16px;font-weight:700;color:#CD7F32;">Bronze</div><div style="font-size:10px;color:rgba(255,255,255,0.5);">0–199 pts</div><div style="font-size:15px;font-weight:600;margin-top:5px;">512</div></div>
+            <div style="text-align:center;"><div style="font-size:18px;margin-bottom:3px;">🥈</div><div style="font-size:16px;font-weight:700;color:#C0C0C0;">Silver</div><div style="font-size:10px;color:rgba(255,255,255,0.5);">200–499 pts</div><div style="font-size:15px;font-weight:600;margin-top:5px;">248</div></div>
+            <div style="text-align:center;"><div style="font-size:18px;margin-bottom:3px;">🥇</div><div style="font-size:16px;font-weight:700;color:#FFD700;">Gold</div><div style="font-size:10px;color:rgba(255,255,255,0.5);">500–999 pts</div><div style="font-size:15px;font-weight:600;margin-top:5px;">108</div></div>
+            <div style="text-align:center;"><div style="font-size:18px;margin-bottom:3px;">💎</div><div style="font-size:16px;font-weight:700;color:#B9F2FF;">Diamond</div><div style="font-size:10px;color:rgba(255,255,255,0.5);">1000+ pts</div><div style="font-size:15px;font-weight:600;margin-top:5px;">24</div></div>
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="widget"><div class="widget-header"><div class="widget-title"><i class="ti ti-chart-bar"></i> Distribusi Tier</div></div><canvas id="chartTier" height="170"></canvas></div>
+          <div class="widget">
+            <div class="widget-header"><div class="widget-title"><i class="ti ti-list"></i> Daily Missions</div></div>
+            <div style="display:flex;flex-direction:column;gap:7px;">
+              <div class="stock-item"><div class="stock-left"><div class="stock-icon"><i class="ti ti-login"></i></div><div><div class="stock-name">Login Daily</div><div class="stock-sku">+10 poin</div></div></div><div class="stock-right"><div class="stock-qty" style="font-size:15px;">682</div><div class="stock-unit">selesai</div></div></div>
+              <div class="stock-item"><div class="stock-left"><div class="stock-icon"><i class="ti ti-share"></i></div><div><div class="stock-name">Share Outfit (OOTD)</div><div class="stock-sku">+5 poin</div></div></div><div class="stock-right"><div class="stock-qty" style="font-size:15px;">228</div><div class="stock-unit">selesai</div></div></div>
+              <div class="stock-item"><div class="stock-left"><div class="stock-icon"><i class="ti ti-qrcode"></i></div><div><div class="stock-name">Scan Produk QR</div><div class="stock-sku">+15 poin</div></div></div><div class="stock-right"><div class="stock-qty" style="font-size:15px;">189</div><div class="stock-unit">selesai</div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════ FINANCE ══════════ -->
+      <div class="page" id="page-finance">
+        <div class="section-header">
+          <div class="section-title">Proyeksi Keuangan</div>
+          <div class="section-sub">Revenue, HPP, Margin — 3 tahun detail | Harga Jual: Rp549.000 | HPP: Rp349.000</div>
+        </div>
+        <div class="kpi-grid">
+          <div class="kpi-card maroon"><div class="kpi-label"><i class="ti ti-currency-dollar"></i> Revenue Bulan Ini</div><div class="kpi-value">102,1Jt</div><div class="kpi-change up">+12% MoM</div><div class="kpi-sub">186 × Rp549.000</div></div>
+          <div class="kpi-card gold"><div class="kpi-label"><i class="ti ti-receipt"></i> HPP (COGS)</div><div class="kpi-value">64,9Jt</div><div class="kpi-change">186 × Rp349.000</div></div>
+          <div class="kpi-card green"><div class="kpi-label"><i class="ti ti-chart-pie"></i> Gross Margin</div><div class="kpi-value">36,5%</div><div class="kpi-change up">Margin Rp200K/unit</div></div>
+          <div class="kpi-card blue"><div class="kpi-label"><i class="ti ti-coin"></i> Net Profit</div><div class="kpi-value">33,3Jt</div><div class="kpi-change up">setelah OPEX</div></div>
+          <div class="kpi-card warn"><div class="kpi-label"><i class="ti ti-target"></i> BEP Bulanan</div><div class="kpi-value">19 unit</div><div class="kpi-change">dari 200 target/bln</div><div class="kpi-sub">Fixed cost Rp3,75Jt</div></div>
+          <div class="kpi-card maroon"><div class="kpi-label"><i class="ti ti-trending-up"></i> ROI Y1</div><div class="kpi-value">≈68%</div><div class="kpi-change up">Modal Rp284,4Jt</div></div>
+        </div>
+        <div class="grid-2">
+          <div class="widget"><div class="widget-header"><div class="widget-title"><i class="ti ti-chart-bar"></i> Revenue vs HPP 3 Tahun</div></div><canvas id="chartRevenue" height="190"></canvas></div>
+          <div class="widget"><div class="widget-header"><div class="widget-title"><i class="ti ti-chart-line"></i> Net Profit Trend</div></div><canvas id="chartProfit" height="190"></canvas></div>
+        </div>
+        <div class="widget">
+          <div class="widget-header"><div class="widget-title"><i class="ti ti-table"></i> Detail P&L 3 Tahun</div></div>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead><tr><th>Metrik</th><th>Tahun 1</th><th>Tahun 2</th><th>Tahun 3</th></tr></thead>
+              <tbody>
+                <tr><td><b>Unit Terjual</b></td><td>2.400</td><td>3.600</td><td>4.800</td></tr>
+                <tr><td><b>Revenue</b></td><td>Rp1.317.600.000</td><td>Rp1.976.400.000</td><td>Rp2.635.200.000</td></tr>
+                <tr><td><b>HPP Total</b></td><td>Rp837.600.000</td><td>Rp1.256.400.000</td><td>Rp1.675.200.000</td></tr>
+                <tr><td><b>Gross Margin</b></td><td><span class="status-pill pill-success">36,5%</span></td><td><span class="status-pill pill-success">36,5%</span></td><td><span class="status-pill pill-success">36,5%</span></td></tr>
+                <tr><td><b>OPEX</b></td><td>Rp45.000.000</td><td>Rp45.000.000</td><td>Rp54.000.000</td></tr>
+                <tr style="font-weight:700;"><td><b>Net Profit</b></td><td style="color:var(--success);">Rp435.000.000</td><td style="color:var(--success);">Rp675.000.000</td><td style="color:var(--success);">Rp906.000.000</td></tr>
+                <tr><td><b>ROI</b></td><td><span class="status-pill pill-maroon">~68%</span></td><td><span class="status-pill pill-gold">~105%</span></td><td><span class="status-pill pill-success">~140%</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════ VENDOR ══════════ -->
+      <div class="page" id="page-vendor">
+        <div class="section-header">
+          <div class="section-title">Manajemen Vendor</div>
+          <div class="section-sub">Data supplier lengkap — lokasi, ongkir, MOQ, lead time, rating produksi</div>
+        </div>
+        <div class="kpi-grid" style="grid-template-columns:repeat(auto-fit,minmax(140px,1fr));">
+          <div class="kpi-card maroon"><div class="kpi-label"><i class="ti ti-building-store"></i> Total Vendor</div><div class="kpi-value" id="kpi-vendor-total">4</div><div class="kpi-sub">terdaftar</div></div>
+          <div class="kpi-card green"><div class="kpi-label"><i class="ti ti-circle-check"></i> Vendor Aktif</div><div class="kpi-value" id="kpi-vendor-aktif">4</div><div class="kpi-sub">siap order</div></div>
+          <div class="kpi-card gold"><div class="kpi-label"><i class="ti ti-file-invoice"></i> PO Aktif</div><div class="kpi-value" id="kpi-po-aktif">1</div><div class="kpi-sub">purchase order</div></div>
+          <div class="kpi-card blue"><div class="kpi-label"><i class="ti ti-star"></i> Avg Rating</div><div class="kpi-value" id="kpi-avg-rating">4.1</div><div class="kpi-sub">dari 5 bintang</div></div>
+          <div class="kpi-card warn"><div class="kpi-label"><i class="ti ti-map-pin"></i> Kota Berbeda</div><div class="kpi-value">3</div><div class="kpi-sub">kota supplier</div></div>
+        </div>
+        <div class="filter-bar">
+          <div class="filter-input"><i class="ti ti-search"></i><input type="text" id="vendorSearch" placeholder="Cari vendor…" oninput="filterVendors(this.value)"></div>
+          <div class="filter-input"><i class="ti ti-filter"></i>
+            <select onchange="filterVendorStatus(this.value)"><option value="">Semua Status</option><option value="Aktif">Aktif</option><option value="Tidak Aktif">Tidak Aktif</option></select>
+          </div>
+          <div style="margin-left:auto;display:flex;gap:7px;">
+            <button class="btn btn-secondary btn-sm" onclick="exportVendorCSV()"><i class="ti ti-download"></i> Export</button>
+            <button class="btn btn-primary" onclick="resetVendorForm();openModal('modalTambahVendor')"><i class="ti ti-plus"></i> Tambah Vendor</button>
+          </div>
+        </div>
+        <div class="vendor-grid" id="vendorList"></div>
+        <div class="widget" style="margin-top:14px;">
+          <div class="widget-header">
+            <div class="widget-title"><i class="ti ti-file-invoice"></i> Semua Purchase Order</div>
+            <button class="btn btn-secondary btn-sm" onclick="exportPOCSV()"><i class="ti ti-download"></i> Export PO</button>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead><tr><th>No. PO</th><th>Vendor</th><th>Material</th><th>Qty</th><th>Total</th><th>Ongkir</th><th>Tgl. Order</th><th>Est. Tiba</th><th>Status</th><th>Aksi</th></tr></thead>
+              <tbody id="poGlobalBody">
+                <tr><td><span class="sku-tag">PO-2026-022</span></td><td>PT Konveksi Prima</td><td>Kemeja Jadi</td><td>50 unit</td><td>Rp17.450.000</td><td>Rp300.000</td><td>14/06/2026</td><td>28/06/2026</td><td><span class="status-pill pill-warn">Diproses</span></td><td><button class="btn btn-secondary btn-sm" onclick="updatePOStatus(this,'Diterima')">Terima</button></td></tr>
+                <tr><td><span class="sku-tag">PO-2026-021</span></td><td>Toko Label Digital</td><td>Label & Hang Tag</td><td>200 pcs</td><td>Rp500.000</td><td>Rp50.000</td><td>12/06/2026</td><td>15/06/2026</td><td><span class="status-pill pill-success">Diterima</span></td><td><span style="font-size:11px;color:var(--muted);">Selesai</span></td></tr>
+                <tr><td><span class="sku-tag">PO-2026-020</span></td><td>Supplier Packaging</td><td>Packaging Box</td><td>100 pcs</td><td>Rp800.000</td><td>Rp75.000</td><td>10/06/2026</td><td>15/06/2026</td><td><span class="status-pill pill-success">Diterima</span></td><td><span style="font-size:11px;color:var(--muted);">Selesai</span></td></tr>
+                <tr><td><span class="sku-tag">PO-2026-019</span></td><td>CV Mitra Tekstil</td><td>Kemeja Jadi</td><td>120 unit</td><td>Rp41.880.000</td><td>Rp250.000</td><td>07/06/2026</td><td>14/06/2026</td><td><span class="status-pill pill-success">Diterima</span></td><td><span style="font-size:11px;color:var(--muted);">Selesai</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════ REPORT ══════════ -->
+      <div class="page" id="page-report">
+        <div class="section-header">
+          <div class="section-title">Laporan Bulanan</div>
+          <div class="section-sub">Ringkasan performa penjualan, produksi, dan digital STRAIT&CO</div>
+        </div>
+        <div class="filter-bar">
+          <div class="filter-input"><i class="ti ti-calendar"></i><select id="reportMonth"><option>Juni 2026</option><option>Mei 2026</option><option>April 2026</option></select></div>
+          <button class="btn btn-primary btn-sm" onclick="exportCSV()"><i class="ti ti-download"></i> Export CSV</button>
+        </div>
+        <div class="kpi-grid">
+          <div class="kpi-card maroon"><div class="kpi-label"><i class="ti ti-shirt"></i> Total Terjual</div><div class="kpi-value">186</div><div class="kpi-sub">unit bulan ini</div></div>
+          <div class="kpi-card gold"><div class="kpi-label"><i class="ti ti-currency-dollar"></i> Revenue</div><div class="kpi-value">102,1Jt</div></div>
+          <div class="kpi-card green"><div class="kpi-label"><i class="ti ti-coin"></i> Net Profit</div><div class="kpi-value">33,3Jt</div><div class="kpi-sub">margin 36,5%</div></div>
+          <div class="kpi-card blue"><div class="kpi-label"><i class="ti ti-qrcode"></i> QR Scan</div><div class="kpi-value">1.240</div></div>
+          <div class="kpi-card maroon"><div class="kpi-label"><i class="ti ti-users"></i> S-Users Baru</div><div class="kpi-value">+64</div></div>
+          <div class="kpi-card warn"><div class="kpi-label"><i class="ti ti-repeat"></i> Repeat Customer</div><div class="kpi-value">67%</div></div>
+        </div>
+        <div class="grid-2">
+          <div class="widget"><div class="widget-header"><div class="widget-title"><i class="ti ti-chart-bar"></i> Channel Breakdown</div></div>
+            <div class="chart-bar-wrap">
+              <div class="chart-row"><div class="chart-label">Shopee</div><div class="chart-track"><div class="chart-fill maroon" style="width:72%"></div></div><div class="chart-val">134 (72%)</div></div>
+              <div class="chart-row"><div class="chart-label">Tokopedia</div><div class="chart-track"><div class="chart-fill gold" style="width:32%"></div></div><div class="chart-val">60 (32%)</div></div>
+              <div class="chart-row"><div class="chart-label">TikTok</div><div class="chart-track"><div class="chart-fill blue" style="width:20%"></div></div><div class="chart-val">37 (20%)</div></div>
+              <div class="chart-row"><div class="chart-label">eBay Intl</div><div class="chart-track"><div class="chart-fill green" style="width:8%"></div></div><div class="chart-val">15 (8%)</div></div>
+            </div>
+          </div>
+          <div class="widget"><div class="widget-header"><div class="widget-title"><i class="ti ti-shirt"></i> Produk Terlaris</div></div>
+            <div class="chart-bar-wrap">
+              <div class="chart-row"><div class="chart-label">Navy M</div><div class="chart-track"><div class="chart-fill maroon" style="width:80%"></div></div><div class="chart-val">58 unit</div></div>
+              <div class="chart-row"><div class="chart-label">Cream M</div><div class="chart-track"><div class="chart-fill gold" style="width:55%"></div></div><div class="chart-val">40 unit</div></div>
+              <div class="chart-row"><div class="chart-label">Black L</div><div class="chart-track"><div class="chart-fill maroon" style="width:42%"></div></div><div class="chart-val">31 unit</div></div>
+              <div class="chart-row"><div class="chart-label">Navy L</div><div class="chart-track"><div class="chart-fill gold" style="width:30%"></div></div><div class="chart-val">22 unit</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════
+// CONFIG STATE (editable via modal)
+// ═══════════════════════════════════
+const config = {
+  hpp: 349000,
+  hargaJual: 549000,
+  orderingCost: 200000,
+  holdingPct: 2,       // % of HPP per month
+  dailyDemand: 7,      // baseline unit/day
+  safetyStock: 30,
+  leadTime: 14,        // days
+  growth2: 50,         // % growth Y1→Y2
+  growth3: 33          // % growth Y2→Y3
+};
+
+// ═══════════════════════════════════
+// IOQ CALCULATION ENGINE
+// ═══════════════════════════════════
+function calcEOQ(annualDemand) {
+  const D = annualDemand;
+  const S = config.orderingCost;
+  const H = (config.holdingPct / 100) * config.hpp * 12; // annual holding cost per unit
+  return Math.round(Math.sqrt((2 * D * S) / H));
+}
+
+function calcMonthlyIOQ(monthDemand) {
+  // Monthly EOQ variant: uses monthly demand scaled to annual
+  const annualD = monthDemand * 12;
+  const eoq = calcEOQ(annualD);
+  const safetyBuffer = Math.round(config.safetyStock + (config.leadTime / 30) * monthDemand);
+  // Reorder Point
+  const rop = Math.round((monthDemand / 30) * config.leadTime + config.safetyStock);
+  // Times to order per year
+  const ordersPerYear = Math.round(annualD / eoq);
+  return { eoq, safetyBuffer, rop, totalIOQ: eoq + safetyBuffer, ordersPerYear };
+}
+
+// Generate 3 years monthly demand
+function generateDemandData() {
+  const years = [];
+  // Y1: starts at 150/mo, grows to 250/mo (seasonal pattern)
+  const y1Base = [150,160,170,180,190,200,195,185,175,200,230,250];
+  // Y2: Y1 × (1 + growth2/100)
+  const y2Factor = 1 + config.growth2 / 100;
+  // Y3: Y2 × (1 + growth3/100)
+  const y3Factor = 1 + config.growth3 / 100;
+  for (let y = 1; y <= 3; y++) {
+    const months = [];
+    for (let m = 0; m < 12; m++) {
+      let demand;
+      if (y === 1) demand = y1Base[m];
+      else if (y === 2) demand = Math.round(y1Base[m] * y2Factor);
+      else demand = Math.round(y1Base[m] * y2Factor * y3Factor);
+      // Add slight random variance ±10% to simulate prediction vs actual
+      const actualVariance = 1 + (Math.random() * 0.2 - 0.1);
+      const actualDemand = Math.round(demand * actualVariance);
+      const ioq = calcMonthlyIOQ(demand);
+      const actualIOQ = calcMonthlyIOQ(actualDemand);
+      months.push({
+        month: ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'][m],
+        demandPrediksi: demand,
+        demandAktual: actualDemand,
+        ioqPrediksi: ioq.totalIOQ,
+        ioqAktual: actualIOQ.totalIOQ,
+        eoq: ioq.eoq,
+        safetyStock: ioq.safetyBuffer,
+        rop: ioq.rop,
+        ordersPerYear: ioq.ordersPerYear,
+        revenue: actualDemand * config.hargaJual,
+        hpp: actualDemand * config.hpp,
+        profit: actualDemand * (config.hargaJual - config.hpp),
+        turnover: parseFloat((actualDemand / ((ioq.totalIOQ / 2) || 1)).toFixed(2))
+      });
+    }
+    years.push(months);
+  }
+  return years;
+}
+
+let demandData = generateDemandData();
+let currentIOQYear = 1;
+
+function renderIOQSummary() {
+  const cur = demandData[0]; // Y1 current (Jun = index 5)
+  const jun = cur[5];
+  const annualY1 = cur.reduce((s,m) => s + m.demandAktual, 0);
+  const eoqY1 = calcEOQ(annualY1);
+  const avgTurnover = (cur.reduce((s,m) => s + m.turnover, 0) / 12).toFixed(2);
+
+  // Summary grid
+  document.getElementById('ioq-summary-grid').innerHTML = `
+    <div class="ioq-item">
+      <div class="ioq-item-label">IOQ Bulan Ini (Jun)</div>
+      <div class="ioq-item-val">${jun.ioqAktual}</div>
+      <div class="ioq-item-sub">unit rekomendasi order</div>
+    </div>
+    <div class="ioq-item">
+      <div class="ioq-item-label">EOQ Tahunan Y1</div>
+      <div class="ioq-item-val">${eoqY1}</div>
+      <div class="ioq-item-sub">unit per order optimal</div>
+    </div>
+    <div class="ioq-item">
+      <div class="ioq-item-label">Reorder Point</div>
+      <div class="ioq-item-val">${jun.rop}</div>
+      <div class="ioq-item-sub">unit trigger restock</div>
+    </div>
+    <div class="ioq-item">
+      <div class="ioq-item-label">Safety Stock</div>
+      <div class="ioq-item-val">${jun.safetyStock}</div>
+      <div class="ioq-item-sub">unit buffer</div>
+    </div>
+    <div class="ioq-item">
+      <div class="ioq-item-label">Avg Turnover Y1</div>
+      <div class="ioq-item-val">${avgTurnover}x</div>
+      <div class="ioq-item-sub">per bulan</div>
+    </div>
+    <div class="ioq-item">
+      <div class="ioq-item-label">Order/Tahun Optimal</div>
+      <div class="ioq-item-val">${jun.ordersPerYear}</div>
+      <div class="ioq-item-sub">kali pesan per tahun</div>
+    </div>
+  `;
+
+  // Turnover grid
+  document.getElementById('turnover-grid').innerHTML = ['Y1','Y2','Y3'].map((y,yi) => {
+    const yData = demandData[yi];
+    const totalDemand = yData.reduce((s,m) => s + m.demandAktual, 0);
+    const avgStock = yData.reduce((s,m) => s + m.ioqAktual, 0) / 12 / 2;
+    const turnover = (totalDemand / avgStock).toFixed(1);
+    const totalRevenue = yData.reduce((s,m) => s + m.revenue, 0);
+    const totalProfit = yData.reduce((s,m) => s + m.profit, 0);
+    const ioqY = calcEOQ(totalDemand);
+    return `<div style="padding:12px;background:var(--bg);border-radius:var(--radius-sm);border:1px solid var(--border);">
+      <div style="font-size:10.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">Tahun ${yi+1}</div>
+      <div style="display:flex;flex-direction:column;gap:5px;">
+        <div style="display:flex;justify-content:space-between;font-size:11.5px;"><span style="color:var(--muted);">EOQ Optimal</span><b>${ioqY} unit</b></div>
+        <div style="display:flex;justify-content:space-between;font-size:11.5px;"><span style="color:var(--muted);">Total Demand</span><b>${totalDemand.toLocaleString('id-ID')} unit</b></div>
+        <div style="display:flex;justify-content:space-between;font-size:11.5px;"><span style="color:var(--muted);">Inventory Turnover</span><b style="color:var(--maroon);">${turnover}x/thn</b></div>
+        <div style="display:flex;justify-content:space-between;font-size:11.5px;"><span style="color:var(--muted);">Revenue</span><b>Rp${(totalRevenue/1e9).toFixed(2)}M</b></div>
+        <div style="display:flex;justify-content:space-between;font-size:11.5px;"><span style="color:var(--muted);">Gross Profit</span><b style="color:var(--success);">Rp${(totalProfit/1e9).toFixed(2)}M</b></div>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Dashboard KPI
+  const dashEl = document.getElementById('kpi-ioq-dash');
+  const dashSub = document.getElementById('kpi-ioq-dash-sub');
+  if (dashEl) { dashEl.textContent = jun.ioqAktual; }
+  if (dashSub) {
+    const diff = jun.ioqAktual - jun.ioqPrediksi;
+    const sign = diff >= 0 ? '+' : '';
+    dashSub.innerHTML = `<span class="${diff >= 0 ? 'up' : 'down'}">${sign}${diff} dari prediksi</span>`;
+  }
+
+  // Alert check
+  const stockEl = document.getElementById('kpi-stock');
+  const currentStock = stockEl ? parseInt(stockEl.textContent) : 247;
+  if (currentStock <= jun.rop) {
+    document.getElementById('ioq-alert-banner').style.display = 'flex';
+    document.getElementById('ioq-alert-text').textContent = `Stok ${currentStock} unit ≤ Reorder Point ${jun.rop} unit. Segera buat PO untuk ${jun.ioqAktual} unit.`;
+    document.getElementById('ioq-main-alert').style.display = 'flex';
+    document.getElementById('ioq-main-alert-text').textContent = `⚠️ Stok saat ini (${currentStock} unit) sudah di bawah ROP (${jun.rop} unit). Rekomendasi: Order ${jun.ioqAktual} unit sekarang.`;
+  }
+}
+
+function switchIOQYear(year, el) {
+  currentIOQYear = year;
+  document.querySelectorAll('#ioq-year-tabs .tab').forEach(t => t.classList.remove('active'));
+  if (el) el.classList.add('active');
+  renderIOQYearTable(year);
+}
+
+function renderIOQYearTable(year) {
+  const data = demandData[year - 1];
+  const totalDemand = data.reduce((s,m) => s + m.demandAktual, 0);
+  const totalRevenue = data.reduce((s,m) => s + m.revenue, 0);
+  const totalProfit = data.reduce((s,m) => s + m.profit, 0);
+  const eoqAnnual = calcEOQ(totalDemand);
+
+  let html = `
+    <div class="widget" style="margin-bottom:14px;">
+      <div class="widget-header">
+        <div class="widget-title"><i class="ti ti-table"></i> IOQ Detail Bulanan — Tahun ${year}</div>
+        <div style="display:flex;gap:7px;">
+          <span class="status-pill pill-blue">EOQ Tahunan: <b>${eoqAnnual} unit</b></span>
+          <span class="status-pill pill-maroon">Total Demand: <b>${totalDemand.toLocaleString('id-ID')} unit</b></span>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table class="ioq-month-table">
+          <thead>
+            <tr>
+              <th>Bulan</th>
+              <th>Demand Prediksi</th>
+              <th>Demand Aktual</th>
+              <th>Δ Demand</th>
+              <th>IOQ Prediksi</th>
+              <th>IOQ Aktual</th>
+              <th>Δ IOQ</th>
+              <th>EOQ</th>
+              <th>Safety Stock</th>
+              <th>ROP</th>
+              <th>Turnover</th>
+              <th>Revenue</th>
+              <th>Gross Profit</th>
+              <th>Status IOQ</th>
+            </tr>
+          </thead>
+          <tbody>`;
+
+  data.forEach(m => {
+    const dDelta = m.demandAktual - m.demandPrediksi;
+    const iqDelta = m.ioqAktual - m.ioqPrediksi;
+    const dDeltaClass = dDelta >= 0 ? 'up' : 'down';
+    const iqDeltaClass = iqDelta >= 0 ? 'up' : 'down';
+    const dSign = dDelta >= 0 ? '+' : '';
+    const iqSign = iqDelta >= 0 ? '+' : '';
+    let ioqStatus, ioqStatusClass;
+    if (Math.abs(iqDelta) <= 5) { ioqStatus = 'Stabil'; ioqStatusClass = 'pill-success'; }
+    else if (iqDelta > 5) { ioqStatus = '↑ Naik'; ioqStatusClass = 'pill-warn'; }
+    else { ioqStatus = '↓ Turun'; ioqStatusClass = 'pill-blue'; }
+
+    html += `<tr>
+      <td><b>${m.month}</b></td>
+      <td>${m.demandPrediksi}</td>
+      <td><b>${m.demandAktual}</b></td>
+      <td class="${dDeltaClass}"><b>${dSign}${dDelta}</b></td>
+      <td>${m.ioqPrediksi}</td>
+      <td class="ioq-val">${m.ioqAktual}</td>
+      <td class="${iqDeltaClass}"><b>${iqSign}${iqDelta}</b></td>
+      <td>${m.eoq}</td>
+      <td>${m.safetyStock}</td>
+      <td>${m.rop}</td>
+      <td>${m.turnover}x</td>
+      <td>Rp${(m.revenue/1e6).toFixed(1)}Jt</td>
+      <td style="color:var(--success);">Rp${(m.profit/1e6).toFixed(1)}Jt</td>
+      <td><span class="status-pill ${ioqStatusClass}">${ioqStatus}</span></td>
+    </tr>`;
+  });
+
+  html += `</tbody>
+          <tfoot>
+            <tr style="font-weight:700;background:var(--bg);">
+              <td>TOTAL</td>
+              <td>${data.reduce((s,m)=>s+m.demandPrediksi,0)}</td>
+              <td>${totalDemand}</td>
+              <td>–</td>
+              <td>–</td>
+              <td>–</td>
+              <td>–</td>
+              <td>${eoqAnnual}</td>
+              <td>–</td>
+              <td>–</td>
+              <td>${(data.reduce((s,m)=>s+m.turnover,0)/12).toFixed(2)}x avg</td>
+              <td>Rp${(totalRevenue/1e9).toFixed(2)}M</td>
+              <td style="color:var(--success);">Rp${(totalProfit/1e9).toFixed(2)}M</td>
+              <td>–</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>`;
+
+  // IOQ chart
+  html += `<div class="widget">
+    <div class="widget-header">
+      <div class="widget-title"><i class="ti ti-chart-line"></i> Tren IOQ Prediksi vs Aktual — Tahun ${year}</div>
+    </div>
+    <canvas id="chartIOQYear${year}" height="160"></canvas>
+  </div>`;
+
+  document.getElementById('ioq-year-content').innerHTML = html;
+
+  // Render chart
+  setTimeout(() => {
+    const ctx = document.getElementById(`chartIOQYear${year}`);
+    if (!ctx) return;
+    const key = `ioqYear${year}`;
+    if (charts[key]) { charts[key].destroy(); delete charts[key]; }
+    charts[key] = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: data.map(m => m.month),
+        datasets: [
+          {
+            label: 'IOQ Prediksi',
+            data: data.map(m => m.ioqPrediksi),
+            borderColor: '#1976D2',
+            borderDash: [5,5],
+            backgroundColor: 'rgba(25,118,210,0.05)',
+            tension: 0.4, fill: false, pointRadius: 3
+          },
+          {
+            label: 'IOQ Aktual',
+            data: data.map(m => m.ioqAktual),
+            borderColor: MAROON,
+            backgroundColor: 'rgba(122,22,36,0.08)',
+            tension: 0.4, fill: true, pointRadius: 4, pointBackgroundColor: MAROON
+          },
+          {
+            label: 'Demand Aktual',
+            data: data.map(m => m.demandAktual),
+            borderColor: GOLD,
+            backgroundColor: 'rgba(212,168,83,0.05)',
+            tension: 0.4, fill: false, pointRadius: 3, borderWidth: 2
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { position: 'top', labels: { font: { size: 11 } } } },
+        scales: {
+          y: { beginAtZero: false, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: { size: 11 } } },
+          x: { grid: { display: false }, ticks: { font: { size: 11 } } }
+        }
+      }
+    });
+  }, 100);
+}
+
+function saveIOQConfig() {
+  config.hpp = parseInt(document.getElementById('cfg-hpp').value) || 349000;
+  config.hargaJual = parseInt(document.getElementById('cfg-harga-jual').value) || 549000;
+  config.orderingCost = parseInt(document.getElementById('cfg-ordering-cost').value) || 200000;
+  config.holdingPct = parseFloat(document.getElementById('cfg-holding-pct').value) || 2;
+  config.dailyDemand = parseInt(document.getElementById('cfg-daily-demand').value) || 7;
+  config.safetyStock = parseInt(document.getElementById('cfg-safety-stock').value) || 30;
+  config.leadTime = parseInt(document.getElementById('cfg-lead-time').value) || 14;
+  config.growth2 = parseInt(document.getElementById('cfg-growth2').value) || 50;
+  config.growth3 = parseInt(document.getElementById('cfg-growth3').value) || 33;
+  demandData = generateDemandData();
+  renderIOQSummary();
+  renderIOQYearTable(currentIOQYear);
+  closeModal('modalIOQSettings');
+  toast('Parameter IOQ diperbarui — semua perhitungan telah dihitung ulang', 'success');
+  addActivity('Parameter IOQ diubah — EOQ & ROP dihitung ulang', 'blue');
+}
+
+// ═══════════════════════════════════
+// RAW MATERIAL INVENTORY (DETAILED)
+// ═══════════════════════════════════
+const inventoryFG = [
+  {sku:'STR-KMJ-NAV-S',name:'Kemeja Navy',color:'Navy',size:'S',stock:18,reorder:20,updated:'14/06/2026'},
+  {sku:'STR-KMJ-NAV-M',name:'Kemeja Navy',color:'Navy',size:'M',stock:42,reorder:20,updated:'14/06/2026'},
+  {sku:'STR-KMJ-NAV-L',name:'Kemeja Navy',color:'Navy',size:'L',stock:29,reorder:15,updated:'14/06/2026'},
+  {sku:'STR-KMJ-CRM-M',name:'Kemeja Cream',color:'Cream',size:'M',stock:38,reorder:20,updated:'12/06/2026'},
+  {sku:'STR-KMJ-CRM-L',name:'Kemeja Cream',color:'Cream',size:'L',stock:34,reorder:15,updated:'12/06/2026'},
+  {sku:'STR-KMJ-BLK-S',name:'Kemeja Black',color:'Black',size:'S',stock:12,reorder:15,updated:'10/06/2026'},
+  {sku:'STR-KMJ-BLK-M',name:'Kemeja Black',color:'Black',size:'M',stock:28,reorder:20,updated:'10/06/2026'},
+  {sku:'STR-KMJ-BLK-L',name:'Kemeja Black',color:'Black',size:'L',stock:14,reorder:15,updated:'10/06/2026'},
+  {sku:'STR-KMJ-MAR-M',name:'Kemeja Maroon',color:'Maroon',size:'M',stock:22,reorder:20,updated:'07/06/2026'},
+  {sku:'STR-KMJ-MAR-L',name:'Kemeja Maroon',color:'Maroon',size:'L',stock:10,reorder:15,updated:'07/06/2026'},
+  {sku:'STR-KMJ-OLV-M',name:'Kemeja Olive',color:'Olive',size:'M',stock:0,reorder:20,updated:'01/06/2026'},
+  {sku:'STR-KMJ-OLV-L',name:'Kemeja Olive',color:'Olive',size:'L',stock:0,reorder:15,updated:'01/06/2026'},
+];
+
+const inventoryRM = [
+  // KAIN
+  {code:'RM-KN-OXF-NVY',name:'Kain Oxford Premium — Navy',cat:'Kain',stock:85,unit:'meter',reorder:50,price:48000,supplier:'CV Mitra Tekstil'},
+  {code:'RM-KN-OXF-CRM',name:'Kain Oxford Premium — Cream',cat:'Kain',stock:62,unit:'meter',reorder:50,price:48000,supplier:'CV Mitra Tekstil'},
+  {code:'RM-KN-OXF-BLK',name:'Kain Oxford Premium — Black',cat:'Kain',stock:40,unit:'meter',reorder:50,price:48000,supplier:'CV Mitra Tekstil'},
+  {code:'RM-KN-OXF-MAR',name:'Kain Oxford Premium — Maroon',cat:'Kain',stock:28,unit:'meter',reorder:40,price:48000,supplier:'CV Mitra Tekstil'},
+  {code:'RM-KN-OXF-OLV',name:'Kain Oxford Premium — Olive',cat:'Kain',stock:0,unit:'meter',reorder:40,price:48000,supplier:'CV Mitra Tekstil'},
+  {code:'RM-KN-VIS-INT',name:'Kain Viselin/Interfacing (Penegak Kerah)',cat:'Kain',stock:120,unit:'meter',reorder:80,price:12000,supplier:'CV Mitra Tekstil'},
+  {code:'RM-KN-LIN-WH',name:'Kain Lining (Lapisan Dalam)',cat:'Kain',stock:55,unit:'meter',reorder:40,price:15000,supplier:'CV Mitra Tekstil'},
+  // BENANG
+  {code:'RM-BNG-NVY',name:'Benang Jahit — Navy',cat:'Benang',stock:18,unit:'cone',reorder:10,price:22000,supplier:'Toko Bahan Jahit Sukabumi'},
+  {code:'RM-BNG-CRM',name:'Benang Jahit — Cream',cat:'Benang',stock:15,unit:'cone',reorder:10,price:22000,supplier:'Toko Bahan Jahit Sukabumi'},
+  {code:'RM-BNG-BLK',name:'Benang Jahit — Black',cat:'Benang',stock:20,unit:'cone',reorder:10,price:22000,supplier:'Toko Bahan Jahit Sukabumi'},
+  {code:'RM-BNG-MAR',name:'Benang Jahit — Maroon',cat:'Benang',stock:12,unit:'cone',reorder:10,price:22000,supplier:'Toko Bahan Jahit Sukabumi'},
+  // KANCING
+  {code:'RM-KNC-WHT-SM',name:'Kancing Kemeja Putih 11mm (badan)',cat:'Kancing',stock:2400,unit:'pcs',reorder:1000,price:350,supplier:'Supplier Aksesoris Bandung'},
+  {code:'RM-KNC-WHT-XS',name:'Kancing Kemeja Putih 8mm (manset)',cat:'Kancing',stock:1800,unit:'pcs',reorder:800,price:280,supplier:'Supplier Aksesoris Bandung'},
+  {code:'RM-KNC-NAV-SM',name:'Kancing Kemeja Navy 11mm (tone)',cat:'Kancing',stock:1200,unit:'pcs',reorder:600,price:380,supplier:'Supplier Aksesoris Bandung'},
+  {code:'RM-KNC-BLK-SM',name:'Kancing Kemeja Black 11mm',cat:'Kancing',stock:900,unit:'pcs',reorder:500,price:350,supplier:'Supplier Aksesoris Bandung'},
+  // RITSLETING & HARDWARE
+  {code:'RM-HW-ZIP-20',name:'Ritsleting 20cm (saku dalam)',cat:'Hardware',stock:350,unit:'pcs',reorder:200,price:4500,supplier:'Supplier Aksesoris Bandung'},
+  {code:'RM-HW-SNAP',name:'Kancing Snap / Press Button (collar stay)',cat:'Hardware',stock:600,unit:'pcs',reorder:300,price:1200,supplier:'Supplier Aksesoris Bandung'},
+  // POLA & BAHAN PENDUKUNG
+  {code:'RM-PTR-OXF-S',name:'Pola Kemeja Size S (kertas kraft)',cat:'Pola',stock:12,unit:'set',reorder:5,price:15000,supplier:'Internal'},
+  {code:'RM-PTR-OXF-M',name:'Pola Kemeja Size M (kertas kraft)',cat:'Pola',stock:12,unit:'set',reorder:5,price:15000,supplier:'Internal'},
+  {code:'RM-PTR-OXF-L',name:'Pola Kemeja Size L (kertas kraft)',cat:'Pola',stock:10,unit:'set',reorder:5,price:15000,supplier:'Internal'},
+  {code:'RM-PTR-OXF-XL',name:'Pola Kemeja Size XL (kertas kraft)',cat:'Pola',stock:8,unit:'set',reorder:5,price:15000,supplier:'Internal'},
+  // BAHAN CUTTING
+  {code:'RM-CUT-PAPER',name:'Kertas Marking / Cutting Paper',cat:'Bahan Cutting',stock:15,unit:'rol',reorder:8,price:35000,supplier:'Toko ATK Industri'},
+  {code:'RM-CUT-CHALK',name:'Kapur Jahit (Tailor Chalk)',cat:'Bahan Cutting',stock:30,unit:'pcs',reorder:15,price:8000,supplier:'Toko Bahan Jahit Sukabumi'},
+  // ANTI-CREASE
+  {code:'RM-FIN-STARCH',name:'Cairan Anti-Crease Spray (1L)',cat:'Finishing',stock:8,unit:'botol',reorder:5,price:45000,supplier:'Supplier Chemical Textile'},
+  {code:'RM-FIN-ANTIQ',name:'Pelapis Anti-Kusut Celup (per kg)',cat:'Finishing',stock:3,unit:'kg',reorder:2,price:180000,supplier:'Supplier Chemical Textile'},
+  // LABEL KAIN
+  {code:'RM-LBL-BRAND',name:'Label Kain STRAIT&CO (brand label)',cat:'Label Kain',stock:800,unit:'pcs',reorder:300,price:1500,supplier:'Toko Label Digital'},
+  {code:'RM-LBL-SIZE',name:'Label Kain Size (S/M/L/XL)',cat:'Label Kain',stock:650,unit:'pcs',reorder:300,price:800,supplier:'Toko Label Digital'},
+  {code:'RM-LBL-CARE',name:'Label Care Instruction (cuci, setrika)',cat:'Label Kain',stock:700,unit:'pcs',reorder:300,price:900,supplier:'Toko Label Digital'},
+  {code:'RM-LBL-COMP',name:'Label Komposisi Bahan (100% Cotton)',cat:'Label Kain',stock:600,unit:'pcs',reorder:300,price:900,supplier:'Toko Label Digital'},
+  {code:'RM-LBL-ORIGIN',name:'Label Made in Indonesia',cat:'Label Kain',stock:750,unit:'pcs',reorder:300,price:700,supplier:'Toko Label Digital'},
+];
+
+const inventoryPK = [
+  {code:'PK-BOX-SML',name:'Gift Box Premium Small (S/M)',stock:180,unit:'pcs',reorder:100,price:8500},
+  {code:'PK-BOX-LRG',name:'Gift Box Premium Large (L/XL)',stock:95,unit:'pcs',reorder:80,price:9500},
+  {code:'PK-BAG-PP',name:'Polybag PP Transparan (30×40cm)',stock:450,unit:'pcs',reorder:200,price:1200},
+  {code:'PK-BAG-ZIP',name:'Ziplock Bag Premium (resealable)',stock:280,unit:'pcs',reorder:150,price:2500},
+  {code:'PK-TIS-WHT',name:'Tissue Paper Putih (pembungkus)',stock:600,unit:'lembar',reorder:300,price:500},
+  {code:'PK-STK-SEAL',name:'Stiker Seal STRAIT&CO',stock:820,unit:'pcs',reorder:400,price:350},
+  {code:'PK-HNG-TAG',name:'Hang Tag Karton Premium (dua muka)',stock:420,unit:'pcs',reorder:200,price:2800},
+  {code:'PK-HNG-STR',name:'Tali Hang Tag Rami Natural',stock:450,unit:'pcs',reorder:200,price:400},
+  {code:'PK-QR-LBL',name:'Label QR Code (stiker anti-air)',stock:500,unit:'pcs',reorder:200,price:2500},
+  {code:'PK-BUB-WRP',name:'Bubble Wrap 30cm (pengiriman)',stock:25,unit:'meter',reorder:15,price:4500},
+  {code:'PK-TAPE-BRN',name:'Lakban Coklat 4,8cm',stock:18,unit:'rol',reorder:10,price:12000},
+  {code:'PK-TAPE-OPP',name:'Solasi OPP Bening (seal box)',stock:22,unit:'rol',reorder:10,price:10000},
+  {code:'PK-ENV-TYP',name:'Amplop Tipis Invoice',stock:300,unit:'pcs',reorder:150,price:800},
+  {code:'PK-DESICC',name:'Silica Gel Anti-Lembab (per pcs)',stock:400,unit:'pcs',reorder:200,price:600},
+  {code:'PK-FOLD-BD',name:'Cardboard Folder Insert (penegak di box)',stock:190,unit:'pcs',reorder:100,price:1500},
+  {code:'PK-INS-CARD',name:'Insert Card (QR + loyalty info)',stock:380,unit:'pcs',reorder:200,price:1800},
+];
+
+function getIOQRecommendation(stock, reorderPt) {
+  if (stock <= 0) return { text: 'Order Sekarang!', cls: 'pill-err' };
+  if (stock <= reorderPt) return { text: 'Restock', cls: 'pill-warn' };
+  return { text: 'Aman', cls: 'pill-success' };
+}
+
+function renderInventoryFG(data) {
+  const jun = demandData[0][5];
+  const body = document.getElementById('inventoryFGBody');
+  if (!body) return;
+  const colorDot = {'Navy':'#1565C0','Cream':'#D4A853','Black':'#333','Maroon':'#7A1624','Olive':'#6B7024'};
+  body.innerHTML = data.map(item => {
+    let sc, st;
+    if (item.stock === 0) { sc='pill-err'; st='Habis'; }
+    else if (item.stock <= item.reorder) { sc='pill-warn'; st='Low Stock'; }
+    else { sc='pill-success'; st='OK'; }
+    const ioqRec = item.stock <= item.reorder ? `<span class="status-pill pill-warn">${jun.ioqAktual}</span>` : '–';
+    const cd = colorDot[item.color] || '#888';
+    return `<tr>
+      <td><span class="sku-tag">${item.sku}</span></td>
+      <td>${item.name}</td>
+      <td><span style="display:inline-flex;align-items:center;gap:4px;"><span style="width:9px;height:9px;border-radius:50%;background:${cd};display:inline-block;"></span>${item.color}</span></td>
+      <td>${item.size}</td>
+      <td><b>${item.stock}</b></td>
+      <td>${item.reorder}</td>
+      <td>${ioqRec}</td>
+      <td><span class="status-pill ${sc}">${st}</span></td>
+      <td style="color:var(--muted);font-size:10.5px;">${item.updated}</td>
+      <td><button class="btn btn-secondary btn-sm" onclick="editStockFG('${item.sku}')">Edit</button></td>
+    </tr>`;
+  }).join('');
+  document.getElementById('fg-count').textContent = data.length + ' SKU';
+}
+
+function renderInventoryRM(data) {
+  const body = document.getElementById('inventoryRMBody');
+  if (!body) return;
+  body.innerHTML = data.map(item => {
+    let sc, st;
+    if (item.stock <= 0) { sc='pill-err'; st='Habis'; }
+    else if (item.stock <= item.reorder) { sc='pill-warn'; st='Low'; }
+    else { sc='pill-success'; st='OK'; }
+    const pct = Math.min(100, Math.round(item.stock / (item.reorder * 3) * 100));
+    return `<tr>
+      <td><span class="sku-tag">${item.code}</span></td>
+      <td><div style="font-size:12px;font-weight:500;">${item.name}</div>
+        <div style="margin-top:3px;"><div class="progress-bar"><div class="progress-fill ${sc==='pill-success'?'green':sc==='pill-warn'?'warn':'err'}" style="width:${pct}%"></div></div></div>
+      </td>
+      <td><span class="status-pill pill-muted" style="font-size:9.5px;">${item.cat}</span></td>
+      <td><b>${item.stock.toLocaleString('id-ID')}</b></td>
+      <td>${item.unit}</td>
+      <td>${item.reorder.toLocaleString('id-ID')}</td>
+      <td>Rp${item.price.toLocaleString('id-ID')}</td>
+      <td><span class="status-pill ${sc}">${st}</span></td>
+      <td style="font-size:10.5px;color:var(--muted);">${item.supplier}</td>
+      <td><button class="btn btn-secondary btn-sm" onclick="editStockRM('${item.code}')">Edit</button></td>
+    </tr>`;
+  }).join('');
+  document.getElementById('rm-count').textContent = data.length + ' item';
+}
+
+function renderInventoryPK(data) {
+  const body = document.getElementById('inventoryPKBody');
+  if (!body) return;
+  body.innerHTML = data.map(item => {
+    let sc, st;
+    if (item.stock <= 0) { sc='pill-err'; st='Habis'; }
+    else if (item.stock <= item.reorder) { sc='pill-warn'; st='Low'; }
+    else { sc='pill-success'; st='OK'; }
+    return `<tr>
+      <td><span class="sku-tag">${item.code}</span></td>
+      <td>${item.name}</td>
+      <td><b>${item.stock.toLocaleString('id-ID')}</b></td>
+      <td>${item.unit}</td>
+      <td>${item.reorder.toLocaleString('id-ID')}</td>
+      <td>Rp${item.price.toLocaleString('id-ID')}</td>
+      <td><span class="status-pill ${sc}">${st}</span></td>
+      <td><button class="btn btn-secondary btn-sm" onclick="editStockPK('${item.code}')">Edit</button></td>
+    </tr>`;
+  }).join('');
+  document.getElementById('pk-count').textContent = data.length + ' item';
+}
+
+function filterInventory(val) {
+  val = (val || document.querySelector('#page-inventory .filter-input input')?.value || '').toLowerCase();
+  const catF = document.getElementById('inv-cat-filter')?.value || '';
+  const statusF = document.getElementById('inv-status-filter')?.value || '';
+  const matchStatus = (stock, reorder) => {
+    if (statusF === 'ok') return stock > reorder;
+    if (statusF === 'low') return stock > 0 && stock <= reorder;
+    if (statusF === 'out') return stock <= 0;
+    return true;
+  };
+  if (!catF || catF === 'fg') {
+    renderInventoryFG(inventoryFG.filter(i => matchStatus(i.stock, i.reorder) && (!val || i.sku.toLowerCase().includes(val) || i.name.toLowerCase().includes(val) || i.color.toLowerCase().includes(val))));
+    document.getElementById('inv-cat-fg').style.display = (!catF || catF === 'fg') ? '' : 'none';
+  }
+  if (!catF || catF === 'rm') {
+    renderInventoryRM(inventoryRM.filter(i => matchStatus(i.stock, i.reorder) && (!val || i.code.toLowerCase().includes(val) || i.name.toLowerCase().includes(val) || i.cat.toLowerCase().includes(val))));
+    document.getElementById('inv-cat-rm').style.display = (!catF || catF === 'rm') ? '' : 'none';
+  }
+  if (!catF || catF === 'pk') {
+    renderInventoryPK(inventoryPK.filter(i => matchStatus(i.stock, i.reorder) && (!val || i.code.toLowerCase().includes(val) || i.name.toLowerCase().includes(val))));
+    document.getElementById('inv-cat-pk').style.display = (!catF || catF === 'pk') ? '' : 'none';
+  }
+}
+
+function editStockFG(sku) {
+  const item = inventoryFG.find(i => i.sku === sku);
+  if (!item) return;
+  const n = prompt(`Edit stok ${item.sku}\nSekarang: ${item.stock} unit\nMasukkan jumlah baru:`, item.stock);
+  if (n === null) return;
+  const qty = parseInt(n);
+  if (isNaN(qty) || qty < 0) { toast('Jumlah tidak valid', 'err'); return; }
+  item.stock = qty;
+  item.updated = new Date().toLocaleDateString('id-ID');
+  renderInventoryFG(inventoryFG);
+  toast(`Stok ${sku} diperbarui → ${qty} unit`);
+}
+function editStockRM(code) {
+  const item = inventoryRM.find(i => i.code === code);
+  if (!item) return;
+  const n = prompt(`Edit stok ${item.name}\nSekarang: ${item.stock} ${item.unit}\nMasukkan jumlah baru:`, item.stock);
+  if (n === null) return;
+  const qty = parseInt(n);
+  if (isNaN(qty) || qty < 0) { toast('Tidak valid', 'err'); return; }
+  item.stock = qty;
+  renderInventoryRM(inventoryRM);
+  toast(`Stok ${item.name} diperbarui → ${qty} ${item.unit}`);
+}
+function editStockPK(code) {
+  const item = inventoryPK.find(i => i.code === code);
+  if (!item) return;
+  const n = prompt(`Edit stok ${item.name}\nSekarang: ${item.stock} ${item.unit}`, item.stock);
+  if (n === null) return;
+  const qty = parseInt(n);
+  if (isNaN(qty) || qty < 0) { toast('Tidak valid', 'err'); return; }
+  item.stock = qty;
+  renderInventoryPK(inventoryPK);
+  toast(`Stok diperbarui → ${qty} ${item.unit}`);
+}
+
+// Material summary
+function renderMaterialSummary() {
+  const el = document.getElementById('materialSummary');
+  if (!el) return;
+  const items = [
+    { icon:'ti-shirt', name:'Kemeja Jadi', sku:'FINISHED GOODS', qty: inventoryFG.reduce((s,i)=>s+i.stock,0), unit:'unit', status: inventoryFG.reduce((s,i)=>s+i.stock,0) > 50 ? 'OK' : 'Low', statusCls: inventoryFG.reduce((s,i)=>s+i.stock,0) > 50 ? 'pill-success':'pill-warn' },
+    { icon:'ti-rolls', name:'Kain Bahan Total', sku:'RAW MATERIAL', qty: inventoryRM.filter(i=>i.cat==='Kain').reduce((s,i)=>s+i.stock,0), unit:'meter', status:'OK', statusCls:'pill-success' },
+    { icon:'ti-circle', name:'Kancing Total', sku:'HARDWARE', qty: inventoryRM.filter(i=>i.cat==='Kancing').reduce((s,i)=>s+i.stock,0), unit:'pcs', status:'OK', statusCls:'pill-success' },
+    { icon:'ti-box', name:'Packaging Box', sku:'PACKAGING', qty: inventoryPK.filter(i=>i.code.includes('BOX')).reduce((s,i)=>s+i.stock,0), unit:'pcs', status:'Low', statusCls:'pill-warn' },
+    { icon:'ti-qrcode', name:'Label QR', sku:'DIGITAL', qty: inventoryPK.find(i=>i.code==='PK-QR-LBL')?.stock||500, unit:'pcs', status:'OK', statusCls:'pill-success' },
+    { icon:'ti-tag', name:'Hang Tag', sku:'ACCESSORY', qty: inventoryPK.find(i=>i.code==='PK-HNG-TAG')?.stock||420, unit:'pcs', status:'OK', statusCls:'pill-success' },
+  ];
+  el.innerHTML = items.map(i => `
+    <div class="stock-item">
+      <div class="stock-left">
+        <div class="stock-icon"><i class="ti ${i.icon}"></i></div>
+        <div><div class="stock-name">${i.name}</div><div class="stock-sku">${i.sku}</div></div>
+      </div>
+      <div class="stock-right">
+        <div><div class="stock-qty">${i.qty.toLocaleString('id-ID')}</div><div class="stock-unit">${i.unit}</div></div>
+        <span class="status-pill ${i.statusCls}">${i.status}</span>
+      </div>
+    </div>`).join('');
+}
+
+// Inbound selects
+const materialsByCategory = {
+  fg: [{label:'Kemeja Jadi',unit:'unit'},{label:'Kemeja Sampel',unit:'unit'}],
+  rm: [
+    {label:'Kain Oxford Premium',unit:'meter'},{label:'Kain Viselin/Interfacing',unit:'meter'},{label:'Kain Lining',unit:'meter'},
+    {label:'Benang Jahit',unit:'cone'},{label:'Kancing 11mm',unit:'pcs'},{label:'Kancing 8mm (manset)',unit:'pcs'},
+    {label:'Kancing Snap',unit:'pcs'},{label:'Ritsleting',unit:'pcs'},{label:'Cairan Anti-Crease',unit:'botol'},
+    {label:'Label Kain Brand',unit:'pcs'},{label:'Label Care',unit:'pcs'},{label:'Label Size',unit:'pcs'},
+  ],
+  pk: [
+    {label:'Gift Box Small',unit:'pcs'},{label:'Gift Box Large',unit:'pcs'},{label:'Polybag PP',unit:'pcs'},
+    {label:'Hang Tag',unit:'pcs'},{label:'Label QR',unit:'pcs'},{label:'Tissue Paper',unit:'lembar'},
+    {label:'Stiker Seal',unit:'pcs'},{label:'Bubble Wrap',unit:'meter'},{label:'Lakban Coklat',unit:'rol'},
+    {label:'Silica Gel',unit:'pcs'},{label:'Insert Card',unit:'pcs'},
+  ]
+};
+
+function updateInboundItems() {
+  const cat = document.getElementById('inboundCat')?.value;
+  const sel = document.getElementById('inboundMaterial');
+  const unitEl = document.getElementById('inboundUnit');
+  if (!cat || !sel) return;
+  const items = materialsByCategory[cat] || [];
+  sel.innerHTML = items.map(i => `<option value="${i.label}" data-unit="${i.unit}">${i.label}</option>`).join('');
+  if (unitEl && items[0]) unitEl.value = items[0].unit;
+  sel.onchange = () => { if (unitEl) { const opt = sel.selectedOptions[0]; unitEl.value = opt ? opt.dataset.unit : ''; } };
+}
+function updateIBItems() {
+  const cat = document.getElementById('ib-cat')?.value;
+  const sel = document.getElementById('ib-item');
+  const unitEl = document.getElementById('ib-unit');
+  if (!cat || !sel) return;
+  const items = materialsByCategory[cat] || [];
+  sel.innerHTML = items.map(i => `<option value="${i.label}" data-unit="${i.unit}">${i.label}</option>`).join('');
+  if (unitEl && items[0]) unitEl.value = items[0].unit;
+  sel.onchange = () => { if (unitEl) { const opt = sel.selectedOptions[0]; unitEl.value = opt ? opt.dataset.unit : ''; } };
+}
+function updateIBUnit() {
+  const sel = document.getElementById('ib-item');
+  const unitEl = document.getElementById('ib-unit');
+  if (sel && unitEl) { const opt = sel.selectedOptions[0]; unitEl.value = opt ? opt.dataset.unit : ''; }
+}
+
+function populateVendorSelects() {
+  const names = vendorState.vendors.map(v => v.name);
+  ['inboundVendor','ib-vendor'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = names.map(n => `<option>${n}</option>`).join('');
+  });
+}
+
+// ═══════════════════════════════════
+// PRODUCTION TRACKING
+// ═══════════════════════════════════
+const productionBatches = [
+  {
+    id:'BTH-2026-06', po:'PO-2026-022', vendor:'PT Konveksi Prima', product:'Kemeja Navy M/L', qty:200,
+    startDate:'2026-06-14', targetDate:'2026-06-28',
+    steps:[
+      {name:'Pembuatan PO & Konfirmasi Vendor',icon:'ti-file-invoice',estDays:1,actualDays:1,status:'done',note:'PO diterima dalam 4 jam'},
+      {name:'Pengiriman Bahan Baku ke Vendor',icon:'ti-truck',estDays:2,actualDays:2,status:'done',note:'Kain + kancing dikirim'},
+      {name:'Penerimaan & QC Material (Vendor)',icon:'ti-checklist',estDays:1,actualDays:1,status:'done',note:'Material lolos QC'},
+      {name:'Proses Cutting',icon:'ti-scissors',estDays:2,actualDays:3,status:'done',note:'Delay 1 hari — mesin potong rusak'},
+      {name:'Proses Jahit (Sewing)',icon:'ti-needle-thread',estDays:5,actualDays:null,status:'active',note:'Sedang berjalan — progres 60%'},
+      {name:'Proses Finishing (Obras, Kancing)',icon:'ti-shirt',estDays:2,actualDays:null,status:'pending',note:'–'},
+      {name:'QC Internal (Jahitan, Ukuran)',icon:'ti-zoom-check',estDays:1,actualDays:null,status:'pending',note:'–'},
+      {name:'Final QC & Packing',icon:'ti-package',estDays:1,actualDays:null,status:'pending',note:'–'},
+      {name:'Pengiriman ke Gudang',icon:'ti-truck-delivery',estDays:1,actualDays:null,status:'pending',note:'–'},
+      {name:'Receiving & QC Gudang',icon:'ti-home-check',estDays:1,actualDays:null,status:'pending',note:'–'},
+    ]
+  },
+  {
+    id:'BTH-2026-05', po:'PO-2026-019', vendor:'CV Mitra Tekstil', product:'Kemeja Cream M', qty:120,
+    startDate:'2026-06-07', targetDate:'2026-06-21',
+    steps:[
+      {name:'Pembuatan PO & Konfirmasi Vendor',icon:'ti-file-invoice',estDays:1,actualDays:1,status:'done',note:'Konfirmasi 2 jam'},
+      {name:'Pengiriman Bahan Baku ke Vendor',icon:'ti-truck',estDays:2,actualDays:2,status:'done',note:'On time'},
+      {name:'Penerimaan & QC Material (Vendor)',icon:'ti-checklist',estDays:1,actualDays:1,status:'done',note:'OK'},
+      {name:'Proses Cutting',icon:'ti-scissors',estDays:2,actualDays:2,status:'done',note:'Tepat waktu'},
+      {name:'Proses Jahit (Sewing)',icon:'ti-needle-thread',estDays:5,actualDays:5,status:'done',note:'Selesai tepat waktu'},
+      {name:'Proses Finishing',icon:'ti-shirt',estDays:2,actualDays:2,status:'done',note:''},
+      {name:'QC Internal',icon:'ti-zoom-check',estDays:1,actualDays:1,status:'done',note:'0 reject'},
+      {name:'Final QC & Packing',icon:'ti-package',estDays:1,actualDays:1,status:'done',note:'OK'},
+      {name:'Pengiriman ke Gudang',icon:'ti-truck-delivery',estDays:1,actualDays:1,status:'done',note:'JNE'},
+      {name:'Receiving & QC Gudang',icon:'ti-home-check',estDays:1,actualDays:1,status:'done',note:'Diterima 120 unit'},
+    ]
+  }
+];
+
+function renderProductionList() {
+  const el = document.getElementById('productionList');
+  if (!el) return;
+  el.innerHTML = productionBatches.map(b => {
+    const doneSteps = b.steps.filter(s => s.status === 'done').length;
+    const pct = Math.round(doneSteps / b.steps.length * 100);
+    const totalEst = b.steps.reduce((s,st) => s + st.estDays, 0);
+    const totalAct = b.steps.reduce((s,st) => s + (st.actualDays || 0), 0);
+    const startD = new Date(b.startDate);
+    const targetD = new Date(b.targetDate);
+    const today = new Date();
+    const daysLeft = Math.ceil((targetD - today) / 86400000);
+    const isLate = daysLeft < 0 && pct < 100;
+    const statusPill = pct === 100 ? '<span class="status-pill pill-success">✓ Selesai</span>' :
+                       isLate ? '<span class="status-pill pill-err">Terlambat</span>' :
+                       '<span class="status-pill pill-warn">Berjalan</span>';
+
+    const stepsHtml = b.steps.map(s => {
+      let dotClass = 'pending';
+      if (s.status === 'done') dotClass = 'done';
+      else if (s.status === 'active') dotClass = 'active';
+      else if (s.status === 'late') dotClass = 'warn';
+      let compareHtml = '';
+      if (s.actualDays !== null) {
+        const delta = s.actualDays - s.estDays;
+        const cls = delta === 0 ? 'aktual-ok' : delta > 0 ? 'aktual-late' : 'aktual-early';
+        const sign = delta > 0 ? '+' : '';
+        compareHtml = `<div class="prod-step-compare">
+          <span class="prod-compare-item est">Est: ${s.estDays}h</span>
+          <span class="prod-compare-item ${cls}">Aktual: ${s.actualDays}h (${sign}${delta}h)</span>
+        </div>`;
+      } else {
+        compareHtml = `<div class="prod-step-compare"><span class="prod-compare-item est">Est: ${s.estDays}h</span><span class="prod-compare-item" style="background:var(--bg);color:var(--muted);">Belum mulai</span></div>`;
+      }
+      return `<div class="prod-step">
+        <div class="prod-step-dot ${dotClass}"><i class="ti ${s.icon}" style="font-size:13px;"></i></div>
+        <div class="prod-step-content">
+          <div class="prod-step-title">${s.name}</div>
+          <div class="prod-step-meta">${s.note || '–'}</div>
+          ${compareHtml}
+        </div>
+      </div>`;
+    }).join('');
+
+    return `<div class="widget" style="margin-bottom:14px;">
+      <div class="widget-header">
+        <div class="widget-title"><i class="ti ti-tools"></i> ${b.id} — ${b.product} (${b.qty} unit)</div>
+        <div style="display:flex;gap:7px;align-items:center;">${statusPill}${daysLeft >= 0 ? `<span class="status-pill pill-blue">${daysLeft} hari tersisa</span>` : `<span class="status-pill pill-err">${Math.abs(daysLeft)} hari terlambat</span>`}</div>
+      </div>
+      <div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:12px;">
+        <span style="font-size:11.5px;color:var(--muted);">Vendor: <b>${b.vendor}</b></span>
+        <span style="font-size:11.5px;color:var(--muted);">PO: <b>${b.po}</b></span>
+        <span style="font-size:11.5px;color:var(--muted);">Mulai: <b>${new Date(b.startDate).toLocaleDateString('id-ID')}</b></span>
+        <span style="font-size:11.5px;color:var(--muted);">Target: <b>${new Date(b.targetDate).toLocaleDateString('id-ID')}</b></span>
+        <span style="font-size:11.5px;color:var(--muted);">Est Total: <b>${totalEst} hari</b></span>
+        <span style="font-size:11.5px;color:var(--muted);">Aktual: <b>${totalAct}/${totalEst} hari</b></span>
+      </div>
+      <div style="margin-bottom:12px;">
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:4px;"><span>Progress: ${doneSteps}/${b.steps.length} tahap</span><span>${pct}%</span></div>
+        <div class="progress-bar" style="height:10px;"><div class="progress-fill ${pct===100?'green':isLate?'err':'maroon'}" style="width:${pct}%;"></div></div>
+      </div>
+      <div class="prod-flow">${stepsHtml}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderVendorProdCompare() {
+  const body = document.getElementById('vendorProdCompareBody');
+  if (!body) return;
+  const vendorProd = {};
+  productionBatches.forEach(b => {
+    if (!vendorProd[b.vendor]) vendorProd[b.vendor] = { batches:0, totalEst:0, totalAct:0, onTime:0 };
+    const vp = vendorProd[b.vendor];
+    vp.batches++;
+    const est = b.steps.reduce((s,st) => s + st.estDays, 0);
+    const act = b.steps.filter(s=>s.actualDays!==null).reduce((s,st) => s + (st.actualDays||0), 0);
+    vp.totalEst += est;
+    vp.totalAct += act;
+    if (act <= est) vp.onTime++;
+  });
+  body.innerHTML = Object.entries(vendorProd).map(([name, vp]) => {
+    const delta = vp.totalAct - vp.totalEst;
+    const onTimeRate = Math.round(vp.onTime / vp.batches * 100);
+    const deltaCls = delta <= 0 ? 'up' : 'down';
+    const sign = delta > 0 ? '+' : '';
+    // Speed rating based on on-time rate
+    const v = vendorState.vendors.find(x => x.name === name);
+    const speedRating = v ? v.rating.prodspeed || v.rating.waktu : 3;
+    const stars = '★'.repeat(speedRating) + '☆'.repeat(5-speedRating);
+    return `<tr>
+      <td><b>${name}</b></td>
+      <td>${vp.batches}</td>
+      <td>${Math.round(vp.totalEst/vp.batches)} hari avg</td>
+      <td>${Math.round(vp.totalAct/vp.batches)} hari avg</td>
+      <td class="${deltaCls}"><b>${sign}${Math.round(delta/vp.batches)} hari</b></td>
+      <td><div class="progress-bar"><div class="progress-fill ${onTimeRate>=80?'green':'warn'}" style="width:${onTimeRate}%;"></div></div><span style="font-size:10.5px;">${onTimeRate}%</span></td>
+      <td><span style="color:var(--gold);font-size:14px;">${stars}</span> <span style="font-size:11px;color:var(--muted);">${speedRating}/5</span></td>
+    </tr>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════
+// VENDOR MANAGEMENT
+// ═══════════════════════════════════
+const vendorState = {
+  vendors: [
+    {id:1,initial:'CM',name:'CV Mitra Tekstil',material:'Kain Bahan, Kemeja Jadi',phone:'0812-3456-7890',email:'mitra@tekstil.id',location:'Bandung, Jabar',address:'Jl. Industri Tekstil No. 24, Bandung',leadtime:7,moq:50,price:349000,shipping:250000,courier:'JNE Reguler',payment:'Transfer Langsung',prodtime:8,status:'Aktif',ytd:59130000,note:'Vendor utama bahan kain',rating:{kualitas:4,waktu:4,harga:5,respon:4,prodspeed:4},reviews:[],poList:[
+      {no:'PO-2026-019',material:'Kemeja Jadi',qty:120,price:349000,date:'07/06/2026',eta:7,payment:'Transfer Langsung',status:'Diterima',note:''},
+      {no:'PO-2026-018',material:'Kain Bahan',qty:50,price:45000,date:'03/06/2026',eta:7,payment:'Transfer Langsung',status:'Diterima',note:''}
+    ]},
+    {id:2,initial:'PK',name:'PT Konveksi Prima',material:'Kemeja Jadi (Batch Produksi)',phone:'0857-8888-1234',email:'konveksi@prima.co.id',location:'Jakarta Barat, DKI',address:'Jl. Raya Daan Mogot KM 18, Jakarta Barat',leadtime:14,moq:100,price:349000,shipping:300000,courier:'SiCepat Cargo',payment:'Transfer Bank (NET 30)',prodtime:12,status:'Aktif',ytd:17450000,note:'Kapasitas besar untuk batch produksi',rating:{kualitas:4,waktu:3,harga:4,respon:4,prodspeed:3},reviews:[],poList:[
+      {no:'PO-2026-022',material:'Kemeja Jadi',qty:50,price:349000,date:'14/06/2026',eta:14,payment:'Transfer Bank (NET 30)',status:'Diproses',note:'Batch Juni'}
+    ]},
+    {id:3,initial:'TL',name:'Toko Label Digital',material:'Label Hang Tag, Label QR, Label Kain',phone:'0821-4444-9999',email:'label@digital.id',location:'Surabaya, Jatim',address:'Jl. Rungkut Industri No. 88, Surabaya',leadtime:3,moq:200,price:2500,shipping:50000,courier:'J&T Express',payment:'Transfer Langsung',prodtime:2,status:'Aktif',ytd:500000,note:'Fast response & digital printing',rating:{kualitas:5,waktu:5,harga:4,respon:5,prodspeed:5},reviews:[],poList:[
+      {no:'PO-2026-021',material:'Label & Hang Tag',qty:200,price:2500,date:'12/06/2026',eta:3,payment:'Transfer Langsung',status:'Diterima',note:''}
+    ]},
+    {id:4,initial:'SP',name:'Supplier Packaging',material:'Box Premium, Polybag, Tissue',phone:'0878-2222-5555',email:'supplier@pack.id',location:'Bekasi, Jabar',address:'Kawasan Industri Jababeka Blok C, Bekasi',leadtime:5,moq:100,price:8000,shipping:75000,courier:'TIKI',payment:'COD',prodtime:3,status:'Aktif',ytd:800000,note:'Perlu negosiasi MOQ untuk box large',rating:{kualitas:3,waktu:3,harga:4,respon:3,prodspeed:3},reviews:[],poList:[
+      {no:'PO-2026-020',material:'Packaging Box',qty:100,price:8000,date:'10/06/2026',eta:5,payment:'COD',status:'Diterima',note:''}
+    ]}
+  ],
+  poCounter: 23,
+  currentRating: {kualitas:4,waktu:4,harga:4,respon:4,prodspeed:4}
+};
+
+function avgRating(r) {
+  const vals = [r.kualitas, r.waktu, r.harga, r.respon, r.prodspeed || r.waktu];
+  return (vals.reduce((s,v)=>s+v,0) / vals.length).toFixed(1);
+}
+function renderStars(val) {
+  const full = Math.floor(val), frac = val % 1 >= 0.5;
+  let h = '';
+  for (let i = 1; i <= 5; i++) {
+    if (i <= full) h += '<span class="star filled">★</span>';
+    else if (i === full + 1 && frac) h += '<span class="star half">★</span>';
+    else h += '<span class="star">★</span>';
+  }
+  return h;
+}
+
+function renderVendors(list) {
+  const container = document.getElementById('vendorList');
+  if (!container) return;
+  if (!list || !list.length) {
+    container.innerHTML = `<div class="empty-state" style="grid-column:1/-1;"><i class="ti ti-building-store"></i><p>Belum ada vendor.</p></div>`;
+    return;
+  }
+  container.innerHTML = list.map(v => {
+    const avg = parseFloat(avgRating(v.rating));
+    const po = v.poList || [];
+    const poRows = po.slice(0,3).map(p => `<tr>
+      <td><span class="sku-tag">${p.no}</span></td>
+      <td>${p.material}</td>
+      <td>${p.qty}</td>
+      <td>Rp${(p.qty*p.price).toLocaleString('id-ID')}</td>
+      <td>${p.date}</td>
+      <td><span class="status-pill ${p.status==='Diterima'?'pill-success':'pill-warn'}">${p.status}</span></td>
+      ${p.status==='Diproses'?`<td><button class="btn btn-sm btn-secondary" onclick="updateVendorPOStatus(${v.id},'${p.no}',this)">Terima</button></td>`:'<td></td>'}
+    </tr>`).join('');
+
+    const lastReview = v.reviews.length ? `<div style="margin:6px 0;padding:7px 9px;background:var(--bg);border-radius:7px;font-size:11px;font-style:italic;color:var(--muted);">"${v.reviews[v.reviews.length-1].comment}"</div>` : '';
+
+    return `<div class="vendor-card" id="vendor-card-${v.id}">
+      <div class="vendor-header">
+        <div class="vendor-avatar">${v.initial}</div>
+        <div style="flex:1;min-width:0;">
+          <div class="vendor-name">${v.name}</div>
+          <div class="vendor-material">${v.material}</div>
+        </div>
+        <span class="status-pill ${v.status==='Aktif'?'pill-success':'pill-muted'}">${v.status}</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:7px;margin-bottom:8px;padding:7px 9px;background:var(--bg);border-radius:var(--radius-sm);">
+        <div class="stars">${renderStars(avg)}</div>
+        <span class="rating-val">${avg}</span>
+        <span class="rating-count">(${v.reviews.length} ulasan)</span>
+        <span style="margin-left:auto;font-size:10px;color:var(--muted);">Q:${v.rating.kualitas} W:${v.rating.waktu} H:${v.rating.harga} R:${v.rating.respon} Prod:${v.rating.prodspeed||'–'}</span>
+      </div>
+      ${lastReview}
+      <div class="vendor-meta" style="margin-top:7px;">
+        <div class="vendor-meta-item"><i class="ti ti-map-pin"></i> ${v.location}</div>
+        <div class="vendor-meta-item"><i class="ti ti-clock"></i> LT: <b>${v.leadtime} hari</b></div>
+        <div class="vendor-meta-item"><i class="ti ti-tools"></i> Prod: <b>${v.prodtime||'–'} hari</b></div>
+        <div class="vendor-meta-item"><i class="ti ti-package"></i> MOQ: <b>${v.moq} unit</b></div>
+        <div class="vendor-meta-item"><i class="ti ti-truck"></i> Ongkir: <b>Rp${(v.shipping||0).toLocaleString('id-ID')}</b> (${v.courier||'–'})</div>
+        <div class="vendor-meta-item"><i class="ti ti-phone"></i> ${v.phone}</div>
+        <div class="vendor-meta-item"><i class="ti ti-mail"></i> ${v.email||'–'}</div>
+        <div class="vendor-meta-item" style="grid-column:1/-1;"><i class="ti ti-home"></i> ${v.address||'–'}</div>
+      </div>
+      <div class="vendor-tabs" style="margin-top:12px;">
+        <div class="vendor-tab active" onclick="switchVendorTab(${v.id},'po',this)">PO (${po.length})</div>
+        <div class="vendor-tab" onclick="switchVendorTab(${v.id},'ulasan',this)">Ulasan (${v.reviews.length})</div>
+        <div class="vendor-tab" onclick="switchVendorTab(${v.id},'info',this)">Info Lengkap</div>
+      </div>
+      <div class="vendor-body active" id="vbody-po-${v.id}">
+        ${po.length ? `<div style="overflow-x:auto;"><table class="po-mini-table"><thead><tr><th>No. PO</th><th>Material</th><th>Qty</th><th>Total</th><th>Tgl</th><th>Status</th><th></th></tr></thead><tbody>${poRows}</tbody></table></div>` : '<div class="empty-state" style="padding:16px;"><i class="ti ti-file-off"></i><p style="font-size:11.5px;">Belum ada PO</p></div>'}
+      </div>
+      <div class="vendor-body" id="vbody-ulasan-${v.id}">
+        ${v.reviews.length ? v.reviews.slice().reverse().map(r => `<div style="padding:8px 0;border-bottom:1px solid var(--border);">
+          <div style="display:flex;gap:7px;align-items:center;margin-bottom:3px;"><div class="stars">${renderStars(parseFloat(((r.kualitas+r.waktu+r.harga+r.respon+(r.prodspeed||r.waktu))/5).toFixed(1)))}</div><span style="font-size:10px;color:var(--muted);">${r.date}</span></div>
+          <div style="font-size:11.5px;font-style:italic;">"${r.comment||'–'}"</div>
+          <div style="font-size:10px;color:var(--muted);margin-top:2px;">Lead aktual: ${r.actualLead||'–'} hr (est: ${r.estLead||'–'} hr)</div>
+        </div>`).join('') : '<div class="empty-state" style="padding:16px;"><i class="ti ti-message-off"></i><p>Belum ada ulasan</p></div>'}
+      </div>
+      <div class="vendor-body" id="vbody-info-${v.id}">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;padding-top:6px;">
+          <div style="padding:8px;background:var(--bg);border-radius:7px;"><div style="font-size:10px;color:var(--muted);margin-bottom:3px;">Harga Satuan</div><div style="font-size:13px;font-weight:700;">Rp${(v.price||0).toLocaleString('id-ID')}</div></div>
+          <div style="padding:8px;background:var(--bg);border-radius:7px;"><div style="font-size:10px;color:var(--muted);margin-bottom:3px;">MOQ</div><div style="font-size:13px;font-weight:700;">${v.moq} unit</div></div>
+          <div style="padding:8px;background:var(--bg);border-radius:7px;"><div style="font-size:10px;color:var(--muted);margin-bottom:3px;">Ongkir</div><div style="font-size:13px;font-weight:700;">Rp${(v.shipping||0).toLocaleString('id-ID')}</div></div>
+          <div style="padding:8px;background:var(--bg);border-radius:7px;"><div style="font-size:10px;color:var(--muted);margin-bottom:3px;">Ekspedisi</div><div style="font-size:13px;font-weight:700;">${v.courier||'–'}</div></div>
+          <div style="padding:8px;background:var(--bg);border-radius:7px;"><div style="font-size:10px;color:var(--muted);margin-bottom:3px;">Pembayaran</div><div style="font-size:12px;font-weight:600;">${v.payment||'–'}</div></div>
+          <div style="padding:8px;background:var(--bg);border-radius:7px;"><div style="font-size:10px;color:var(--muted);margin-bottom:3px;">Lead Time Produksi</div><div style="font-size:13px;font-weight:700;">${v.prodtime||'–'} hari</div></div>
+          <div style="padding:8px;background:var(--bg);border-radius:7px;grid-column:1/-1;"><div style="font-size:10px;color:var(--muted);margin-bottom:3px;">Total YTD</div><div style="font-size:15px;font-weight:700;color:var(--maroon);">Rp${v.ytd.toLocaleString('id-ID')}</div></div>
+        </div>
+        ${v.note ? `<div style="margin-top:8px;padding:8px 10px;background:var(--maroon-soft);border-radius:7px;font-size:11.5px;color:var(--maroon-dark);">${v.note}</div>` : ''}
+      </div>
+      <div class="divider"></div>
+      <div style="display:flex;gap:6px;justify-content:flex-end;flex-wrap:wrap;">
+        <button class="btn btn-secondary btn-sm" onclick="openEditVendor(${v.id})"><i class="ti ti-edit"></i> Edit</button>
+        <button class="btn btn-gold btn-sm" onclick="openRatingModal(${v.id})"><i class="ti ti-star"></i> Rating</button>
+        <button class="btn btn-primary btn-sm" onclick="openPOModal(${v.id})"><i class="ti ti-file-invoice"></i> Buat PO</button>
+      </div>
+    </div>`;
+  }).join('');
+  updateVendorKPI();
+}
+
+function switchVendorTab(id, tab, el) {
+  el.closest('.vendor-card').querySelectorAll('.vendor-tab').forEach(t => t.classList.remove('active'));
+  el.closest('.vendor-card').querySelectorAll('.vendor-body').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById(`vbody-${tab}-${id}`).classList.add('active');
+}
+
+function filterVendors(val) {
+  val = val.toLowerCase();
+  renderVendors(vendorState.vendors.filter(v => v.name.toLowerCase().includes(val) || v.material.toLowerCase().includes(val) || v.location.toLowerCase().includes(val)));
+}
+function filterVendorStatus(val) {
+  renderVendors(val ? vendorState.vendors.filter(v => v.status === val) : vendorState.vendors);
+}
+
+function updateVendorKPI() {
+  const vs = vendorState.vendors;
+  const el = (id, val) => { const e = document.getElementById(id); if (e) e.textContent = val; };
+  el('kpi-vendor-total', vs.length);
+  el('kpi-vendor-aktif', vs.filter(v => v.status === 'Aktif').length);
+  el('kpi-po-aktif', vs.reduce((s, v) => s + (v.poList || []).filter(p => p.status === 'Diproses').length, 0));
+  const avgAll = (vs.reduce((s, v) => s + parseFloat(avgRating(v.rating)), 0) / vs.length).toFixed(1);
+  el('kpi-avg-rating', avgAll);
+}
+
+let newVendorRating = 3;
+function setNewVendorRating(n) {
+  newVendorRating = n;
+  document.getElementById('v-rating').value = n;
+  document.querySelectorAll('#v-rating-input .star').forEach((s, i) => s.classList.toggle('filled', i < n));
+}
+function openEditVendor(id) {
+  const v = vendorState.vendors.find(x => x.id === id);
+  if (!v) return;
+  document.getElementById('modalVendorTitle').textContent = 'Edit Vendor';
+  document.getElementById('editVendorIdx').value = id;
+  ['name','initial','material','phone','email','location','address','leadtime','moq','price','shipping','courier','prodtime','note'].forEach(f => {
+    const el = document.getElementById('v-'+f); if (el) el.value = v[f] || '';
+  });
+  document.getElementById('v-status').value = v.status;
+  document.getElementById('v-payment').value = v.payment || 'Transfer Langsung';
+  setNewVendorRating(Math.round(parseFloat(avgRating(v.rating))));
+  openModal('modalTambahVendor');
+}
+function saveVendor() {
+  const name = document.getElementById('v-name').value.trim();
+  const initial = document.getElementById('v-initial').value.trim().toUpperCase() || name.slice(0,2).toUpperCase();
+  const material = document.getElementById('v-material').value.trim();
+  const phone = document.getElementById('v-phone').value.trim();
+  const location = document.getElementById('v-location').value.trim();
+  if (!name || !material || !phone || !location) { toast('Lengkapi field wajib (*)', 'err'); return; }
+  const editId = document.getElementById('editVendorIdx').value;
+  const nr = newVendorRating;
+  const rObj = {kualitas:nr, waktu:nr, harga:nr, respon:nr, prodspeed:nr};
+  const fields = v => {
+    v.name=name; v.initial=initial; v.material=material; v.phone=phone;
+    v.email=document.getElementById('v-email').value.trim();
+    v.location=location; v.address=document.getElementById('v-address').value.trim();
+    v.leadtime=parseInt(document.getElementById('v-leadtime').value)||7;
+    v.moq=parseInt(document.getElementById('v-moq').value)||50;
+    v.price=parseInt(document.getElementById('v-price').value)||0;
+    v.shipping=parseInt(document.getElementById('v-shipping').value)||0;
+    v.courier=document.getElementById('v-courier').value.trim();
+    v.payment=document.getElementById('v-payment').value;
+    v.prodtime=parseInt(document.getElementById('v-prodtime').value)||0;
+    v.status=document.getElementById('v-status').value;
+    v.note=document.getElementById('v-note').value.trim();
+  };
+  if (editId) {
+    const v = vendorState.vendors.find(x => x.id == editId);
+    if (v) { fields(v); toast(`Vendor "${name}" diperbarui`); }
+  } else {
+    const newV = { id:Date.now(), ytd:0, rating:rObj, reviews:[], poList:[] };
+    fields(newV);
+    vendorState.vendors.push(newV);
+    addActivity(`Vendor baru: ${name}`, 'green');
+    toast(`Vendor "${name}" ditambahkan`);
+  }
+  closeModal('modalTambahVendor');
+  resetVendorForm();
+  renderVendors(vendorState.vendors);
+  populateVendorSelects();
+}
+function resetVendorForm() {
+  ['name','initial','material','phone','email','location','address','leadtime','moq','price','shipping','courier','prodtime','note'].forEach(f => {
+    const el = document.getElementById('v-'+f); if (el) el.value = '';
+  });
+  document.getElementById('editVendorIdx').value = '';
+  document.getElementById('modalVendorTitle').textContent = 'Tambah Vendor Baru';
+  setNewVendorRating(3);
+}
+
+// PO Modal
+function openPOModal(id) {
+  const v = vendorState.vendors.find(x => x.id === id);
+  if (!v) return;
+  document.getElementById('po-vendor-idx').value = id;
+  document.getElementById('po-vendor-avatar').textContent = v.initial;
+  document.getElementById('po-vendor-name').textContent = v.name;
+  document.getElementById('po-vendor-material').textContent = v.material;
+  document.getElementById('po-vendor-ongkir').textContent = `Rp${(v.shipping||0).toLocaleString('id-ID')} (${v.courier||'–'})`;
+  document.getElementById('po-moq-hint').textContent = `MOQ: ${v.moq} unit`;
+  const poNo = 'PO-2026-0' + String(vendorState.poCounter).padStart(2,'0');
+  document.getElementById('po-number').value = poNo;
+  const today = new Date().toISOString().slice(0,10);
+  document.getElementById('po-date').value = today;
+  document.getElementById('po-eta').value = v.leadtime;
+  document.getElementById('po-price').value = v.price || '';
+  document.getElementById('po-shipping-cost').value = v.shipping || '';
+  document.getElementById('po-material').value = '';
+  document.getElementById('po-qty').value = '';
+  document.getElementById('po-total').value = '';
+  const etaDate = new Date(); etaDate.setDate(etaDate.getDate() + v.leadtime);
+  document.getElementById('po-eta-date').value = etaDate.toLocaleDateString('id-ID');
+  document.getElementById('po-eta').oninput = function() {
+    const d = new Date(); d.setDate(d.getDate() + parseInt(this.value)||0);
+    document.getElementById('po-eta-date').value = d.toLocaleDateString('id-ID');
+  };
+  openModal('modalBuatPO');
+}
+
+function calcPOTotal() {
+  const qty = parseInt(document.getElementById('po-qty').value) || 0;
+  const price = parseInt(document.getElementById('po-price').value) || 0;
+  const ongkir = parseInt(document.getElementById('po-shipping-cost').value) || 0;
+  const total = qty * price + ongkir;
+  document.getElementById('po-total').value = total ? 'Rp'+total.toLocaleString('id-ID') : '';
+}
+
+function submitPO() {
+  const vid = document.getElementById('po-vendor-idx').value;
+  const v = vendorState.vendors.find(x => x.id == vid);
+  const material = document.getElementById('po-material').value.trim();
+  const qty = parseInt(document.getElementById('po-qty').value);
+  const price = parseInt(document.getElementById('po-price').value) || 0;
+  const eta = parseInt(document.getElementById('po-eta').value) || v.leadtime;
+  const payment = document.getElementById('po-payment').value;
+  const note = document.getElementById('po-note').value.trim();
+  const poNo = document.getElementById('po-number').value;
+  const date = document.getElementById('po-date').value;
+  const ongkir = parseInt(document.getElementById('po-shipping-cost').value) || 0;
+  if (!material || !qty || qty < 1) { toast('Lengkapi material dan jumlah', 'err'); return; }
+  if (qty < v.moq) { toast(`Jumlah ${qty} kurang dari MOQ ${v.moq}`, 'err'); return; }
+  const po = {no:poNo, material, qty, price, date:new Date(date).toLocaleDateString('id-ID'), eta, payment, status:'Diproses', note, ongkir};
+  v.poList.unshift(po);
+  v.ytd += qty * price + ongkir;
+  vendorState.poCounter++;
+  const tbody = document.getElementById('poGlobalBody');
+  const etaDate = new Date(date); etaDate.setDate(etaDate.getDate() + eta);
+  const tr = document.createElement('tr');
+  tr.innerHTML = `<td><span class="sku-tag">${poNo}</span></td><td>${v.name}</td><td>${material}</td><td>${qty}</td><td>Rp${(qty*price).toLocaleString('id-ID')}</td><td>Rp${ongkir.toLocaleString('id-ID')}</td><td>${new Date(date).toLocaleDateString('id-ID')}</td><td>${etaDate.toLocaleDateString('id-ID')}</td><td><span class="status-pill pill-warn">Diproses</span></td><td><button class="btn btn-secondary btn-sm" onclick="updatePOStatus(this,'Diterima')">Terima</button></td>`;
+  if (tbody) tbody.prepend(tr);
+  addActivity(`PO ${poNo} dibuat → ${v.name} — ${qty} ${material}`, 'blue');
+  toast(`PO ${poNo} berhasil dibuat`);
+  closeModal('modalBuatPO');
+  renderVendors(vendorState.vendors);
+}
+
+function updateVendorPOStatus(vid, poNo, btn) {
+  const v = vendorState.vendors.find(x => x.id === vid);
+  const po = v && v.poList.find(p => p.no === poNo);
+  if (po) po.status = 'Diterima';
+  btn.closest('tr').querySelector('td:nth-child(6)').innerHTML = '<span class="status-pill pill-success">Diterima</span>';
+  btn.closest('td').innerHTML = '';
+  toast(`PO ${poNo} diterima`);
+  renderVendors(vendorState.vendors);
+}
+function updatePOStatus(btn, newStatus) {
+  btn.closest('tr').querySelector('td:nth-child(9)').innerHTML = `<span class="status-pill pill-success">${newStatus}</span>`;
+  btn.closest('td').innerHTML = '';
+  toast('Status PO diperbarui');
+}
+
+// Rating
+function openRatingModal(id) {
+  const v = vendorState.vendors.find(x => x.id === id);
+  if (!v) return;
+  document.getElementById('rating-vendor-idx').value = id;
+  document.getElementById('rating-vendor-avatar').textContent = v.initial;
+  document.getElementById('rating-vendor-name').textContent = v.name;
+  document.getElementById('rating-vendor-material').textContent = v.material;
+  document.getElementById('rating-comment').value = '';
+  document.getElementById('rating-actual-lead').value = '';
+  document.getElementById('rating-est-lead').value = v.leadtime;
+  vendorState.currentRating = {...v.rating};
+  ['kualitas','waktu','harga','respon','prodspeed'].forEach(k => renderRatingStars(k, vendorState.currentRating[k] || 4));
+  openModal('modalRating');
+}
+function setRatingStar(cat, val) {
+  vendorState.currentRating[cat] = val;
+  renderRatingStars(cat, val);
+}
+function renderRatingStars(cat, val) {
+  const c = document.getElementById('stars-'+cat);
+  const l = document.getElementById('lbl-'+cat);
+  if (!c) return;
+  c.querySelectorAll('.star').forEach((s,i) => s.classList.toggle('filled', i < val));
+  if (l) l.textContent = `★ ${val}`;
+}
+function submitRating() {
+  const id = document.getElementById('rating-vendor-idx').value;
+  const v = vendorState.vendors.find(x => x.id == id);
+  const comment = document.getElementById('rating-comment').value.trim();
+  const actualLead = document.getElementById('rating-actual-lead').value;
+  const estLead = document.getElementById('rating-est-lead').value;
+  const r = {...vendorState.currentRating};
+  const totalReviews = v.reviews.length;
+  ['kualitas','waktu','harga','respon','prodspeed'].forEach(k => {
+    v.rating[k] = Math.round(((v.rating[k]||4) * totalReviews + (r[k]||4)) / (totalReviews + 1) * 10) / 10;
+  });
+  v.reviews.push({...r, comment, date:new Date().toLocaleDateString('id-ID'), actualLead, estLead});
+  closeModal('modalRating');
+  addActivity(`Rating untuk ${v.name}: ★ ${avgRating(v.rating)}`, 'gold');
+  toast(`Rating ${v.name} disimpan`);
+  renderVendors(vendorState.vendors);
+  renderVendorProdCompare();
+}
+
+function exportVendorCSV() {
+  const rows = [['Nama','Material','Lokasi','Alamat','Telepon','Email','Lead Time','Prod Time','MOQ','Harga','Ongkir','Kurir','Pembayaran','Status','Rating','YTD']];
+  vendorState.vendors.forEach(v => rows.push([v.name,v.material,v.location,v.address||'',v.phone,v.email||'',v.leadtime+'h',v.prodtime+'h',v.moq,'Rp'+v.price,'Rp'+(v.shipping||0),v.courier||'',v.payment||'',v.status,avgRating(v.rating),'Rp'+v.ytd]));
+  const csv = rows.map(r => r.join(',')).join('\n');
+  const a = document.createElement('a'); a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+  a.download = 'STRAITCO_Vendor_' + new Date().toISOString().slice(0,10) + '.csv'; a.click();
+  toast('Export vendor CSV berhasil');
+}
+function exportPOCSV() {
+  const rows = [['No PO','Vendor','Material','Qty','HPP Total','Ongkir','Tanggal','Status']];
+  vendorState.vendors.forEach(v => (v.poList||[]).forEach(p => rows.push([p.no,v.name,p.material,p.qty,p.qty*p.price,p.ongkir||0,p.date,p.status])));
+  const csv = rows.map(r => r.join(',')).join('\n');
+  const a = document.createElement('a'); a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+  a.download = 'STRAITCO_PO_' + new Date().toISOString().slice(0,10) + '.csv'; a.click();
+  toast('Export PO CSV berhasil');
+}
+
+// ═══════════════════════════════════
+// INBOUND / SALES
+// ═══════════════════════════════════
+function submitInbound() {
+  const cat = document.getElementById('inboundCat').value;
+  const mat = document.getElementById('inboundMaterial').value;
+  const qty = parseInt(document.getElementById('inboundQty').value);
+  const vendor = document.getElementById('inboundVendor').value;
+  const po = document.getElementById('inboundPO').value || '–';
+  if (!qty || qty < 1) { toast('Masukkan jumlah yang valid', 'err'); return; }
+  addActivity(`Inbound ${qty} ${mat} dari ${vendor} (${po})`, 'green');
+  toast(`✓ Inbound ${qty} ${mat} dicatat`);
+  closeModal('modalInbound');
+  renderMaterialSummary();
+}
+
+function submitInboundPage() {
+  const qty = parseInt(document.getElementById('ib-qty').value);
+  const item = document.getElementById('ib-item').value;
+  const vendor = document.getElementById('ib-vendor').value;
+  const po = document.getElementById('ib-po').value || '–';
+  const price = parseInt(document.getElementById('ib-price').value) || 0;
+  if (!qty || qty < 1) { toast('Masukkan jumlah yang valid', 'err'); return; }
+  const tbody = document.getElementById('inboundTableBody');
+  const tr = document.createElement('tr');
+  tr.innerHTML = `<td>${new Date().toLocaleDateString('id-ID')}</td><td><span class="status-pill pill-maroon">Inbound</span></td><td>${item}</td><td>${qty}</td><td>Rp${price.toLocaleString('id-ID')}</td><td>Rp${(qty*price).toLocaleString('id-ID')}</td><td>${vendor}</td><td><span class="sku-tag">${po}</span></td>`;
+  if (tbody) tbody.prepend(tr);
+  addActivity(`Inbound ${qty} ${item} dari ${vendor}`, 'green');
+  toast(`✓ Inbound ${qty} ${item} dicatat`);
+  document.getElementById('ib-qty').value = '';
+  document.getElementById('ib-po').value = '';
+  renderMaterialSummary();
+}
+
+function submitSalesModal() {
+  const channel = document.getElementById('salesChannel').value;
+  const sku = document.getElementById('salesSKU').value;
+  const qty = parseInt(document.getElementById('salesQty').value) || 1;
+  const price = parseInt(document.getElementById('salesPrice').value) || config.hargaJual;
+  const resi = document.getElementById('salesResi').value || '–';
+  const customer = document.getElementById('salesCustomer').value || '–';
+  addActivity(`Penjualan ${qty}x ${sku} via ${channel} — Rp${(qty*price).toLocaleString('id-ID')}`, 'maroon');
+  toast(`✓ Penjualan ${qty}x ${sku} dicatat`);
+  closeModal('modalSales');
+}
+
+function submitSalesPage() {
+  const sku = document.getElementById('ob-sku').value;
+  const qty = parseInt(document.getElementById('ob-qty').value) || 1;
+  const price = parseInt(document.getElementById('ob-price').value) || config.hargaJual;
+  const channel = document.getElementById('ob-channel').value;
+  const inv = inventoryFG.find(i => i.sku === sku);
+  if (inv) {
+    if (inv.stock < qty) { toast(`Stok tidak cukup! Tersedia: ${inv.stock} unit`, 'err'); return; }
+    inv.stock -= qty;
+    renderInventoryFG(inventoryFG);
+  }
+  const tbody = document.getElementById('salesTableBody');
+  const tr = document.createElement('tr');
+  tr.innerHTML = `<td>${new Date().toLocaleDateString('id-ID')}</td><td><span class="sku-tag">${sku}</span></td><td>${qty}</td><td><span class="status-pill pill-maroon">${channel}</span></td><td>Rp${(qty*price).toLocaleString('id-ID')}</td><td>${document.getElementById('ob-resi').value||'–'}</td><td>${document.getElementById('ob-customer').value||'–'}</td><td><span class="status-pill pill-warn">Diproses</span></td>`;
+  if (tbody) tbody.prepend(tr);
+  addActivity(`Penjualan ${qty}x ${sku} via ${channel}`, 'maroon');
+  toast(`✓ Penjualan dicatat. Stok diperbarui.`);
+}
+
+function exportCSV() {
+  const rows = [['SKU','Produk','Warna','Size','Stok','Reorder','Status']];
+  inventoryFG.forEach(i => rows.push([i.sku,i.name,i.color,i.size,i.stock,i.reorder,i.stock===0?'Habis':i.stock<=i.reorder?'Low':'OK']));
+  const csv = rows.map(r => r.join(',')).join('\n');
+  const a = document.createElement('a');
+  a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+  a.download = 'STRAITCO_WMS_' + new Date().toISOString().slice(0,10) + '.csv'; a.click();
+  toast('Export CSV berhasil');
+}
+
+// ═══════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════
+const pageTitles = {
+  dashboard:'Dashboard',ioq:'IOQ & Perencanaan Produksi',inventory:'Inventori Lengkap',
+  inbound:'Stok Masuk',outbound:'Penjualan & Outbound',production:'Tracking Produksi',
+  digital:'Ekosistem Digital',loyalty:'S-Users Loyalty',finance:'Proyeksi Keuangan',
+  vendor:'Manajemen Vendor',report:'Laporan Bulanan'
+};
+function showPage(id, el) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const pg = document.getElementById('page-' + id);
+  if (pg) pg.classList.add('active');
+  if (el) el.classList.add('active');
+  document.getElementById('topbarTitle').textContent = pageTitles[id] || '';
+  closeSidebar();
+  if (id === 'outbound') setTimeout(initChannelPageChart, 100);
+  if (id === 'loyalty') setTimeout(initTierChart, 100);
+  if (id === 'digital') setTimeout(initQRChart, 100);
+  if (id === 'finance') setTimeout(initFinanceCharts, 100);
+  if (id === 'vendor') { renderVendors(vendorState.vendors); }
+  if (id === 'inventory') { renderInventoryFG(inventoryFG); renderInventoryRM(inventoryRM); renderInventoryPK(inventoryPK); }
+  if (id === 'ioq') { renderIOQSummary(); renderIOQYearTable(currentIOQYear); }
+  if (id === 'inbound') { updateIBItems(); renderMaterialSummary(); }
+  if (id === 'production') { renderProductionList(); renderVendorProdCompare(); }
+}
+function toggleSidebar() {
+  const s = document.getElementById('sidebar');
+  const ov = document.getElementById('sidebarOverlay');
+  s.classList.toggle('open');
+  ov.style.display = s.classList.contains('open') ? 'block' : 'none';
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebarOverlay').style.display = 'none';
+}
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-overlay').forEach(m => {
+  m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); });
+});
+function toast(msg, type='success') {
+  const icons = {success:'ti-circle-check',err:'ti-alert-circle',warn:'ti-alert-triangle'};
+  const colors = {success:'var(--success)',err:'var(--error)',warn:'var(--warn)'};
+  const t = document.createElement('div');
+  t.className = `toast toast-${type}`;
+  t.innerHTML = `<i class="ti ${icons[type]||icons.success}" style="color:${colors[type]||colors.success};"></i>${msg}`;
+  document.getElementById('toastWrap').appendChild(t);
+  setTimeout(() => t.remove(), 3500);
+}
+function addActivity(text, type='maroon') {
+  const list = document.getElementById('activityList');
+  if (!list) return;
+  const item = document.createElement('div');
+  item.className = 'activity-item';
+  item.innerHTML = `<div class="activity-dot ${type}"></div><div class="activity-body"><div class="activity-text">${text}</div><div class="activity-time">Baru saja</div></div>`;
+  list.prepend(item);
+  if (list.children.length > 8) list.lastChild.remove();
+}
+function setDate() {
+  const d = new Date();
+  document.getElementById('currentDate').textContent = d.toLocaleDateString('id-ID', {weekday:'short',day:'numeric',month:'short',year:'numeric'});
+}
+
+// ═══════════════════════════════════
+// CHARTS
+// ═══════════════════════════════════
+const MAROON='#7A1624', GOLD='#D4A853', GREEN='#2E7D32', BLUE='#1565C0', WARN='#E65100';
+let charts = {};
+function destroyChart(id) { if (charts[id]) { charts[id].destroy(); delete charts[id]; } }
+
+function initCharts() {
+  const ctx1 = document.getElementById('chartSales');
+  if (ctx1) {
+    destroyChart('sales');
+    charts.sales = new Chart(ctx1, {
+      type:'line',
+      data:{labels:['Sen','Sel','Rab','Kam','Jum','Sab','Min'],datasets:[{label:'Unit Terjual',data:[22,18,31,25,28,42,20],borderColor:MAROON,backgroundColor:'rgba(122,22,36,0.08)',tension:0.4,fill:true,pointBackgroundColor:MAROON,pointRadius:4}]},
+      options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,grid:{color:'rgba(0,0,0,0.04)'}},x:{grid:{display:false}}}}
+    });
+  }
+  const ctx2 = document.getElementById('chartChannel');
+  if (ctx2) {
+    destroyChart('channel');
+    charts.channel = new Chart(ctx2, {
+      type:'doughnut',
+      data:{labels:['Shopee','Tokopedia','TikTok','eBay','Website'],datasets:[{data:[72,32,20,8,3],backgroundColor:[MAROON,GOLD,BLUE,GREEN,WARN],borderWidth:2,borderColor:'#fff'}]},
+      options:{responsive:true,plugins:{legend:{position:'right',labels:{font:{size:10},boxWidth:10,padding:8}}},cutout:'60%'}
+    });
+  }
+}
+function initChannelPageChart() {
+  const ctx = document.getElementById('chartChannelPage');
+  if (!ctx) return;
+  destroyChart('channelPage');
+  charts.channelPage = new Chart(ctx, {
+    type:'doughnut',
+    data:{labels:['Shopee','Tokopedia','TikTok','eBay','Website'],datasets:[{data:[134,60,37,15,5],backgroundColor:[MAROON,GOLD,BLUE,GREEN,WARN],borderWidth:2,borderColor:'#fff'}]},
+    options:{responsive:true,plugins:{legend:{position:'bottom',labels:{font:{size:10},boxWidth:10}}},cutout:'60%'}
+  });
+}
+function initTierChart() {
+  const ctx = document.getElementById('chartTier');
+  if (!ctx) return;
+  destroyChart('tier');
+  charts.tier = new Chart(ctx, {
+    type:'bar',
+    data:{labels:['🥉 Bronze','🥈 Silver','🥇 Gold','💎 Diamond'],datasets:[{label:'Users',data:[512,248,108,24],backgroundColor:[MAROON,'#9E9E9E',GOLD,BLUE],borderRadius:6}]},
+    options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,grid:{color:'rgba(0,0,0,0.04)'}},x:{grid:{display:false}}}}
+  });
+}
+function initQRChart() {
+  const ctx = document.getElementById('chartQR');
+  if (!ctx) return;
+  destroyChart('qr');
+  charts.qr = new Chart(ctx, {
+    type:'bar',
+    data:{labels:['Sen','Sel','Rab','Kam','Jum','Sab','Min'],datasets:[{label:'QR Scan',data:[148,172,210,195,228,312,188],backgroundColor:'rgba(122,22,36,0.12)',borderColor:MAROON,borderWidth:2,borderRadius:5}]},
+    options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,grid:{color:'rgba(0,0,0,0.04)'}},x:{grid:{display:false}}}}
+  });
+}
+function initFinanceCharts() {
+  const ctx1 = document.getElementById('chartRevenue');
+  if (ctx1) {
+    destroyChart('revenue');
+    charts.revenue = new Chart(ctx1, {
+      type:'bar',
+      data:{
+        labels:['Tahun 1','Tahun 2','Tahun 3'],
+        datasets:[
+          {label:'Revenue',data:[1317600000,1976400000,2635200000],backgroundColor:MAROON,borderRadius:6},
+          {label:'HPP',data:[837600000,1256400000,1675200000],backgroundColor:'rgba(212,168,83,0.7)',borderRadius:6}
+        ]
+      },
+      options:{responsive:true,plugins:{legend:{position:'top',labels:{font:{size:11}}}},scales:{y:{beginAtZero:true,ticks:{callback:v=>'Rp'+(v/1e9).toFixed(1)+'M'},grid:{color:'rgba(0,0,0,0.04)'}},x:{grid:{display:false}}}}
+    });
+  }
+  const ctx2 = document.getElementById('chartProfit');
+  if (ctx2) {
+    destroyChart('profit');
+    charts.profit = new Chart(ctx2, {
+      type:'line',
+      data:{
+        labels:['Y1','Y2','Y3'],
+        datasets:[{label:'Net Profit',data:[435000000,675000000,906000000],borderColor:GREEN,backgroundColor:'rgba(46,125,50,0.08)',tension:0.4,fill:true,pointBackgroundColor:GREEN,pointRadius:6,borderWidth:2}]
+      },
+      options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{callback:v=>'Rp'+(v/1e9).toFixed(2)+'M'},grid:{color:'rgba(0,0,0,0.04)'}},x:{grid:{display:false}}}}
+    });
+  }
+}
+
+// ═══════════════════════════════════
+// INIT
+// ═══════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+  setDate();
+  initCharts();
+  renderIOQSummary();
+  renderInventoryFG(inventoryFG);
+  renderInventoryRM(inventoryRM);
+  renderInventoryPK(inventoryPK);
+  renderVendors(vendorState.vendors);
+  renderMaterialSummary();
+  updateInboundItems();
+  updateIBItems();
+  populateVendorSelects();
+  renderProductionList();
+  renderVendorProdCompare();
+});
+</script>
+</body>
+</html>
