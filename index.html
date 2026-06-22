@@ -1386,6 +1386,15 @@ const config = {
   growth3: 33          // % growth Y2→Y3
 };
 
+// Load dari localStorage jika ada
+const savedConfig = localStorage.getItem('straitco_ioq_config');
+if (savedConfig) {
+  try {
+    const parsed = JSON.parse(savedConfig);
+    Object.assign(config, parsed);
+  } catch(e) {}
+}
+
 // ═══════════════════════════════════
 // IOQ CALCULATION ENGINE
 // ═══════════════════════════════════
@@ -1701,6 +1710,7 @@ function saveIOQConfig() {
   config.leadTime = parseInt(document.getElementById('cfg-lead-time').value) || 14;
   config.growth2 = parseInt(document.getElementById('cfg-growth2').value) || 50;
   config.growth3 = parseInt(document.getElementById('cfg-growth3').value) || 33;
+  localStorage.setItem('straitco_ioq_config', JSON.stringify(config));
   demandData = generateDemandData();
   renderIOQSummary();
   renderIOQYearTable(currentIOQYear);
@@ -2615,7 +2625,20 @@ function closeSidebar() {
   document.getElementById('sidebar').classList.remove('open');
   document.getElementById('sidebarOverlay').style.display = 'none';
 }
-function openModal(id) { document.getElementById(id).classList.add('open'); }
+function openModal(id) {
+  document.getElementById(id).classList.add('open');
+  if (id === 'modalIOQSettings') {
+    document.getElementById('cfg-hpp').value = config.hpp;
+    document.getElementById('cfg-harga-jual').value = config.hargaJual;
+    document.getElementById('cfg-ordering-cost').value = config.orderingCost;
+    document.getElementById('cfg-holding-pct').value = config.holdingPct;
+    document.getElementById('cfg-daily-demand').value = config.dailyDemand;
+    document.getElementById('cfg-safety-stock').value = config.safetyStock;
+    document.getElementById('cfg-lead-time').value = config.leadTime;
+    document.getElementById('cfg-growth2').value = config.growth2;
+    document.getElementById('cfg-growth3').value = config.growth3;
+  }
+}
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 document.querySelectorAll('.modal-overlay').forEach(m => {
   m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); });
