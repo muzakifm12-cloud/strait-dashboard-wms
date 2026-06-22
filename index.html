@@ -1914,6 +1914,7 @@ function editStockFG(sku) {
   item.stock = qty;
   item.updated = new Date().toLocaleDateString('id-ID');
   renderInventoryFG(inventoryFG);
+  saveAllState();
   toast(`Stok ${sku} diperbarui → ${qty} unit`);
 }
 function editStockRM(code) {
@@ -1925,6 +1926,7 @@ function editStockRM(code) {
   if (isNaN(qty) || qty < 0) { toast('Tidak valid', 'err'); return; }
   item.stock = qty;
   renderInventoryRM(inventoryRM);
+  saveAllState();
   toast(`Stok ${item.name} diperbarui → ${qty} ${item.unit}`);
 }
 function editStockPK(code) {
@@ -1936,6 +1938,7 @@ function editStockPK(code) {
   if (isNaN(qty) || qty < 0) { toast('Tidak valid', 'err'); return; }
   item.stock = qty;
   renderInventoryPK(inventoryPK);
+  saveAllState();
   toast(`Stok diperbarui → ${qty} ${item.unit}`);
 }
 
@@ -2359,6 +2362,7 @@ function saveVendor() {
   closeModal('modalTambahVendor');
   resetVendorForm();
   renderVendors(vendorState.vendors);
+  saveAllState();
   populateVendorSelects();
 }
 function resetVendorForm() {
@@ -2434,6 +2438,7 @@ function submitPO() {
   toast(`PO ${poNo} berhasil dibuat`);
   closeModal('modalBuatPO');
   renderVendors(vendorState.vendors);
+  saveAllState();
 }
 
 function updateVendorPOStatus(vid, poNo, btn) {
@@ -2494,6 +2499,7 @@ function submitRating() {
   toast(`Rating ${v.name} disimpan`);
   renderVendors(vendorState.vendors);
   renderVendorProdCompare();
+  saveAllState();
 }
 
 function exportVendorCSV() {
@@ -2545,6 +2551,7 @@ function submitInboundPage() {
   document.getElementById('ib-qty').value = '';
   document.getElementById('ib-po').value = '';
   renderMaterialSummary();
+  saveAllState();
 }
 
 function submitSalesModal() {
@@ -2576,6 +2583,7 @@ function submitSalesPage() {
   if (tbody) tbody.prepend(tr);
   addActivity(`Penjualan ${qty}x ${sku} via ${channel}`, 'maroon');
   toast(`✓ Penjualan dicatat. Stok diperbarui.`);
+  saveAllState();
 }
 
 function exportCSV() {
@@ -2754,9 +2762,34 @@ function initFinanceCharts() {
 }
 
 // ═══════════════════════════════════
+// PERSISTENCE — SAVE & LOAD
+// ═══════════════════════════════════
+function saveAllState() {
+  localStorage.setItem('straitco_inventoryFG', JSON.stringify(inventoryFG));
+  localStorage.setItem('straitco_inventoryRM', JSON.stringify(inventoryRM));
+  localStorage.setItem('straitco_inventoryPK', JSON.stringify(inventoryPK));
+  localStorage.setItem('straitco_vendorState', JSON.stringify(vendorState));
+}
+
+function loadAllState() {
+  const fg = localStorage.getItem('straitco_inventoryFG');
+  if (fg) { const d = JSON.parse(fg); inventoryFG.length = 0; d.forEach(i => inventoryFG.push(i)); }
+
+  const rm = localStorage.getItem('straitco_inventoryRM');
+  if (rm) { const d = JSON.parse(rm); inventoryRM.length = 0; d.forEach(i => inventoryRM.push(i)); }
+
+  const pk = localStorage.getItem('straitco_inventoryPK');
+  if (pk) { const d = JSON.parse(pk); inventoryPK.length = 0; d.forEach(i => inventoryPK.push(i)); }
+
+  const vs = localStorage.getItem('straitco_vendorState');
+  if (vs) { const d = JSON.parse(vs); Object.assign(vendorState, d); }
+}
+
+// ═══════════════════════════════════
 // INIT
 // ═══════════════════════════════════
 document.addEventListener('DOMContentLoaded', () => {
+  loadAllState();
   setDate();
   initCharts();
   renderIOQSummary();
