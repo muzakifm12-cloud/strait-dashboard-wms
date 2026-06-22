@@ -1249,42 +1249,39 @@ input,select,textarea{font-family:inherit;font-size:inherit;}
       </div>
 
       <!-- ══════════ FINANCE ══════════ -->
-      <div class="page" id="page-finance">
-        <div class="section-header">
-          <div class="section-title">Proyeksi Keuangan</div>
-          <div class="section-sub">Revenue, HPP, Margin — 3 tahun detail | Harga Jual: Rp549.000 | HPP: Rp349.000</div>
-        </div>
-        <div class="kpi-grid">
-          <div class="kpi-card maroon"><div class="kpi-label"><i class="ti ti-currency-dollar"></i> Revenue Bulan Ini</div><div class="kpi-value">102,1Jt</div><div class="kpi-change up">+12% MoM</div><div class="kpi-sub">186 × Rp549.000</div></div>
-          <div class="kpi-card gold"><div class="kpi-label"><i class="ti ti-receipt"></i> HPP (COGS)</div><div class="kpi-value">64,9Jt</div><div class="kpi-change">186 × Rp349.000</div></div>
-          <div class="kpi-card green"><div class="kpi-label"><i class="ti ti-chart-pie"></i> Gross Margin</div><div class="kpi-value">36,5%</div><div class="kpi-change up">Margin Rp200K/unit</div></div>
-          <div class="kpi-card blue"><div class="kpi-label"><i class="ti ti-coin"></i> Net Profit</div><div class="kpi-value">33,3Jt</div><div class="kpi-change up">setelah OPEX</div></div>
-          <div class="kpi-card warn"><div class="kpi-label"><i class="ti ti-target"></i> BEP Bulanan</div><div class="kpi-value">19 unit</div><div class="kpi-change">dari 200 target/bln</div><div class="kpi-sub">Fixed cost Rp3,75Jt</div></div>
-          <div class="kpi-card maroon"><div class="kpi-label"><i class="ti ti-trending-up"></i> ROI Y1</div><div class="kpi-value">≈68%</div><div class="kpi-change up">Modal Rp284,4Jt</div></div>
-        </div>
-        <div class="grid-2">
-          <div class="widget"><div class="widget-header"><div class="widget-title"><i class="ti ti-chart-bar"></i> Revenue vs HPP 3 Tahun</div></div><canvas id="chartRevenue" height="190"></canvas></div>
-          <div class="widget"><div class="widget-header"><div class="widget-title"><i class="ti ti-chart-line"></i> Net Profit Trend</div></div><canvas id="chartProfit" height="190"></canvas></div>
-        </div>
-        <div class="widget">
-          <div class="widget-header"><div class="widget-title"><i class="ti ti-table"></i> Detail P&L 3 Tahun</div></div>
-          <div class="table-wrap">
-            <table class="data-table">
-              <thead><tr><th>Metrik</th><th>Tahun 1</th><th>Tahun 2</th><th>Tahun 3</th></tr></thead>
-              <tbody>
-                <tr><td><b>Unit Terjual</b></td><td>2.400</td><td>3.600</td><td>4.800</td></tr>
-                <tr><td><b>Revenue</b></td><td>Rp1.317.600.000</td><td>Rp1.976.400.000</td><td>Rp2.635.200.000</td></tr>
-                <tr><td><b>HPP Total</b></td><td>Rp837.600.000</td><td>Rp1.256.400.000</td><td>Rp1.675.200.000</td></tr>
-                <tr><td><b>Gross Margin</b></td><td><span class="status-pill pill-success">36,5%</span></td><td><span class="status-pill pill-success">36,5%</span></td><td><span class="status-pill pill-success">36,5%</span></td></tr>
-                <tr><td><b>OPEX</b></td><td>Rp45.000.000</td><td>Rp45.000.000</td><td>Rp54.000.000</td></tr>
-                <tr style="font-weight:700;"><td><b>Net Profit</b></td><td style="color:var(--success);">Rp435.000.000</td><td style="color:var(--success);">Rp675.000.000</td><td style="color:var(--success);">Rp906.000.000</td></tr>
-                <tr><td><b>ROI</b></td><td><span class="status-pill pill-maroon">~68%</span></td><td><span class="status-pill pill-gold">~105%</span></td><td><span class="status-pill pill-success">~140%</span></td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
+      <!-- ══════════ FINANCE ══════════ -->
+<div class="page" id="page-finance">
+  <div class="section-header">
+    <div class="section-title">Proyeksi Keuangan</div>
+    <div class="section-sub">Revenue, HPP, Margin — 3 tahun detail | Klik nilai untuk edit</div>
+  </div>
 
+  <div style="display:flex;gap:8px;margin-bottom:14px;align-items:center;">
+    <button class="btn btn-primary btn-sm" onclick="saveFinanceData()"><i class="ti ti-device-floppy"></i> Simpan Perubahan</button>
+    <button class="btn btn-secondary btn-sm" onclick="resetFinanceData()"><i class="ti ti-refresh"></i> Reset Default</button>
+    <span style="font-size:11px;color:var(--muted);" id="finance-save-status"></span>
+  </div>
+
+  <div class="kpi-grid" id="finance-kpi-grid"></div>
+
+  <div class="grid-2">
+    <div class="widget"><div class="widget-header"><div class="widget-title"><i class="ti ti-chart-bar"></i> Revenue vs HPP 3 Tahun</div></div><canvas id="chartRevenue" height="190"></canvas></div>
+    <div class="widget"><div class="widget-header"><div class="widget-title"><i class="ti ti-chart-line"></i> Net Profit Trend</div></div><canvas id="chartProfit" height="190"></canvas></div>
+  </div>
+
+  <div class="widget">
+    <div class="widget-header">
+      <div class="widget-title"><i class="ti ti-table"></i> Detail P&L 3 Tahun</div>
+      <span style="font-size:11px;color:var(--muted);"><i class="ti ti-edit"></i> Klik sel biru untuk edit</span>
+    </div>
+    <div class="table-wrap">
+      <table class="data-table" id="finance-pl-table">
+        <thead><tr><th>Metrik</th><th>Tahun 1</th><th>Tahun 2</th><th>Tahun 3</th></tr></thead>
+        <tbody id="finance-pl-body"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
       <!-- ══════════ VENDOR ══════════ -->
       <div class="page" id="page-vendor">
         <div class="section-header">
@@ -1393,6 +1390,149 @@ if (savedConfig) {
     const parsed = JSON.parse(savedConfig);
     Object.assign(config, parsed);
   } catch(e) {}
+}
+
+// ═══════════════════════════════════
+// FINANCE DATA STATE
+// ═══════════════════════════════════
+const financeDefaults = {
+  hargaJual: 549000,
+  hpp: 349000,
+  units: [2400, 3600, 4800],
+  opex: [45000000, 45000000, 54000000]
+};
+let financeData = JSON.parse(localStorage.getItem('straitco_financeData') || 'null') || {
+  hargaJual: 549000,
+  hpp: 349000,
+  units: [2400, 3600, 4800],
+  opex: [45000000, 45000000, 54000000]
+};
+
+function calcFinance() {
+  const { hargaJual, hpp, units, opex } = financeData;
+  return units.map((u, i) => {
+    const revenue = u * hargaJual;
+    const cogs = u * hpp;
+    const grossProfit = revenue - cogs;
+    const grossMargin = ((grossProfit / revenue) * 100).toFixed(1);
+    const netProfit = grossProfit - opex[i];
+    const bep = Math.ceil(opex[i] / (hargaJual - hpp));
+    const roi = ((netProfit / (cogs + opex[i])) * 100).toFixed(0);
+    return { units: u, revenue, cogs, grossProfit, grossMargin, opex: opex[i], netProfit, bep, roi };
+  });
+}
+
+function renderFinancePage() {
+  const calc = calcFinance();
+  const fmt = n => 'Rp' + n.toLocaleString('id-ID');
+  const fmtM = n => n >= 1e9 ? (n/1e9).toFixed(2)+'M' : (n/1e6).toFixed(1)+'Jt';
+
+  // KPI cards (Tahun berjalan = index 0)
+  const c = calc[0];
+  document.getElementById('finance-kpi-grid').innerHTML = `
+    <div class="kpi-card maroon"><div class="kpi-label"><i class="ti ti-currency-dollar"></i> Revenue Bulan Ini</div><div class="kpi-value">${fmtM(c.revenue/12)}</div><div class="kpi-change up">+12% MoM</div><div class="kpi-sub">${Math.round(c.units/12)} unit/bln × ${fmt(financeData.hargaJual)}</div></div>
+    <div class="kpi-card gold"><div class="kpi-label"><i class="ti ti-receipt"></i> HPP (COGS)</div><div class="kpi-value">${fmtM(c.cogs/12)}</div><div class="kpi-change">${Math.round(c.units/12)} × ${fmt(financeData.hpp)}</div></div>
+    <div class="kpi-card green"><div class="kpi-label"><i class="ti ti-chart-pie"></i> Gross Margin</div><div class="kpi-value">${c.grossMargin}%</div><div class="kpi-change up">Margin ${fmt(financeData.hargaJual - financeData.hpp)}/unit</div></div>
+    <div class="kpi-card blue"><div class="kpi-label"><i class="ti ti-coin"></i> Net Profit/bln</div><div class="kpi-value">${fmtM(c.netProfit/12)}</div><div class="kpi-change up">setelah OPEX</div></div>
+    <div class="kpi-card warn"><div class="kpi-label"><i class="ti ti-target"></i> BEP Bulanan</div><div class="kpi-value">${c.bep} unit</div><div class="kpi-change">dari ${Math.round(c.units/12)} target/bln</div><div class="kpi-sub">Fixed cost ${fmtM(c.opex/12)}</div></div>
+    <div class="kpi-card maroon"><div class="kpi-label"><i class="ti ti-trending-up"></i> ROI Y1</div><div class="kpi-value">≈${c.roi}%</div><div class="kpi-change up">Modal ${fmtM(c.cogs + c.opex)}</div></div>
+  `;
+
+  // P&L Table
+  const roiColors = ['pill-maroon','pill-gold','pill-success'];
+  const rows = [
+    { label:'<b>Harga Jual/unit</b>', key:'hargaJual', type:'price', vals: [financeData.hargaJual, financeData.hargaJual, financeData.hargaJual] },
+    { label:'<b>HPP/unit</b>', key:'hpp', type:'price', vals: [financeData.hpp, financeData.hpp, financeData.hpp] },
+    { label:'<b>Unit Terjual</b>', key:'units', type:'units', vals: financeData.units },
+    { label:'<b>Revenue</b>', type:'readonly', vals: calc.map(c => fmt(c.revenue)) },
+    { label:'<b>HPP Total</b>', type:'readonly', vals: calc.map(c => fmt(c.cogs)) },
+    { label:'<b>Gross Margin</b>', type:'readonly', vals: calc.map(c => `<span class="status-pill pill-success">${c.grossMargin}%</span>`) },
+    { label:'<b>OPEX</b>', key:'opex', type:'opex', vals: financeData.opex },
+    { label:'<b>Net Profit</b>', type:'readonly', vals: calc.map((c,i) => `<span style="color:var(--success);font-weight:700;">${fmt(c.netProfit)}</span>`) },
+    { label:'<b>ROI</b>', type:'readonly', vals: calc.map((c,i) => `<span class="status-pill ${roiColors[i]}">~${c.roi}%</span>`) },
+  ];
+
+  document.getElementById('finance-pl-body').innerHTML = rows.map(row => {
+    const cells = [0,1,2].map(i => {
+      if (row.type === 'readonly') return `<td>${row.vals[i]}</td>`;
+      if (row.type === 'price') {
+        return `<td><input type="number" value="${row.vals[i]}" 
+          style="width:130px;background:#EBF5FB;border:1px solid #90CAF9;border-radius:6px;padding:4px 8px;font-size:12px;font-weight:600;color:var(--maroon);"
+          onchange="updateFinanceData('${row.key}', null, this.value)" 
+          oninput="updateFinanceData('${row.key}', null, this.value)"></td>`;
+      }
+      if (row.type === 'units') {
+        return `<td><input type="number" value="${row.vals[i]}" 
+          style="width:100px;background:#EBF5FB;border:1px solid #90CAF9;border-radius:6px;padding:4px 8px;font-size:12px;font-weight:600;color:var(--maroon);"
+          onchange="updateFinanceData('units', ${i}, this.value)"
+          oninput="updateFinanceData('units', ${i}, this.value)"></td>`;
+      }
+      if (row.type === 'opex') {
+        return `<td><input type="number" value="${row.vals[i]}" 
+          style="width:130px;background:#EBF5FB;border:1px solid #90CAF9;border-radius:6px;padding:4px 8px;font-size:12px;font-weight:600;color:var(--maroon);"
+          onchange="updateFinanceData('opex', ${i}, this.value)"
+          oninput="updateFinanceData('opex', ${i}, this.value)"></td>`;
+      }
+    }).join('');
+    return `<tr><td>${row.label}</td>${cells}</tr>`;
+  }).join('');
+
+  initFinanceCharts();
+}
+
+function updateFinanceData(key, idx, val) {
+  const n = parseFloat(val);
+  if (isNaN(n) || n < 0) return;
+  if (idx === null) {
+    financeData[key] = n;
+  } else {
+    financeData[key][idx] = n;
+  }
+  // Re-render hanya baris readonly (recalc)
+  const calc = calcFinance();
+  const fmt = n => 'Rp' + n.toLocaleString('id-ID');
+  const roiColors = ['pill-maroon','pill-gold','pill-success'];
+  const rows = document.getElementById('finance-pl-body').querySelectorAll('tr');
+  const readonlyMap = [
+    { rowIdx:3, vals: calc.map(c => fmt(c.revenue)) },
+    { rowIdx:4, vals: calc.map(c => fmt(c.cogs)) },
+    { rowIdx:5, vals: calc.map(c => `<span class="status-pill pill-success">${c.grossMargin}%</span>`) },
+    { rowIdx:7, vals: calc.map(c => `<span style="color:var(--success);font-weight:700;">${fmt(c.netProfit)}</span>`) },
+    { rowIdx:8, vals: calc.map((c,i) => `<span class="status-pill ${roiColors[i]}">~${c.roi}%</span>`) },
+  ];
+  readonlyMap.forEach(({ rowIdx, vals }) => {
+    const tds = rows[rowIdx].querySelectorAll('td');
+    vals.forEach((v, i) => { tds[i+1].innerHTML = v; });
+  });
+  // Update KPI
+  const c = calc[0];
+  const fmtM = n => n >= 1e9 ? (n/1e9).toFixed(2)+'M' : (n/1e6).toFixed(1)+'Jt';
+  document.getElementById('finance-kpi-grid').innerHTML = `
+    <div class="kpi-card maroon"><div class="kpi-label"><i class="ti ti-currency-dollar"></i> Revenue Bulan Ini</div><div class="kpi-value">${fmtM(c.revenue/12)}</div><div class="kpi-change up">+12% MoM</div><div class="kpi-sub">${Math.round(c.units/12)} unit/bln × ${fmt(financeData.hargaJual)}</div></div>
+    <div class="kpi-card gold"><div class="kpi-label"><i class="ti ti-receipt"></i> HPP (COGS)</div><div class="kpi-value">${fmtM(c.cogs/12)}</div><div class="kpi-change">${Math.round(c.units/12)} × ${fmt(financeData.hpp)}</div></div>
+    <div class="kpi-card green"><div class="kpi-label"><i class="ti ti-chart-pie"></i> Gross Margin</div><div class="kpi-value">${c.grossMargin}%</div><div class="kpi-change up">Margin ${fmt(financeData.hargaJual - financeData.hpp)}/unit</div></div>
+    <div class="kpi-card blue"><div class="kpi-label"><i class="ti ti-coin"></i> Net Profit/bln</div><div class="kpi-value">${fmtM(c.netProfit/12)}</div><div class="kpi-change up">setelah OPEX</div></div>
+    <div class="kpi-card warn"><div class="kpi-label"><i class="ti ti-target"></i> BEP Bulanan</div><div class="kpi-value">${c.bep} unit</div><div class="kpi-change">dari ${Math.round(c.units/12)} target/bln</div><div class="kpi-sub">Fixed cost ${fmtM(c.opex/12)}</div></div>
+    <div class="kpi-card maroon"><div class="kpi-label"><i class="ti ti-trending-up"></i> ROI Y1</div><div class="kpi-value">≈${c.roi}%</div><div class="kpi-change up">Modal ${fmtM(c.cogs + c.opex)}</div></div>
+  `;
+  document.getElementById('finance-save-status').textContent = '● Belum disimpan';
+  document.getElementById('finance-save-status').style.color = 'var(--warn)';
+  initFinanceCharts();
+}
+
+function saveFinanceData() {
+  localStorage.setItem('straitco_financeData', JSON.stringify(financeData));
+  document.getElementById('finance-save-status').textContent = '✓ Tersimpan';
+  document.getElementById('finance-save-status').style.color = 'var(--success)';
+  toast('Proyeksi keuangan disimpan', 'success');
+}
+
+function resetFinanceData() {
+  if (!confirm('Reset ke data default?')) return;
+  financeData = { ...financeDefaults, units: [...financeDefaults.units], opex: [...financeDefaults.opex] };
+  localStorage.removeItem('straitco_financeData');
+  renderFinancePage();
+  toast('Data direset ke default', 'warn');
 }
 
 // ═══════════════════════════════════
@@ -2616,7 +2756,7 @@ function showPage(id, el) {
   if (id === 'outbound') setTimeout(initChannelPageChart, 100);
   if (id === 'loyalty') setTimeout(initTierChart, 100);
   if (id === 'digital') setTimeout(initQRChart, 100);
-  if (id === 'finance') setTimeout(initFinanceCharts, 100);
+  if (id === 'finance') { renderFinancePage(); }
   if (id === 'vendor') { renderVendors(vendorState.vendors); }
   if (id === 'inventory') { renderInventoryFG(inventoryFG); renderInventoryRM(inventoryRM); renderInventoryPK(inventoryPK); }
   if (id === 'ioq') { renderIOQSummary(); renderIOQYearTable(currentIOQYear); }
