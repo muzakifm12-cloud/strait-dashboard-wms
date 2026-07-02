@@ -342,15 +342,15 @@ input,select,textarea{font-family:inherit;font-size:inherit;}
 <body>
 <div class="toast-wrap" id="toastWrap"></div>
 
-<!-- ══ MODAL: SETTINGS IOQ ══ -->
+<!-- ══ MODAL: SETTINGS EOQ ══ -->
 <div class="modal-overlay" id="modalIOQSettings">
   <div class="modal" style="width:min(500px,95vw);">
     <div class="modal-header">
-      <div class="modal-title">⚙️ Konfigurasi Parameter IOQ</div>
+      <div class="modal-title">⚙️ Konfigurasi Parameter EOQ (Tahun 1)</div>
       <button class="modal-close" onclick="closeModal('modalIOQSettings')"><i class="ti ti-x"></i></button>
     </div>
     <div class="modal-body">
-      <div class="alert-box alert-blue"><i class="ti ti-info-circle"></i> Parameter ini digunakan untuk menghitung IOQ dinamis. Ubah sesuai kondisi bisnis aktual Anda.</div>
+      <div class="alert-box alert-blue"><i class="ti ti-info-circle"></i> Form ini override manual untuk Tahun 1 saja. Untuk Tahun 2 &amp; 3, edit langsung di Google Sheets lalu klik "Sync Sekarang" di halaman EOQ.</div>
       <div class="form-row">
         <div class="form-group">
           <label class="form-label">HPP per Unit (Rp) <span style="color:var(--error)">*</span></label>
@@ -358,46 +358,20 @@ input,select,textarea{font-family:inherit;font-size:inherit;}
         </div>
         <div class="form-group">
           <label class="form-label">Harga Jual per Unit (Rp)</label>
-          <input class="form-control" id="cfg-harga-jual" type="number" value="549000">
+          <input class="form-control" id="cfg-harga-jual" type="number" value="369000">
         </div>
       </div>
       <div class="form-row">
         <div class="form-group">
-          <label class="form-label">Biaya Pesan per PO (Rp) <span style="color:var(--error)">*</span></label>
-          <input class="form-control" id="cfg-ordering-cost" type="number" value="200000">
+          <label class="form-label">Ordering Cost / S (Rp) — Tahun 1 <span style="color:var(--error)">*</span></label>
+          <input class="form-control" id="cfg-ordering-cost" type="number" value="500000">
           <div style="font-size:10.5px;color:var(--muted);margin-top:4px;">Biaya admin, transfer bank, komunikasi vendor</div>
         </div>
         <div class="form-group">
-          <label class="form-label">Holding Cost (% HPP/bulan)</label>
-          <input class="form-control" id="cfg-holding-pct" type="number" value="2" step="0.1" min="0.5" max="10">
+          <label class="form-label">Holding Cost (% HPP/bulan) — Tahun 1</label>
+          <input class="form-control" id="cfg-holding-pct" type="number" value="0.21" step="0.01" min="0.1" max="10">
           <div style="font-size:10.5px;color:var(--muted);margin-top:4px;">Biaya simpan, listrik, risiko kerusakan</div>
         </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Demand Harian Baseline (unit)</label>
-          <input class="form-control" id="cfg-daily-demand" type="number" value="7">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Safety Stock (unit)</label>
-          <input class="form-control" id="cfg-safety-stock" type="number" value="30">
-          <div style="font-size:10.5px;color:var(--muted);margin-top:4px;">Stok penyangga untuk antisipasi lonjakan</div>
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Lead Time Rata-rata (hari)</label>
-          <input class="form-control" id="cfg-lead-time" type="number" value="14">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Growth Rate Tahun 2 (%)</label>
-          <input class="form-control" id="cfg-growth2" type="number" value="50">
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Growth Rate Tahun 3 (%)</label>
-        <input class="form-control" id="cfg-growth3" type="number" value="33">
-        <div style="font-size:10.5px;color:var(--muted);margin-top:4px;">Relatif terhadap Tahun 2</div>
       </div>
       <div class="divider"></div>
       <div style="display:flex;gap:8px;justify-content:flex-end;">
@@ -758,7 +732,7 @@ input,select,textarea{font-family:inherit;font-size:inherit;}
       </div>
       <div class="form-row">
         <div class="form-group"><label class="form-label">Jumlah (pcs)</label><input class="form-control" type="number" id="salesQty" placeholder="1" min="1"></div>
-        <div class="form-group"><label class="form-label">Harga Jual (Rp)</label><input class="form-control" type="number" id="salesPrice" placeholder="549000"></div>
+        <div class="form-group"><label class="form-label">Harga Jual (Rp)</label><input class="form-control" type="number" id="salesPrice" placeholder="369000"></div>
       </div>
       <div class="form-row">
         <div class="form-group"><label class="form-label">No. Resi</label><input class="form-control" type="text" id="salesResi" placeholder="JNE-XXXXXX"></div>
@@ -782,7 +756,7 @@ input,select,textarea{font-family:inherit;font-size:inherit;}
     <nav class="nav">
       <div class="nav-section">Overview</div>
       <div class="nav-item active" onclick="showPage('dashboard',this)"><i class="ti ti-dashboard"></i> Dashboard</div>
-      <div class="nav-item" onclick="showPage('ioq',this)"><i class="ti ti-calculator"></i> IOQ & Produksi<span class="nav-badge">NEW</span></div>
+      <div class="nav-item" onclick="showPage('ioq',this)"><i class="ti ti-calculator"></i> EOQ & Produksi<span class="nav-badge">NEW</span></div>
 
       <div class="nav-section">Operasional</div>
       <div class="nav-item" onclick="showPage('inventory',this)"><i class="ti ti-packages"></i> Inventori Lengkap<span class="nav-badge red" id="nav-low-badge">3</span></div>
@@ -813,7 +787,7 @@ input,select,textarea{font-family:inherit;font-size:inherit;}
       <div class="topbar-right">
         <div class="search-box"><i class="ti ti-search" style="font-size:13px;color:var(--muted);"></i><input type="text" placeholder="Cari produk, SKU…"></div>
         <button class="btn-icon" title="Notifikasi"><i class="ti ti-bell" style="font-size:15px;"></i><span class="notif-dot"></span></button>
-        <button class="btn-icon" title="Settings IOQ" onclick="openModal('modalIOQSettings')"><i class="ti ti-settings" style="font-size:15px;"></i></button>
+        <button class="btn-icon" title="Settings EOQ" onclick="openModal('modalIOQSettings')"><i class="ti ti-settings" style="font-size:15px;"></i></button>
         <div class="date-badge" id="currentDate"></div>
       </div>
     </div>
@@ -843,10 +817,10 @@ input,select,textarea{font-family:inherit;font-size:inherit;}
             <div class="kpi-label"><i class="ti ti-currency-dollar"></i> Revenue (Juni)</div>
             <div class="kpi-value">102,1Jt</div>
             <div class="kpi-change up"><i class="ti ti-trending-up"></i> +12% MoM</div>
-            <div class="kpi-sub">186 × Rp549.000</div>
+            <div class="kpi-sub">186 × Rp369.000</div>
           </div>
           <div class="kpi-card blue">
-            <div class="kpi-label"><i class="ti ti-calculator"></i> IOQ Bulan Ini</div>
+            <div class="kpi-label"><i class="ti ti-calculator"></i> EOQ Bulan Ini</div>
             <div class="kpi-value" id="kpi-ioq-dash">--</div>
             <div class="kpi-change" id="kpi-ioq-dash-sub">Menghitung...</div>
             <div class="kpi-sub">rekomendasi order</div>
@@ -865,10 +839,10 @@ input,select,textarea{font-family:inherit;font-size:inherit;}
           </div>
         </div>
 
-        <!-- IOQ Alert Banner -->
+        <!-- EOQ Alert Banner -->
         <div id="ioq-alert-banner" style="display:none;" class="alert-box alert-warn" style="margin-bottom:14px;">
           <i class="ti ti-alert-triangle"></i>
-          <div><b>IOQ Alert:</b> <span id="ioq-alert-text"></span> <a href="#" onclick="showPage('ioq',document.querySelector('.nav-item:nth-child(2)'));return false;" style="color:var(--warn);font-weight:600;">→ Lihat IOQ</a></div>
+          <div><b>EOQ Alert:</b> <span id="ioq-alert-text"></span> <a href="#" onclick="showPage('ioq',document.querySelector('.nav-item:nth-child(2)'));return false;" style="color:var(--warn);font-weight:600;">→ Lihat EOQ</a></div>
         </div>
 
         <div style="display:grid;grid-template-columns:2fr 1fr;gap:14px;margin-bottom:14px;">
@@ -904,7 +878,7 @@ input,select,textarea{font-family:inherit;font-size:inherit;}
             <div class="activity-list" id="activityList">
               <div class="activity-item"><div class="activity-dot green"></div><div class="activity-body"><div class="activity-text">Inbound 50 unit Kemeja Navy dari CV Mitra Tekstil</div><div class="activity-time">5 menit lalu · Gudang A</div></div></div>
               <div class="activity-item"><div class="activity-dot maroon"></div><div class="activity-body"><div class="activity-text">Penjualan 3x STR-KMJ-CRM-M via Shopee — Resi JNE123456</div><div class="activity-time">22 menit lalu · Shopee</div></div></div>
-              <div class="activity-item"><div class="activity-dot gold"></div><div class="activity-body"><div class="activity-text">IOQ dihitung ulang: rekomendasi order 148 unit bulan ini</div><div class="activity-time">1 jam lalu · Sistem</div></div></div>
+              <div class="activity-item"><div class="activity-dot gold"></div><div class="activity-body"><div class="activity-text">EOQ dihitung ulang: rekomendasi order 148 unit bulan ini</div><div class="activity-time">1 jam lalu · Sistem</div></div></div>
               <div class="activity-item"><div class="activity-dot blue"></div><div class="activity-body"><div class="activity-text">Stok Olive size M mencapai level kritis (0 unit)</div><div class="activity-time">3 jam lalu · Alert</div></div></div>
               <div class="activity-item"><div class="activity-dot maroon"></div><div class="activity-body"><div class="activity-text">PO-2026-022 dikirim ke PT Konveksi Prima — 200 unit</div><div class="activity-time">Kemarin · Pembelian</div></div></div>
             </div>
@@ -912,29 +886,33 @@ input,select,textarea{font-family:inherit;font-size:inherit;}
         </div>
       </div>
 
-      <!-- ══════════ IOQ & PRODUKSI ══════════ -->
+      <!-- ══════════ EOQ & PRODUKSI ══════════ -->
       <div class="page" id="page-ioq">
         <div class="section-header">
-          <div class="section-title">IOQ & Perencanaan Produksi</div>
-          <div class="section-sub">Ideal Order Quantity dinamis berbasis EOQ — 3 tahun, detail per bulan</div>
+          <div class="section-title">EOQ & Perencanaan Produksi</div>
+          <div class="section-sub">Economic Order Quantity — sinkron dengan Cost Budgeting STRAIT&CO (Google Sheets)</div>
         </div>
 
-        <!-- IOQ Config Card -->
+        <!-- EOQ Config Card -->
         <div class="ioq-highlight">
           <div class="ioq-badge"><i class="ti ti-calculator"></i> Economic Order Quantity (EOQ)</div>
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px;">
             <div>
-              <div style="font-family:'Playfair Display',serif;font-size:18px;font-weight:700;">IOQ Dinamis STRAIT&CO</div>
-              <div style="font-size:11.5px;color:rgba(255,255,255,0.55);margin-top:2px;">Formula: √(2 × D × S / H) + Safety Stock · Diperbarui otomatis saat demand berubah</div>
+              <div style="font-family:'Playfair Display',serif;font-size:18px;font-weight:700;">EOQ STRAIT&CO</div>
+              <div style="font-size:11.5px;color:rgba(255,255,255,0.55);margin-top:2px;">Formula: √(2 × D × S / H) · Data dari sheet "EOQ" & "Y1/Y2/Y3 Revised"</div>
             </div>
-            <button class="btn btn-gold btn-sm" onclick="openModal('modalIOQSettings')"><i class="ti ti-settings"></i> Edit Parameter</button>
+            <div style="display:flex;gap:7px;flex-wrap:wrap;">
+              <button class="btn btn-secondary btn-sm" onclick="syncFromSheets()"><i class="ti ti-refresh"></i> Sync Sekarang</button>
+              <button class="btn btn-gold btn-sm" onclick="openModal('modalIOQSettings')"><i class="ti ti-settings"></i> Edit Parameter</button>
+            </div>
           </div>
+          <div id="eoq-sync-status" style="font-size:10.5px;color:rgba(255,255,255,0.65);margin-bottom:10px;"><i class="ti ti-loader"></i> Memuat data cadangan (xlsx)...</div>
           <div class="ioq-grid" id="ioq-summary-grid">
             <!-- Populated by JS -->
           </div>
         </div>
 
-        <!-- IOQ Alert -->
+        <!-- EOQ Alert -->
         <div id="ioq-main-alert" class="alert-box alert-warn" style="margin-bottom:14px;display:none;">
           <i class="ti ti-alert-triangle"></i><span id="ioq-main-alert-text"></span>
         </div>
@@ -942,8 +920,8 @@ input,select,textarea{font-family:inherit;font-size:inherit;}
         <!-- Turnover -->
         <div class="widget" style="margin-bottom:14px;">
           <div class="widget-header">
-            <div class="widget-title"><i class="ti ti-refresh"></i> Inventory Turnover & BM Produksi</div>
-            <span class="status-pill pill-blue">Diperbarui otomatis</span>
+            <div class="widget-title"><i class="ti ti-refresh"></i> Inventory Turnover & Ringkasan 3 Tahun</div>
+            <span class="status-pill pill-blue">Sinkron Google Sheets</span>
           </div>
           <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;" id="turnover-grid"></div>
         </div>
@@ -998,7 +976,7 @@ input,select,textarea{font-family:inherit;font-size:inherit;}
           <div class="widget" style="padding:0;">
             <div class="table-wrap" style="margin:0;padding:0;">
               <table class="data-table" id="inventoryFGTable">
-                <thead><tr><th>SKU</th><th>Produk</th><th>Warna</th><th>Size</th><th>Stok</th><th>Reorder Pt.</th><th>IOQ Rec.</th><th>Status</th><th>Update</th><th>Aksi</th></tr></thead>
+                <thead><tr><th>SKU</th><th>Produk</th><th>Warna</th><th>Size</th><th>Stok</th><th>Reorder Pt.</th><th>EOQ Rec.</th><th>Status</th><th>Update</th><th>Aksi</th></tr></thead>
                 <tbody id="inventoryFGBody"></tbody>
               </table>
             </div>
@@ -1114,7 +1092,7 @@ input,select,textarea{font-family:inherit;font-size:inherit;}
               <div class="form-group"><label class="form-label">Jumlah</label><input class="form-control" type="number" id="ob-qty" placeholder="1" min="1"></div>
             </div>
             <div class="form-row">
-              <div class="form-group"><label class="form-label">Harga Jual (Rp)</label><input class="form-control" type="number" id="ob-price" placeholder="549000"></div>
+              <div class="form-group"><label class="form-label">Harga Jual (Rp)</label><input class="form-control" type="number" id="ob-price" placeholder="369000"></div>
               <div class="form-group"><label class="form-label">No. Resi</label><input class="form-control" type="text" id="ob-resi"></div>
             </div>
             <div class="form-group"><label class="form-label">Customer</label><input class="form-control" type="text" id="ob-customer"></div>
@@ -1141,9 +1119,9 @@ input,select,textarea{font-family:inherit;font-size:inherit;}
             <table class="data-table">
               <thead><tr><th>Tanggal</th><th>SKU</th><th>Qty</th><th>Channel</th><th>Revenue</th><th>Resi</th><th>Customer</th><th>Status</th></tr></thead>
               <tbody id="salesTableBody">
-                <tr><td>14/06/2026</td><td><span class="sku-tag">STR-KMJ-NAV-M</span></td><td>2</td><td><span class="status-pill pill-maroon">Shopee</span></td><td>Rp1.098.000</td><td>JNE221344</td><td>Fariz R.</td><td><span class="status-pill pill-success">Terkirim</span></td></tr>
-                <tr><td>14/06/2026</td><td><span class="sku-tag">STR-KMJ-CRM-M</span></td><td>1</td><td><span class="status-pill pill-blue">Tokopedia</span></td><td>Rp549.000</td><td>SiCepat98234</td><td>Luthfi A.</td><td><span class="status-pill pill-warn">Dikirim</span></td></tr>
-                <tr><td>13/06/2026</td><td><span class="sku-tag">STR-KMJ-BLK-L</span></td><td>3</td><td><span class="status-pill pill-maroon">Shopee</span></td><td>Rp1.647.000</td><td>JNE219944</td><td>Rizka D.</td><td><span class="status-pill pill-success">Terkirim</span></td></tr>
+                <tr><td>14/06/2026</td><td><span class="sku-tag">STR-KMJ-NAV-M</span></td><td>2</td><td><span class="status-pill pill-maroon">Shopee</span></td><td>Rp738.000</td><td>JNE221344</td><td>Fariz R.</td><td><span class="status-pill pill-success">Terkirim</span></td></tr>
+                <tr><td>14/06/2026</td><td><span class="sku-tag">STR-KMJ-CRM-M</span></td><td>1</td><td><span class="status-pill pill-blue">Tokopedia</span></td><td>Rp369.000</td><td>SiCepat98234</td><td>Luthfi A.</td><td><span class="status-pill pill-warn">Dikirim</span></td></tr>
+                <tr><td>13/06/2026</td><td><span class="sku-tag">STR-KMJ-BLK-L</span></td><td>3</td><td><span class="status-pill pill-maroon">Shopee</span></td><td>Rp1.107.000</td><td>JNE219944</td><td>Rizka D.</td><td><span class="status-pill pill-success">Terkirim</span></td></tr>
               </tbody>
             </table>
           </div>
@@ -1249,39 +1227,39 @@ input,select,textarea{font-family:inherit;font-size:inherit;}
       </div>
 
       <!-- ══════════ FINANCE ══════════ -->
-      <!-- ══════════ FINANCE ══════════ -->
-<div class="page" id="page-finance">
-  <div class="section-header">
-    <div class="section-title">Proyeksi Keuangan</div>
-    <div class="section-sub">Revenue, HPP, Margin — 3 tahun detail | Klik nilai untuk edit</div>
-  </div>
+      <div class="page" id="page-finance">
+        <div class="section-header">
+          <div class="section-title">Proyeksi Keuangan</div>
+          <div class="section-sub">Revenue, COGS, CM1/2/3, OPEX, Net Profit — 3 tahun, sinkron dengan Cost Budgeting STRAIT&CO (Google Sheets)</div>
+        </div>
 
-  <div style="display:flex;gap:8px;margin-bottom:14px;align-items:center;">
-    <button class="btn btn-primary btn-sm" onclick="saveFinanceData()"><i class="ti ti-device-floppy"></i> Simpan Perubahan</button>
-    <button class="btn btn-secondary btn-sm" onclick="resetFinanceData()"><i class="ti ti-refresh"></i> Reset Default</button>
-    <span style="font-size:11px;color:var(--muted);" id="finance-save-status"></span>
-  </div>
+        <div style="display:flex;gap:8px;margin-bottom:14px;align-items:center;flex-wrap:wrap;">
+          <button class="btn btn-secondary btn-sm" onclick="syncFromSheets()"><i class="ti ti-refresh"></i> Sync dari Google Sheets</button>
+          <button class="btn btn-primary btn-sm" onclick="saveFinanceData()"><i class="ti ti-device-floppy"></i> Simpan Cache Lokal</button>
+          <button class="btn btn-secondary btn-sm" onclick="resetFinanceData()"><i class="ti ti-refresh"></i> Reset ke Data xlsx</button>
+          <span style="font-size:11px;color:var(--muted);" id="finance-sync-status">Memuat data cadangan (xlsx)...</span>
+        </div>
 
-  <div class="kpi-grid" id="finance-kpi-grid"></div>
+        <div class="kpi-grid" id="finance-kpi-grid"></div>
 
-  <div class="grid-2">
-    <div class="widget"><div class="widget-header"><div class="widget-title"><i class="ti ti-chart-bar"></i> Revenue vs HPP 3 Tahun</div></div><canvas id="chartRevenue" height="190"></canvas></div>
-    <div class="widget"><div class="widget-header"><div class="widget-title"><i class="ti ti-chart-line"></i> Net Profit Trend</div></div><canvas id="chartProfit" height="190"></canvas></div>
-  </div>
+        <div class="grid-2">
+          <div class="widget"><div class="widget-header"><div class="widget-title"><i class="ti ti-chart-bar"></i> Revenue vs COGS 3 Tahun</div></div><canvas id="chartRevenue" height="190"></canvas></div>
+          <div class="widget"><div class="widget-header"><div class="widget-title"><i class="ti ti-chart-line"></i> Net Profit Trend</div></div><canvas id="chartProfit" height="190"></canvas></div>
+        </div>
 
-  <div class="widget">
-    <div class="widget-header">
-      <div class="widget-title"><i class="ti ti-table"></i> Detail P&L 3 Tahun</div>
-      <span style="font-size:11px;color:var(--muted);"><i class="ti ti-edit"></i> Klik sel biru untuk edit</span>
-    </div>
-    <div class="table-wrap">
-      <table class="data-table" id="finance-pl-table">
-        <thead><tr><th>Metrik</th><th>Tahun 1</th><th>Tahun 2</th><th>Tahun 3</th></tr></thead>
-        <tbody id="finance-pl-body"></tbody>
-      </table>
-    </div>
-  </div>
-</div>
+        <div class="widget">
+          <div class="widget-header">
+            <div class="widget-title"><i class="ti ti-table"></i> Detail P&L 3 Tahun (struktur sama seperti sheet Y1/Y2/Y3 Revised)</div>
+            <span style="font-size:11px;color:var(--muted);"><i class="ti ti-lock"></i> Read-only — sumber: Google Sheets</span>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table" id="finance-pl-table">
+              <thead><tr><th>Metrik</th><th>Tahun 1</th><th>Tahun 2</th><th>Tahun 3</th></tr></thead>
+              <tbody id="finance-pl-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
       <!-- ══════════ VENDOR ══════════ -->
       <div class="page" id="page-vendor">
         <div class="section-header">
@@ -1369,294 +1347,190 @@ input,select,textarea{font-family:inherit;font-size:inherit;}
 
 <script>
 // ═══════════════════════════════════
-// CONFIG STATE (editable via modal)
+// GOOGLE SHEETS LIVE SYNC
+// Sheet: "Cost Budgeting STRAIT&CO" — harus tetap "Anyone with the link: Viewer"
 // ═══════════════════════════════════
+const SHEET_ID = '1yxoKUuBaz4ErhUzqMMJbkADm5jzeVsiM1wlDzqhb3bU';
+function sheetCSVUrl(tabName) {
+  return `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(tabName)}`;
+}
+function parseCSV(text) {
+  const rows = []; let row = [], field = '', inQuotes = false;
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    if (inQuotes) {
+      if (ch === '"') { if (text[i+1] === '"') { field += '"'; i++; } else inQuotes = false; }
+      else field += ch;
+    } else {
+      if (ch === '"') inQuotes = true;
+      else if (ch === ',') { row.push(field); field = ''; }
+      else if (ch === '\n') { row.push(field); rows.push(row); row = []; field = ''; }
+      else if (ch === '\r') { /* skip */ }
+      else field += ch;
+    }
+  }
+  if (field.length || row.length) { row.push(field); rows.push(row); }
+  return rows;
+}
+function numOnly(v) {
+  const n = parseInt(String(v == null ? '' : v).replace(/[^0-9]/g, ''), 10);
+  return isNaN(n) ? 0 : n;
+}
+async function fetchSheetRows(tabName) {
+  const res = await fetch(sheetCSVUrl(tabName));
+  if (!res.ok) throw new Error('Gagal fetch tab: ' + tabName);
+  return parseCSV(await res.text());
+}
+
+// ═══════════════════════════════════
+// EOQ & FINANCE DATA — default = angka asli dari Cost_Budgeting_STRAIT_CO.xlsx
+// (dipakai instan saat load, lalu ditimpa oleh syncFromSheets() kalau berhasil)
+// ═══════════════════════════════════
+const eoqTable = {
+  1: { D: 2400,  S: 500000, H: 9000,  eoq: 516,  freq: 5,  cycle: 73, safety: 217, rop: 217 },
+  2: { D: 5195,  S: 650000, H: 11000, eoq: 783,  freq: 7,  cycle: 52, safety: 350, rop: 350 },
+  3: { D: 11950, S: 900000, H: 14000, eoq: 1239, freq: 10, cycle: 36, safety: 600, rop: 600 }
+};
+const monthlyQtyTable = {
+  1: [120,140,160,180,190,200,210,220,230,240,250,260],
+  2: [280,300,325,350,380,410,440,470,500,540,580,620],
+  3: [650,700,760,820,880,940,1000,1080,1160,1240,1320,1400]
+};
+const MONTH_NAMES = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+
+const financeDefaults = {
+  hargaJual: 369000,
+  years: [
+    { units: 2400,  revenue: 885600000,   cogs: 538721550,  cm1: 346878450,  logistics: 79704000,  cm2: 267174450, marketing: 122544900, cm3: 144629550,  opex: 100150000, netProfit: 44479550 },
+    { units: 5195,  revenue: 1916955000,  cogs: 1165468050, cm1: 751486950,  logistics: 172156950, cm2: 579330000, marketing: 132417495, cm3: 446912505,  opex: 222900000, netProfit: 224012505 },
+    { units: 11950, revenue: 4409550000,  cogs: 2681301600, cm1: 1728248400, logistics: 396232200, cm2: 1332016200,marketing: 304102125, cm3: 1027914075, opex: 279000000, netProfit: 748914075 }
+  ]
+};
+let financeData = JSON.parse(localStorage.getItem('straitco_financeData') || 'null')
+  || JSON.parse(JSON.stringify(financeDefaults));
+
 const config = {
   hpp: 349000,
-  hargaJual: 549000,
-  orderingCost: 200000,
-  holdingPct: 2,       // % of HPP per month
-  dailyDemand: 7,      // baseline unit/day
-  safetyStock: 30,
-  leadTime: 14,        // days
-  growth2: 50,         // % growth Y1→Y2
-  growth3: 33          // % growth Y2→Y3
+  hargaJual: financeDefaults.hargaJual,
+  perYear: JSON.parse(JSON.stringify(eoqTable))
 };
+const savedConfig = localStorage.getItem('straitco_eoq_config');
+if (savedConfig) { try { Object.assign(config, JSON.parse(savedConfig)); } catch(e) {} }
 
-// Load dari localStorage jika ada
-const savedConfig = localStorage.getItem('straitco_ioq_config');
-if (savedConfig) {
+// ═══════════════════════════════════
+// SYNC FROM GOOGLE SHEETS (live)
+// ═══════════════════════════════════
+async function syncFromSheets() {
+  setSyncStatus('⏳ Sinkronisasi ke Google Sheets...', 'muted');
   try {
-    const parsed = JSON.parse(savedConfig);
-    Object.assign(config, parsed);
-  } catch(e) {}
-}
+    // 1) Sheet "EOQ"
+    const eoqRows = await fetchSheetRows('EOQ');
+    [1,2,3].forEach((y, i) => {
+      const col = 5 + i; // F,G,H
+      config.perYear[y] = {
+        D: numOnly(eoqRows[2][col]), S: numOnly(eoqRows[3][col]), H: numOnly(eoqRows[4][col]),
+        eoq: numOnly(eoqRows[5][col]), freq: numOnly(eoqRows[6][col]), cycle: numOnly(eoqRows[7][col]),
+        safety: numOnly(eoqRows[8][col]), rop: numOnly(eoqRows[9][col])
+      };
+    });
 
-// ═══════════════════════════════════
-// FINANCE DATA STATE
-// ═══════════════════════════════════
-const financeDefaults = {
-  hargaJual: 549000,
-  hpp: 349000,
-  units: [2400, 3600, 4800],
-  opex: [45000000, 45000000, 54000000]
-};
-let financeData = JSON.parse(localStorage.getItem('straitco_financeData') || 'null') || {
-  hargaJual: 549000,
-  hpp: 349000,
-  units: [2400, 3600, 4800],
-  opex: [45000000, 45000000, 54000000]
-};
+    // 2) Sheet "Y1/Y2/Y3 Revised"
+    for (const y of [1,2,3]) {
+      const rows = await fetchSheetRows(`Y${y} Revised`);
+      const qty = [];
+      for (let c = 5; c <= 16; c++) qty.push(numOnly(rows[6][c]));
+      monthlyQtyTable[y] = qty;
+      const price = numOnly(rows[7][5]);
+      if (price) config.hargaJual = price;
+      const sumRow = (r) => { let s = 0; for (let c = 5; c <= 16; c++) s += numOnly(rows[r][c]); return s; };
+      financeData.years[y-1] = {
+        units: qty.reduce((a,b) => a+b, 0),
+        revenue: sumRow(10), cogs: sumRow(35), cm1: sumRow(37),
+        logistics: sumRow(46), cm2: sumRow(48), marketing: sumRow(58), cm3: sumRow(60),
+        opex: sumRow(67), netProfit: sumRow(69)
+      };
+    }
+    financeData.hargaJual = config.hargaJual;
 
-function calcFinance() {
-  const { hargaJual, hpp, units, opex } = financeData;
-  return units.map((u, i) => {
-    const revenue = u * hargaJual;
-    const cogs = u * hpp;
-    const grossProfit = revenue - cogs;
-    const grossMargin = ((grossProfit / revenue) * 100).toFixed(1);
-    const netProfit = grossProfit - opex[i];
-    const bep = Math.ceil(opex[i] / (hargaJual - hpp));
-    const roi = ((netProfit / (cogs + opex[i])) * 100).toFixed(0);
-    return { units: u, revenue, cogs, grossProfit, grossMargin, opex: opex[i], netProfit, bep, roi };
-  });
-}
+    demandData = generateDemandData();
+    renderIOQSummary();
+    renderIOQYearTable(currentIOQYear);
+    if (document.getElementById('page-finance').classList.contains('active')) renderFinancePage();
 
-function renderFinancePage() {
-  const calc = calcFinance();
-  const fmt = n => 'Rp' + n.toLocaleString('id-ID');
-  const fmtM = n => n >= 1e9 ? (n/1e9).toFixed(2)+'M' : (n/1e6).toFixed(1)+'Jt';
-
-  // KPI cards (Tahun berjalan = index 0)
-  const c = calc[0];
-  document.getElementById('finance-kpi-grid').innerHTML = `
-    <div class="kpi-card maroon"><div class="kpi-label"><i class="ti ti-currency-dollar"></i> Revenue Bulan Ini</div><div class="kpi-value">${fmtM(c.revenue/12)}</div><div class="kpi-change up">+12% MoM</div><div class="kpi-sub">${Math.round(c.units/12)} unit/bln × ${fmt(financeData.hargaJual)}</div></div>
-    <div class="kpi-card gold"><div class="kpi-label"><i class="ti ti-receipt"></i> HPP (COGS)</div><div class="kpi-value">${fmtM(c.cogs/12)}</div><div class="kpi-change">${Math.round(c.units/12)} × ${fmt(financeData.hpp)}</div></div>
-    <div class="kpi-card green"><div class="kpi-label"><i class="ti ti-chart-pie"></i> Gross Margin</div><div class="kpi-value">${c.grossMargin}%</div><div class="kpi-change up">Margin ${fmt(financeData.hargaJual - financeData.hpp)}/unit</div></div>
-    <div class="kpi-card blue"><div class="kpi-label"><i class="ti ti-coin"></i> Net Profit/bln</div><div class="kpi-value">${fmtM(c.netProfit/12)}</div><div class="kpi-change up">setelah OPEX</div></div>
-    <div class="kpi-card warn"><div class="kpi-label"><i class="ti ti-target"></i> BEP Bulanan</div><div class="kpi-value">${c.bep} unit</div><div class="kpi-change">dari ${Math.round(c.units/12)} target/bln</div><div class="kpi-sub">Fixed cost ${fmtM(c.opex/12)}</div></div>
-    <div class="kpi-card maroon"><div class="kpi-label"><i class="ti ti-trending-up"></i> ROI Y1</div><div class="kpi-value">≈${c.roi}%</div><div class="kpi-change up">Modal ${fmtM(c.cogs + c.opex)}</div></div>
-  `;
-
-  // P&L Table
-  const roiColors = ['pill-maroon','pill-gold','pill-success'];
-  const rows = [
-    { label:'<b>Harga Jual/unit</b>', key:'hargaJual', type:'price', vals: [financeData.hargaJual, financeData.hargaJual, financeData.hargaJual] },
-    { label:'<b>HPP/unit</b>', key:'hpp', type:'price', vals: [financeData.hpp, financeData.hpp, financeData.hpp] },
-    { label:'<b>Unit Terjual</b>', key:'units', type:'units', vals: financeData.units },
-    { label:'<b>Revenue</b>', type:'readonly', vals: calc.map(c => fmt(c.revenue)) },
-    { label:'<b>HPP Total</b>', type:'readonly', vals: calc.map(c => fmt(c.cogs)) },
-    { label:'<b>Gross Margin</b>', type:'readonly', vals: calc.map(c => `<span class="status-pill pill-success">${c.grossMargin}%</span>`) },
-    { label:'<b>OPEX</b>', key:'opex', type:'opex', vals: financeData.opex },
-    { label:'<b>Net Profit</b>', type:'readonly', vals: calc.map((c,i) => `<span style="color:var(--success);font-weight:700;">${fmt(c.netProfit)}</span>`) },
-    { label:'<b>ROI</b>', type:'readonly', vals: calc.map((c,i) => `<span class="status-pill ${roiColors[i]}">~${c.roi}%</span>`) },
-  ];
-
-  document.getElementById('finance-pl-body').innerHTML = rows.map(row => {
-    const cells = [0,1,2].map(i => {
-      if (row.type === 'readonly') return `<td>${row.vals[i]}</td>`;
-      if (row.type === 'price') {
-        return `<td><input type="number" value="${row.vals[i]}" 
-          style="width:130px;background:#EBF5FB;border:1px solid #90CAF9;border-radius:6px;padding:4px 8px;font-size:12px;font-weight:600;color:var(--maroon);"
-          onchange="updateFinanceData('${row.key}', null, this.value)" 
-          oninput="updateFinanceData('${row.key}', null, this.value)"></td>`;
-      }
-      if (row.type === 'units') {
-        return `<td><input type="number" value="${row.vals[i]}" 
-          style="width:100px;background:#EBF5FB;border:1px solid #90CAF9;border-radius:6px;padding:4px 8px;font-size:12px;font-weight:600;color:var(--maroon);"
-          onchange="updateFinanceData('units', ${i}, this.value)"
-          oninput="updateFinanceData('units', ${i}, this.value)"></td>`;
-      }
-      if (row.type === 'opex') {
-        return `<td><input type="number" value="${row.vals[i]}" 
-          style="width:130px;background:#EBF5FB;border:1px solid #90CAF9;border-radius:6px;padding:4px 8px;font-size:12px;font-weight:600;color:var(--maroon);"
-          onchange="updateFinanceData('opex', ${i}, this.value)"
-          oninput="updateFinanceData('opex', ${i}, this.value)"></td>`;
-      }
-    }).join('');
-    return `<tr><td>${row.label}</td>${cells}</tr>`;
-  }).join('');
-
-  initFinanceCharts();
-}
-
-function updateFinanceData(key, idx, val) {
-  const n = parseFloat(val);
-  if (isNaN(n) || n < 0) return;
-  if (idx === null) {
-    financeData[key] = n;
-  } else {
-    financeData[key][idx] = n;
+    const ts = new Date().toLocaleTimeString('id-ID');
+    setSyncStatus(`<i class="ti ti-circle-check" style="color:var(--success);"></i> Sinkron dari Google Sheets — ${ts}`, 'ok');
+    toast('Data EOQ & Keuangan disinkronkan dari Google Sheets', 'success');
+  } catch (err) {
+    console.error(err);
+    setSyncStatus(`<i class="ti ti-alert-triangle" style="color:var(--warn);"></i> Gagal sync (cek koneksi / sharing sheet) — pakai data cadangan xlsx`, 'warn');
+    toast('Gagal sync Google Sheets — memakai data cadangan xlsx', 'warn');
   }
-  // Re-render hanya baris readonly (recalc)
-  const calc = calcFinance();
-  const fmt = n => 'Rp' + n.toLocaleString('id-ID');
-  const roiColors = ['pill-maroon','pill-gold','pill-success'];
-  const rows = document.getElementById('finance-pl-body').querySelectorAll('tr');
-  const readonlyMap = [
-    { rowIdx:3, vals: calc.map(c => fmt(c.revenue)) },
-    { rowIdx:4, vals: calc.map(c => fmt(c.cogs)) },
-    { rowIdx:5, vals: calc.map(c => `<span class="status-pill pill-success">${c.grossMargin}%</span>`) },
-    { rowIdx:7, vals: calc.map(c => `<span style="color:var(--success);font-weight:700;">${fmt(c.netProfit)}</span>`) },
-    { rowIdx:8, vals: calc.map((c,i) => `<span class="status-pill ${roiColors[i]}">~${c.roi}%</span>`) },
-  ];
-  readonlyMap.forEach(({ rowIdx, vals }) => {
-    const tds = rows[rowIdx].querySelectorAll('td');
-    vals.forEach((v, i) => { tds[i+1].innerHTML = v; });
-  });
-  // Update KPI
-  const c = calc[0];
-  const fmtM = n => n >= 1e9 ? (n/1e9).toFixed(2)+'M' : (n/1e6).toFixed(1)+'Jt';
-  document.getElementById('finance-kpi-grid').innerHTML = `
-    <div class="kpi-card maroon"><div class="kpi-label"><i class="ti ti-currency-dollar"></i> Revenue Bulan Ini</div><div class="kpi-value">${fmtM(c.revenue/12)}</div><div class="kpi-change up">+12% MoM</div><div class="kpi-sub">${Math.round(c.units/12)} unit/bln × ${fmt(financeData.hargaJual)}</div></div>
-    <div class="kpi-card gold"><div class="kpi-label"><i class="ti ti-receipt"></i> HPP (COGS)</div><div class="kpi-value">${fmtM(c.cogs/12)}</div><div class="kpi-change">${Math.round(c.units/12)} × ${fmt(financeData.hpp)}</div></div>
-    <div class="kpi-card green"><div class="kpi-label"><i class="ti ti-chart-pie"></i> Gross Margin</div><div class="kpi-value">${c.grossMargin}%</div><div class="kpi-change up">Margin ${fmt(financeData.hargaJual - financeData.hpp)}/unit</div></div>
-    <div class="kpi-card blue"><div class="kpi-label"><i class="ti ti-coin"></i> Net Profit/bln</div><div class="kpi-value">${fmtM(c.netProfit/12)}</div><div class="kpi-change up">setelah OPEX</div></div>
-    <div class="kpi-card warn"><div class="kpi-label"><i class="ti ti-target"></i> BEP Bulanan</div><div class="kpi-value">${c.bep} unit</div><div class="kpi-change">dari ${Math.round(c.units/12)} target/bln</div><div class="kpi-sub">Fixed cost ${fmtM(c.opex/12)}</div></div>
-    <div class="kpi-card maroon"><div class="kpi-label"><i class="ti ti-trending-up"></i> ROI Y1</div><div class="kpi-value">≈${c.roi}%</div><div class="kpi-change up">Modal ${fmtM(c.cogs + c.opex)}</div></div>
-  `;
-  document.getElementById('finance-save-status').textContent = '● Belum disimpan';
-  document.getElementById('finance-save-status').style.color = 'var(--warn)';
-  initFinanceCharts();
 }
-
-function saveFinanceData() {
-  localStorage.setItem('straitco_financeData', JSON.stringify(financeData));
-  document.getElementById('finance-save-status').textContent = '✓ Tersimpan';
-  document.getElementById('finance-save-status').style.color = 'var(--success)';
-  toast('Proyeksi keuangan disimpan', 'success');
-}
-
-function resetFinanceData() {
-  if (!confirm('Reset ke data default?')) return;
-  financeData = { ...financeDefaults, units: [...financeDefaults.units], opex: [...financeDefaults.opex] };
-  localStorage.removeItem('straitco_financeData');
-  renderFinancePage();
-  toast('Data direset ke default', 'warn');
+function setSyncStatus(html, tone) {
+  const color = tone === 'ok' ? 'rgba(255,255,255,0.85)' : tone === 'warn' ? '#FFD54F' : 'rgba(255,255,255,0.65)';
+  const eoqEl = document.getElementById('eoq-sync-status');
+  if (eoqEl) { eoqEl.innerHTML = html; eoqEl.style.color = color; }
+  const finEl = document.getElementById('finance-sync-status');
+  if (finEl) { finEl.innerHTML = html; finEl.style.color = tone === 'warn' ? 'var(--warn)' : 'var(--success)'; }
 }
 
 // ═══════════════════════════════════
-// IOQ CALCULATION ENGINE
+// EOQ ENGINE
 // ═══════════════════════════════════
-function calcEOQ(annualDemand) {
-  const D = annualDemand;
-  const S = config.orderingCost;
-  const H = (config.holdingPct / 100) * config.hpp * 12; // annual holding cost per unit
-  return Math.round(Math.sqrt((2 * D * S) / H));
+function calcEOQForYear(y) {
+  const c = config.perYear[y];
+  return Math.round(Math.sqrt((2 * c.D * c.S) / c.H));
 }
-
-function calcMonthlyIOQ(monthDemand) {
-  // Monthly EOQ variant: uses monthly demand scaled to annual
-  const annualD = monthDemand * 12;
-  const eoq = calcEOQ(annualD);
-  const safetyBuffer = Math.round(config.safetyStock + (config.leadTime / 30) * monthDemand);
-  // Reorder Point
-  const rop = Math.round((monthDemand / 30) * config.leadTime + config.safetyStock);
-  // Times to order per year
-  const ordersPerYear = Math.round(annualD / eoq);
-  return { eoq, safetyBuffer, rop, totalIOQ: eoq + safetyBuffer, ordersPerYear };
-}
-
-// Generate 3 years monthly demand
 function generateDemandData() {
   const years = [];
-  // Y1: starts at 150/mo, grows to 250/mo (seasonal pattern)
-  const y1Base = [150,160,170,180,190,200,195,185,175,200,230,250];
-  // Y2: Y1 × (1 + growth2/100)
-  const y2Factor = 1 + config.growth2 / 100;
-  // Y3: Y2 × (1 + growth3/100)
-  const y3Factor = 1 + config.growth3 / 100;
   for (let y = 1; y <= 3; y++) {
-    const months = [];
-    for (let m = 0; m < 12; m++) {
-      let demand;
-      if (y === 1) demand = y1Base[m];
-      else if (y === 2) demand = Math.round(y1Base[m] * y2Factor);
-      else demand = Math.round(y1Base[m] * y2Factor * y3Factor);
-      // Add slight random variance ±10% to simulate prediction vs actual
-      const actualVariance = 1 + (Math.random() * 0.2 - 0.1);
-      const actualDemand = Math.round(demand * actualVariance);
-      const ioq = calcMonthlyIOQ(demand);
-      const actualIOQ = calcMonthlyIOQ(actualDemand);
-      months.push({
-        month: ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'][m],
-        demandPrediksi: demand,
-        demandAktual: actualDemand,
-        ioqPrediksi: ioq.totalIOQ,
-        ioqAktual: actualIOQ.totalIOQ,
-        eoq: ioq.eoq,
-        safetyStock: ioq.safetyBuffer,
-        rop: ioq.rop,
-        ordersPerYear: ioq.ordersPerYear,
-        revenue: actualDemand * config.hargaJual,
-        hpp: actualDemand * config.hpp,
-        profit: actualDemand * (config.hargaJual - config.hpp),
-        turnover: parseFloat((actualDemand / ((ioq.totalIOQ / 2) || 1)).toFixed(2))
-      });
-    }
+    const qty = monthlyQtyTable[y];
+    const c = config.perYear[y];
+    const eoqAnnual = c.eoq || calcEOQForYear(y);
+    const months = qty.map((q, i) => ({
+      month: MONTH_NAMES[i],
+      demandAktual: q,
+      eoq: eoqAnnual,
+      safetyStock: c.safety,
+      rop: c.rop,
+      ordersPerYear: c.freq,
+      revenue: q * config.hargaJual,
+      profit: q * (config.hargaJual - config.hpp),
+      turnover: parseFloat((q / (eoqAnnual / 2 || 1)).toFixed(2))
+    }));
     years.push(months);
   }
   return years;
 }
-
 let demandData = generateDemandData();
 let currentIOQYear = 1;
 
 function renderIOQSummary() {
-  const cur = demandData[0]; // Y1 current (Jun = index 5)
-  const jun = cur[5];
-  const annualY1 = cur.reduce((s,m) => s + m.demandAktual, 0);
-  const eoqY1 = calcEOQ(annualY1);
-  const avgTurnover = (cur.reduce((s,m) => s + m.turnover, 0) / 12).toFixed(2);
-
-  // Summary grid
+  const y1 = demandData[0];
+  const jun = y1[5];
+  const c1 = config.perYear[1];
   document.getElementById('ioq-summary-grid').innerHTML = `
-    <div class="ioq-item">
-      <div class="ioq-item-label">IOQ Bulan Ini (Jun)</div>
-      <div class="ioq-item-val">${jun.ioqAktual}</div>
-      <div class="ioq-item-sub">unit rekomendasi order</div>
-    </div>
-    <div class="ioq-item">
-      <div class="ioq-item-label">EOQ Tahunan Y1</div>
-      <div class="ioq-item-val">${eoqY1}</div>
-      <div class="ioq-item-sub">unit per order optimal</div>
-    </div>
-    <div class="ioq-item">
-      <div class="ioq-item-label">Reorder Point</div>
-      <div class="ioq-item-val">${jun.rop}</div>
-      <div class="ioq-item-sub">unit trigger restock</div>
-    </div>
-    <div class="ioq-item">
-      <div class="ioq-item-label">Safety Stock</div>
-      <div class="ioq-item-val">${jun.safetyStock}</div>
-      <div class="ioq-item-sub">unit buffer</div>
-    </div>
-    <div class="ioq-item">
-      <div class="ioq-item-label">Avg Turnover Y1</div>
-      <div class="ioq-item-val">${avgTurnover}x</div>
-      <div class="ioq-item-sub">per bulan</div>
-    </div>
-    <div class="ioq-item">
-      <div class="ioq-item-label">Order/Tahun Optimal</div>
-      <div class="ioq-item-val">${jun.ordersPerYear}</div>
-      <div class="ioq-item-sub">kali pesan per tahun</div>
-    </div>
+    <div class="ioq-item"><div class="ioq-item-label">EOQ Bulan Ini (Jun, Y1)</div><div class="ioq-item-val">${jun.eoq}</div><div class="ioq-item-sub">unit per order optimal</div></div>
+    <div class="ioq-item"><div class="ioq-item-label">Annual Demand (D) Y1</div><div class="ioq-item-val">${c1.D.toLocaleString('id-ID')}</div><div class="ioq-item-sub">pcs / tahun</div></div>
+    <div class="ioq-item"><div class="ioq-item-label">Reorder Point</div><div class="ioq-item-val">${jun.rop}</div><div class="ioq-item-sub">unit trigger restock</div></div>
+    <div class="ioq-item"><div class="ioq-item-label">Safety Stock</div><div class="ioq-item-val">${jun.safetyStock}</div><div class="ioq-item-sub">unit buffer</div></div>
+    <div class="ioq-item"><div class="ioq-item-label">Order Frequency</div><div class="ioq-item-val">${jun.ordersPerYear}x</div><div class="ioq-item-sub">per tahun (Y1)</div></div>
+    <div class="ioq-item"><div class="ioq-item-label">Order Cycle</div><div class="ioq-item-val">${c1.cycle} hr</div><div class="ioq-item-sub">jarak antar order (Y1)</div></div>
   `;
 
-  // Turnover grid
-  document.getElementById('turnover-grid').innerHTML = ['Y1','Y2','Y3'].map((y,yi) => {
-    const yData = demandData[yi];
-    const totalDemand = yData.reduce((s,m) => s + m.demandAktual, 0);
-    const avgStock = yData.reduce((s,m) => s + m.ioqAktual, 0) / 12 / 2;
-    const turnover = (totalDemand / avgStock).toFixed(1);
+  document.getElementById('turnover-grid').innerHTML = [1,2,3].map(y => {
+    const c = config.perYear[y];
+    const yData = demandData[y-1];
     const totalRevenue = yData.reduce((s,m) => s + m.revenue, 0);
     const totalProfit = yData.reduce((s,m) => s + m.profit, 0);
-    const ioqY = calcEOQ(totalDemand);
+    const turnover = (c.D / (c.eoq / 2)).toFixed(1);
     return `<div style="padding:12px;background:var(--bg);border-radius:var(--radius-sm);border:1px solid var(--border);">
-      <div style="font-size:10.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">Tahun ${yi+1}</div>
+      <div style="font-size:10.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">Tahun ${y}</div>
       <div style="display:flex;flex-direction:column;gap:5px;">
-        <div style="display:flex;justify-content:space-between;font-size:11.5px;"><span style="color:var(--muted);">EOQ Optimal</span><b>${ioqY} unit</b></div>
-        <div style="display:flex;justify-content:space-between;font-size:11.5px;"><span style="color:var(--muted);">Total Demand</span><b>${totalDemand.toLocaleString('id-ID')} unit</b></div>
+        <div style="display:flex;justify-content:space-between;font-size:11.5px;"><span style="color:var(--muted);">EOQ</span><b>${c.eoq} unit</b></div>
+        <div style="display:flex;justify-content:space-between;font-size:11.5px;"><span style="color:var(--muted);">Annual Demand</span><b>${c.D.toLocaleString('id-ID')} unit</b></div>
+        <div style="display:flex;justify-content:space-between;font-size:11.5px;"><span style="color:var(--muted);">Order Freq / Cycle</span><b>${c.freq}x — ${c.cycle} hr</b></div>
+        <div style="display:flex;justify-content:space-between;font-size:11.5px;"><span style="color:var(--muted);">Safety Stock / ROP</span><b>${c.safety} / ${c.rop}</b></div>
         <div style="display:flex;justify-content:space-between;font-size:11.5px;"><span style="color:var(--muted);">Inventory Turnover</span><b style="color:var(--maroon);">${turnover}x/thn</b></div>
         <div style="display:flex;justify-content:space-between;font-size:11.5px;"><span style="color:var(--muted);">Revenue</span><b>Rp${(totalRevenue/1e9).toFixed(2)}M</b></div>
         <div style="display:flex;justify-content:space-between;font-size:11.5px;"><span style="color:var(--muted);">Gross Profit</span><b style="color:var(--success);">Rp${(totalProfit/1e9).toFixed(2)}M</b></div>
@@ -1664,24 +1538,21 @@ function renderIOQSummary() {
     </div>`;
   }).join('');
 
-  // Dashboard KPI
   const dashEl = document.getElementById('kpi-ioq-dash');
   const dashSub = document.getElementById('kpi-ioq-dash-sub');
-  if (dashEl) { dashEl.textContent = jun.ioqAktual; }
-  if (dashSub) {
-    const diff = jun.ioqAktual - jun.ioqPrediksi;
-    const sign = diff >= 0 ? '+' : '';
-    dashSub.innerHTML = `<span class="${diff >= 0 ? 'up' : 'down'}">${sign}${diff} dari prediksi</span>`;
-  }
+  if (dashEl) dashEl.textContent = jun.eoq;
+  if (dashSub) dashSub.innerHTML = `<span class="up">EOQ Tahun 1 — ${jun.ordersPerYear}x order/thn</span>`;
 
-  // Alert check
   const stockEl = document.getElementById('kpi-stock');
   const currentStock = stockEl ? parseInt(stockEl.textContent) : 247;
   if (currentStock <= jun.rop) {
     document.getElementById('ioq-alert-banner').style.display = 'flex';
-    document.getElementById('ioq-alert-text').textContent = `Stok ${currentStock} unit ≤ Reorder Point ${jun.rop} unit. Segera buat PO untuk ${jun.ioqAktual} unit.`;
+    document.getElementById('ioq-alert-text').textContent = `Stok ${currentStock} unit ≤ Reorder Point ${jun.rop} unit. Segera buat PO untuk ${jun.eoq} unit (EOQ).`;
     document.getElementById('ioq-main-alert').style.display = 'flex';
-    document.getElementById('ioq-main-alert-text').textContent = `⚠️ Stok saat ini (${currentStock} unit) sudah di bawah ROP (${jun.rop} unit). Rekomendasi: Order ${jun.ioqAktual} unit sekarang.`;
+    document.getElementById('ioq-main-alert-text').textContent = `⚠️ Stok saat ini (${currentStock} unit) di bawah ROP (${jun.rop} unit). Rekomendasi: Order ${jun.eoq} unit (EOQ) sekarang.`;
+  } else {
+    document.getElementById('ioq-alert-banner').style.display = 'none';
+    document.getElementById('ioq-main-alert').style.display = 'none';
   }
 }
 
@@ -1694,106 +1565,51 @@ function switchIOQYear(year, el) {
 
 function renderIOQYearTable(year) {
   const data = demandData[year - 1];
-  const totalDemand = data.reduce((s,m) => s + m.demandAktual, 0);
+  const c = config.perYear[year];
   const totalRevenue = data.reduce((s,m) => s + m.revenue, 0);
   const totalProfit = data.reduce((s,m) => s + m.profit, 0);
-  const eoqAnnual = calcEOQ(totalDemand);
 
   let html = `
     <div class="widget" style="margin-bottom:14px;">
       <div class="widget-header">
-        <div class="widget-title"><i class="ti ti-table"></i> IOQ Detail Bulanan — Tahun ${year}</div>
-        <div style="display:flex;gap:7px;">
-          <span class="status-pill pill-blue">EOQ Tahunan: <b>${eoqAnnual} unit</b></span>
-          <span class="status-pill pill-maroon">Total Demand: <b>${totalDemand.toLocaleString('id-ID')} unit</b></span>
+        <div class="widget-title"><i class="ti ti-table"></i> EOQ Detail Bulanan — Tahun ${year}</div>
+        <div style="display:flex;gap:7px;flex-wrap:wrap;">
+          <span class="status-pill pill-blue">EOQ: <b>${c.eoq} unit</b></span>
+          <span class="status-pill pill-maroon">Annual Demand: <b>${c.D.toLocaleString('id-ID')} unit</b></span>
+          <span class="status-pill pill-gold">Order Cost (S): <b>Rp${c.S.toLocaleString('id-ID')}</b></span>
+          <span class="status-pill pill-purple">Holding Cost (H): <b>Rp${c.H.toLocaleString('id-ID')}/unit</b></span>
         </div>
       </div>
       <div class="table-wrap">
         <table class="ioq-month-table">
-          <thead>
-            <tr>
-              <th>Bulan</th>
-              <th>Demand Prediksi</th>
-              <th>Demand Aktual</th>
-              <th>Δ Demand</th>
-              <th>IOQ Prediksi</th>
-              <th>IOQ Aktual</th>
-              <th>Δ IOQ</th>
-              <th>EOQ</th>
-              <th>Safety Stock</th>
-              <th>ROP</th>
-              <th>Turnover</th>
-              <th>Revenue</th>
-              <th>Gross Profit</th>
-              <th>Status IOQ</th>
-            </tr>
-          </thead>
+          <thead><tr><th>Bulan</th><th>Demand (Qty Terjual)</th><th>EOQ</th><th>Safety Stock</th><th>ROP</th><th>Turnover</th><th>Revenue</th><th>Gross Profit</th><th>Status</th></tr></thead>
           <tbody>`;
-
   data.forEach(m => {
-    const dDelta = m.demandAktual - m.demandPrediksi;
-    const iqDelta = m.ioqAktual - m.ioqPrediksi;
-    const dDeltaClass = dDelta >= 0 ? 'up' : 'down';
-    const iqDeltaClass = iqDelta >= 0 ? 'up' : 'down';
-    const dSign = dDelta >= 0 ? '+' : '';
-    const iqSign = iqDelta >= 0 ? '+' : '';
-    let ioqStatus, ioqStatusClass;
-    if (Math.abs(iqDelta) <= 5) { ioqStatus = 'Stabil'; ioqStatusClass = 'pill-success'; }
-    else if (iqDelta > 5) { ioqStatus = '↑ Naik'; ioqStatusClass = 'pill-warn'; }
-    else { ioqStatus = '↓ Turun'; ioqStatusClass = 'pill-blue'; }
-
+    const status = m.demandAktual <= m.rop ? '<span class="status-pill pill-warn">↓ Perlu Restock</span>' : '<span class="status-pill pill-success">Aman</span>';
     html += `<tr>
-      <td><b>${m.month}</b></td>
-      <td>${m.demandPrediksi}</td>
-      <td><b>${m.demandAktual}</b></td>
-      <td class="${dDeltaClass}"><b>${dSign}${dDelta}</b></td>
-      <td>${m.ioqPrediksi}</td>
-      <td class="ioq-val">${m.ioqAktual}</td>
-      <td class="${iqDeltaClass}"><b>${iqSign}${iqDelta}</b></td>
-      <td>${m.eoq}</td>
-      <td>${m.safetyStock}</td>
-      <td>${m.rop}</td>
-      <td>${m.turnover}x</td>
-      <td>Rp${(m.revenue/1e6).toFixed(1)}Jt</td>
-      <td style="color:var(--success);">Rp${(m.profit/1e6).toFixed(1)}Jt</td>
-      <td><span class="status-pill ${ioqStatusClass}">${ioqStatus}</span></td>
+      <td><b>${m.month}</b></td><td><b>${m.demandAktual}</b> unit</td><td class="ioq-val">${m.eoq}</td>
+      <td>${m.safetyStock}</td><td>${m.rop}</td><td>${m.turnover}x</td>
+      <td>Rp${(m.revenue/1e6).toFixed(1)}Jt</td><td style="color:var(--success);">Rp${(m.profit/1e6).toFixed(1)}Jt</td><td>${status}</td>
     </tr>`;
   });
-
   html += `</tbody>
           <tfoot>
             <tr style="font-weight:700;background:var(--bg);">
-              <td>TOTAL</td>
-              <td>${data.reduce((s,m)=>s+m.demandPrediksi,0)}</td>
-              <td>${totalDemand}</td>
-              <td>–</td>
-              <td>–</td>
-              <td>–</td>
-              <td>–</td>
-              <td>${eoqAnnual}</td>
-              <td>–</td>
-              <td>–</td>
+              <td>TOTAL</td><td>${c.D.toLocaleString('id-ID')}</td><td>${c.eoq}</td><td>–</td><td>–</td>
               <td>${(data.reduce((s,m)=>s+m.turnover,0)/12).toFixed(2)}x avg</td>
-              <td>Rp${(totalRevenue/1e9).toFixed(2)}M</td>
-              <td style="color:var(--success);">Rp${(totalProfit/1e9).toFixed(2)}M</td>
-              <td>–</td>
+              <td>Rp${(totalRevenue/1e9).toFixed(2)}M</td><td style="color:var(--success);">Rp${(totalProfit/1e9).toFixed(2)}M</td><td>–</td>
             </tr>
           </tfoot>
         </table>
       </div>
-    </div>`;
-
-  // IOQ chart
-  html += `<div class="widget">
-    <div class="widget-header">
-      <div class="widget-title"><i class="ti ti-chart-line"></i> Tren IOQ Prediksi vs Aktual — Tahun ${year}</div>
     </div>
-    <canvas id="chartIOQYear${year}" height="160"></canvas>
-  </div>`;
+    <div class="widget">
+      <div class="widget-header"><div class="widget-title"><i class="ti ti-chart-line"></i> Demand Bulanan vs EOQ — Tahun ${year}</div></div>
+      <canvas id="chartIOQYear${year}" height="160"></canvas>
+    </div>`;
 
   document.getElementById('ioq-year-content').innerHTML = html;
 
-  // Render chart
   setTimeout(() => {
     const ctx = document.getElementById(`chartIOQYear${year}`);
     if (!ctx) return;
@@ -1804,59 +1620,96 @@ function renderIOQYearTable(year) {
       data: {
         labels: data.map(m => m.month),
         datasets: [
-          {
-            label: 'IOQ Prediksi',
-            data: data.map(m => m.ioqPrediksi),
-            borderColor: '#1976D2',
-            borderDash: [5,5],
-            backgroundColor: 'rgba(25,118,210,0.05)',
-            tension: 0.4, fill: false, pointRadius: 3
-          },
-          {
-            label: 'IOQ Aktual',
-            data: data.map(m => m.ioqAktual),
-            borderColor: MAROON,
-            backgroundColor: 'rgba(122,22,36,0.08)',
-            tension: 0.4, fill: true, pointRadius: 4, pointBackgroundColor: MAROON
-          },
-          {
-            label: 'Demand Aktual',
-            data: data.map(m => m.demandAktual),
-            borderColor: GOLD,
-            backgroundColor: 'rgba(212,168,83,0.05)',
-            tension: 0.4, fill: false, pointRadius: 3, borderWidth: 2
-          }
+          { label: 'EOQ (garis optimal)', data: data.map(m => m.eoq), borderColor: '#1976D2', borderDash: [5,5], backgroundColor: 'rgba(25,118,210,0.05)', tension: 0.1, fill: false, pointRadius: 3 },
+          { label: 'Demand Aktual (Qty Terjual)', data: data.map(m => m.demandAktual), borderColor: MAROON, backgroundColor: 'rgba(122,22,36,0.08)', tension: 0.4, fill: true, pointRadius: 4, pointBackgroundColor: MAROON },
+          { label: 'Reorder Point', data: data.map(m => m.rop), borderColor: GOLD, backgroundColor: 'rgba(212,168,83,0.05)', borderDash: [2,2], tension: 0, fill: false, pointRadius: 0, borderWidth: 1.5 }
         ]
       },
       options: {
         responsive: true,
         plugins: { legend: { position: 'top', labels: { font: { size: 11 } } } },
-        scales: {
-          y: { beginAtZero: false, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: { size: 11 } } },
-          x: { grid: { display: false }, ticks: { font: { size: 11 } } }
-        }
+        scales: { y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: { size: 11 } } }, x: { grid: { display: false }, ticks: { font: { size: 11 } } } }
       }
     });
   }, 100);
 }
 
 function saveIOQConfig() {
-  config.hpp = parseInt(document.getElementById('cfg-hpp').value) || 349000;
-  config.hargaJual = parseInt(document.getElementById('cfg-harga-jual').value) || 549000;
-  config.orderingCost = parseInt(document.getElementById('cfg-ordering-cost').value) || 200000;
-  config.holdingPct = parseFloat(document.getElementById('cfg-holding-pct').value) || 2;
-  config.dailyDemand = parseInt(document.getElementById('cfg-daily-demand').value) || 7;
-  config.safetyStock = parseInt(document.getElementById('cfg-safety-stock').value) || 30;
-  config.leadTime = parseInt(document.getElementById('cfg-lead-time').value) || 14;
-  config.growth2 = parseInt(document.getElementById('cfg-growth2').value) || 50;
-  config.growth3 = parseInt(document.getElementById('cfg-growth3').value) || 33;
-  saveAllState();
+  const y = 1;
+  config.perYear[y].S = parseInt(document.getElementById('cfg-ordering-cost').value) || config.perYear[y].S;
+  const holdingPct = parseFloat(document.getElementById('cfg-holding-pct').value);
+  config.hpp = parseInt(document.getElementById('cfg-hpp').value) || config.hpp;
+  config.hargaJual = parseInt(document.getElementById('cfg-harga-jual').value) || config.hargaJual;
+  if (!isNaN(holdingPct)) config.perYear[y].H = Math.round((holdingPct/100) * config.hpp * 12);
+  config.perYear[y].eoq = calcEOQForYear(y);
+
+  localStorage.setItem('straitco_eoq_config', JSON.stringify(config));
   demandData = generateDemandData();
   renderIOQSummary();
   renderIOQYearTable(currentIOQYear);
   closeModal('modalIOQSettings');
-  toast('Parameter IOQ diperbarui — semua perhitungan telah dihitung ulang', 'success');
-  addActivity('Parameter IOQ diubah — EOQ & ROP dihitung ulang', 'blue');
+  toast('Parameter EOQ Tahun 1 diperbarui (override manual)', 'success');
+  addActivity('Parameter EOQ diubah — EOQ & ROP dihitung ulang', 'blue');
+}
+
+// ═══════════════════════════════════
+// FINANCE ENGINE
+// ═══════════════════════════════════
+function calcFinance() {
+  return financeData.years.map(y => {
+    const grossMargin = ((y.cm1 / y.revenue) * 100).toFixed(1);
+    const netMargin = ((y.netProfit / y.revenue) * 100).toFixed(1);
+    const hpp = y.cogs / y.units;
+    const bep = Math.ceil((y.opex + y.marketing + y.logistics) / (financeData.hargaJual - hpp));
+    const roi = ((y.netProfit / (y.cogs + y.opex + y.marketing + y.logistics)) * 100).toFixed(0);
+    return { ...y, grossMargin, netMargin, hpp, bep, roi };
+  });
+}
+function renderFinancePage() {
+  const calc = calcFinance();
+  const fmt = n => 'Rp' + Math.round(n).toLocaleString('id-ID');
+  const fmtM = n => n >= 1e9 ? (n/1e9).toFixed(2)+'M' : (n/1e6).toFixed(1)+'Jt';
+
+  const c = calc[0];
+  document.getElementById('finance-kpi-grid').innerHTML = `
+    <div class="kpi-card maroon"><div class="kpi-label"><i class="ti ti-currency-dollar"></i> Revenue Bulan Ini (Avg Y1)</div><div class="kpi-value">${fmtM(c.revenue/12)}</div><div class="kpi-sub">${Math.round(c.units/12)} unit/bln × ${fmt(financeData.hargaJual)}</div></div>
+    <div class="kpi-card gold"><div class="kpi-label"><i class="ti ti-receipt"></i> HPP (COGS) Y1</div><div class="kpi-value">${fmtM(c.cogs)}</div><div class="kpi-change">${fmt(c.hpp)}/unit avg</div></div>
+    <div class="kpi-card green"><div class="kpi-label"><i class="ti ti-chart-pie"></i> Gross Margin (CM1) Y1</div><div class="kpi-value">${c.grossMargin}%</div><div class="kpi-change up">CM1: ${fmtM(c.cm1)}</div></div>
+    <div class="kpi-card blue"><div class="kpi-label"><i class="ti ti-coin"></i> Net Profit Y1</div><div class="kpi-value">${fmtM(c.netProfit)}</div><div class="kpi-change up">margin ${c.netMargin}%</div></div>
+    <div class="kpi-card warn"><div class="kpi-label"><i class="ti ti-target"></i> BEP Tahunan Y1</div><div class="kpi-value">${c.bep.toLocaleString('id-ID')} unit</div><div class="kpi-sub">dari ${c.units.toLocaleString('id-ID')} unit target</div></div>
+    <div class="kpi-card maroon"><div class="kpi-label"><i class="ti ti-trending-up"></i> ROI Y1</div><div class="kpi-value">≈${c.roi}%</div><div class="kpi-change up">Modal ${fmtM(c.cogs + c.opex + c.marketing + c.logistics)}</div></div>
+  `;
+
+  const rows = [
+    { label:'<b>Unit Terjual</b>', vals: calc.map(c => c.units.toLocaleString('id-ID') + ' unit') },
+    { label:'<b>Revenue</b>', vals: calc.map(c => fmt(c.revenue)) },
+    { label:'Cost of Goods Sold', vals: calc.map(c => fmt(c.cogs)) },
+    { label:'<b>Contributive Margin 1 (Gross Profit)</b>', vals: calc.map(c => `${fmt(c.cm1)} <span class="status-pill pill-success">${c.grossMargin}%</span>`) },
+    { label:'Logistics Expenses', vals: calc.map(c => fmt(c.logistics)) },
+    { label:'<b>Contributive Margin 2</b>', vals: calc.map(c => fmt(c.cm2)) },
+    { label:'Marketing/Sales Expenses', vals: calc.map(c => fmt(c.marketing)) },
+    { label:'<b>Contributive Margin 3</b>', vals: calc.map(c => fmt(c.cm3)) },
+    { label:'Other Operating Expenses', vals: calc.map(c => fmt(c.opex)) },
+    { label:'<b>Net Profit / Net Income</b>', vals: calc.map(c => `<span style="color:var(--success);font-weight:700;">${fmt(c.netProfit)}</span>`) },
+    { label:'<b>Net Margin</b>', vals: calc.map(c => `<span class="status-pill pill-blue">${c.netMargin}%</span>`) },
+    { label:'<b>ROI</b>', vals: calc.map((c,i) => `<span class="status-pill ${['pill-maroon','pill-gold','pill-success'][i]}">~${c.roi}%</span>`) },
+  ];
+  document.getElementById('finance-pl-body').innerHTML = rows.map(row =>
+    `<tr><td>${row.label}</td>${row.vals.map(v => `<td>${v}</td>`).join('')}</tr>`
+  ).join('');
+
+  initFinanceCharts();
+}
+function saveFinanceData() {
+  localStorage.setItem('straitco_financeData', JSON.stringify(financeData));
+  toast('Data keuangan disimpan ke cache lokal', 'success');
+}
+function resetFinanceData() {
+  if (!confirm('Reset ke data asli dari Cost Budgeting STRAIT&CO.xlsx (bukan Google Sheets)?')) return;
+  financeData = JSON.parse(JSON.stringify(financeDefaults));
+  localStorage.removeItem('straitco_financeData');
+  renderFinancePage();
+  toast('Data direset ke data xlsx cadangan', 'warn');
 }
 
 // ═══════════════════════════════════
@@ -1878,7 +1731,6 @@ const inventoryFG = [
 ];
 
 const inventoryRM = [
-  // KAIN
   {code:'RM-KN-OXF-NVY',name:'Kain Oxford Premium — Navy',cat:'Kain',stock:85,unit:'meter',reorder:50,price:48000,supplier:'CV Mitra Tekstil'},
   {code:'RM-KN-OXF-CRM',name:'Kain Oxford Premium — Cream',cat:'Kain',stock:62,unit:'meter',reorder:50,price:48000,supplier:'CV Mitra Tekstil'},
   {code:'RM-KN-OXF-BLK',name:'Kain Oxford Premium — Black',cat:'Kain',stock:40,unit:'meter',reorder:50,price:48000,supplier:'CV Mitra Tekstil'},
@@ -1886,31 +1738,24 @@ const inventoryRM = [
   {code:'RM-KN-OXF-OLV',name:'Kain Oxford Premium — Olive',cat:'Kain',stock:0,unit:'meter',reorder:40,price:48000,supplier:'CV Mitra Tekstil'},
   {code:'RM-KN-VIS-INT',name:'Kain Viselin/Interfacing (Penegak Kerah)',cat:'Kain',stock:120,unit:'meter',reorder:80,price:12000,supplier:'CV Mitra Tekstil'},
   {code:'RM-KN-LIN-WH',name:'Kain Lining (Lapisan Dalam)',cat:'Kain',stock:55,unit:'meter',reorder:40,price:15000,supplier:'CV Mitra Tekstil'},
-  // BENANG
   {code:'RM-BNG-NVY',name:'Benang Jahit — Navy',cat:'Benang',stock:18,unit:'cone',reorder:10,price:22000,supplier:'Toko Bahan Jahit Sukabumi'},
   {code:'RM-BNG-CRM',name:'Benang Jahit — Cream',cat:'Benang',stock:15,unit:'cone',reorder:10,price:22000,supplier:'Toko Bahan Jahit Sukabumi'},
   {code:'RM-BNG-BLK',name:'Benang Jahit — Black',cat:'Benang',stock:20,unit:'cone',reorder:10,price:22000,supplier:'Toko Bahan Jahit Sukabumi'},
   {code:'RM-BNG-MAR',name:'Benang Jahit — Maroon',cat:'Benang',stock:12,unit:'cone',reorder:10,price:22000,supplier:'Toko Bahan Jahit Sukabumi'},
-  // KANCING
   {code:'RM-KNC-WHT-SM',name:'Kancing Kemeja Putih 11mm (badan)',cat:'Kancing',stock:2400,unit:'pcs',reorder:1000,price:350,supplier:'Supplier Aksesoris Bandung'},
   {code:'RM-KNC-WHT-XS',name:'Kancing Kemeja Putih 8mm (manset)',cat:'Kancing',stock:1800,unit:'pcs',reorder:800,price:280,supplier:'Supplier Aksesoris Bandung'},
   {code:'RM-KNC-NAV-SM',name:'Kancing Kemeja Navy 11mm (tone)',cat:'Kancing',stock:1200,unit:'pcs',reorder:600,price:380,supplier:'Supplier Aksesoris Bandung'},
   {code:'RM-KNC-BLK-SM',name:'Kancing Kemeja Black 11mm',cat:'Kancing',stock:900,unit:'pcs',reorder:500,price:350,supplier:'Supplier Aksesoris Bandung'},
-  // RITSLETING & HARDWARE
   {code:'RM-HW-ZIP-20',name:'Ritsleting 20cm (saku dalam)',cat:'Hardware',stock:350,unit:'pcs',reorder:200,price:4500,supplier:'Supplier Aksesoris Bandung'},
   {code:'RM-HW-SNAP',name:'Kancing Snap / Press Button (collar stay)',cat:'Hardware',stock:600,unit:'pcs',reorder:300,price:1200,supplier:'Supplier Aksesoris Bandung'},
-  // POLA & BAHAN PENDUKUNG
   {code:'RM-PTR-OXF-S',name:'Pola Kemeja Size S (kertas kraft)',cat:'Pola',stock:12,unit:'set',reorder:5,price:15000,supplier:'Internal'},
   {code:'RM-PTR-OXF-M',name:'Pola Kemeja Size M (kertas kraft)',cat:'Pola',stock:12,unit:'set',reorder:5,price:15000,supplier:'Internal'},
   {code:'RM-PTR-OXF-L',name:'Pola Kemeja Size L (kertas kraft)',cat:'Pola',stock:10,unit:'set',reorder:5,price:15000,supplier:'Internal'},
   {code:'RM-PTR-OXF-XL',name:'Pola Kemeja Size XL (kertas kraft)',cat:'Pola',stock:8,unit:'set',reorder:5,price:15000,supplier:'Internal'},
-  // BAHAN CUTTING
   {code:'RM-CUT-PAPER',name:'Kertas Marking / Cutting Paper',cat:'Bahan Cutting',stock:15,unit:'rol',reorder:8,price:35000,supplier:'Toko ATK Industri'},
   {code:'RM-CUT-CHALK',name:'Kapur Jahit (Tailor Chalk)',cat:'Bahan Cutting',stock:30,unit:'pcs',reorder:15,price:8000,supplier:'Toko Bahan Jahit Sukabumi'},
-  // ANTI-CREASE
   {code:'RM-FIN-STARCH',name:'Cairan Anti-Crease Spray (1L)',cat:'Finishing',stock:8,unit:'botol',reorder:5,price:45000,supplier:'Supplier Chemical Textile'},
   {code:'RM-FIN-ANTIQ',name:'Pelapis Anti-Kusut Celup (per kg)',cat:'Finishing',stock:3,unit:'kg',reorder:2,price:180000,supplier:'Supplier Chemical Textile'},
-  // LABEL KAIN
   {code:'RM-LBL-BRAND',name:'Label Kain STRAIT&CO (brand label)',cat:'Label Kain',stock:800,unit:'pcs',reorder:300,price:1500,supplier:'Toko Label Digital'},
   {code:'RM-LBL-SIZE',name:'Label Kain Size (S/M/L/XL)',cat:'Label Kain',stock:650,unit:'pcs',reorder:300,price:800,supplier:'Toko Label Digital'},
   {code:'RM-LBL-CARE',name:'Label Care Instruction (cuci, setrika)',cat:'Label Kain',stock:700,unit:'pcs',reorder:300,price:900,supplier:'Toko Label Digital'},
@@ -1953,7 +1798,7 @@ function renderInventoryFG(data) {
     if (item.stock === 0) { sc='pill-err'; st='Habis'; }
     else if (item.stock <= item.reorder) { sc='pill-warn'; st='Low Stock'; }
     else { sc='pill-success'; st='OK'; }
-    const ioqRec = item.stock <= item.reorder ? `<span class="status-pill pill-warn">${jun.ioqAktual}</span>` : '–';
+    const eoqRec = item.stock <= item.reorder ? `<span class="status-pill pill-warn">${jun.eoq}</span>` : '–';
     const cd = colorDot[item.color] || '#888';
     return `<tr>
       <td><span class="sku-tag">${item.sku}</span></td>
@@ -1962,7 +1807,7 @@ function renderInventoryFG(data) {
       <td>${item.size}</td>
       <td><b>${item.stock}</b></td>
       <td>${item.reorder}</td>
-      <td>${ioqRec}</td>
+      <td>${eoqRec}</td>
       <td><span class="status-pill ${sc}">${st}</span></td>
       <td style="color:var(--muted);font-size:10.5px;">${item.updated}</td>
       <td><button class="btn btn-secondary btn-sm" onclick="editStockFG('${item.sku}')">Edit</button></td>
@@ -2082,7 +1927,6 @@ function editStockPK(code) {
   toast(`Stok diperbarui → ${qty} ${item.unit}`);
 }
 
-// Material summary
 function renderMaterialSummary() {
   const el = document.getElementById('materialSummary');
   if (!el) return;
@@ -2107,7 +1951,6 @@ function renderMaterialSummary() {
     </div>`).join('');
 }
 
-// Inbound selects
 const materialsByCategory = {
   fg: [{label:'Kemeja Jadi',unit:'unit'},{label:'Kemeja Sampel',unit:'unit'}],
   rm: [
@@ -2204,7 +2047,6 @@ function renderProductionList() {
     const pct = Math.round(doneSteps / b.steps.length * 100);
     const totalEst = b.steps.reduce((s,st) => s + st.estDays, 0);
     const totalAct = b.steps.reduce((s,st) => s + (st.actualDays || 0), 0);
-    const startD = new Date(b.startDate);
     const targetD = new Date(b.targetDate);
     const today = new Date();
     const daysLeft = Math.ceil((targetD - today) / 86400000);
@@ -2281,7 +2123,6 @@ function renderVendorProdCompare() {
     const onTimeRate = Math.round(vp.onTime / vp.batches * 100);
     const deltaCls = delta <= 0 ? 'up' : 'down';
     const sign = delta > 0 ? '+' : '';
-    // Speed rating based on on-time rate
     const v = vendorState.vendors.find(x => x.name === name);
     const speedRating = v ? v.rating.prodspeed || v.rating.waktu : 3;
     const stars = '★'.repeat(speedRating) + '☆'.repeat(5-speedRating);
@@ -2514,7 +2355,6 @@ function resetVendorForm() {
   setNewVendorRating(3);
 }
 
-// PO Modal
 function openPOModal(id) {
   const v = vendorState.vendors.find(x => x.id === id);
   if (!v) return;
@@ -2596,7 +2436,6 @@ function updatePOStatus(btn, newStatus) {
   toast('Status PO diperbarui');
 }
 
-// Rating
 function openRatingModal(id) {
   const v = vendorState.vendors.find(x => x.id === id);
   if (!v) return;
@@ -2740,7 +2579,7 @@ function exportCSV() {
 // NAVIGATION
 // ═══════════════════════════════════
 const pageTitles = {
-  dashboard:'Dashboard',ioq:'IOQ & Perencanaan Produksi',inventory:'Inventori Lengkap',
+  dashboard:'Dashboard',ioq:'EOQ & Perencanaan Produksi',inventory:'Inventori Lengkap',
   inbound:'Stok Masuk',outbound:'Penjualan & Outbound',production:'Tracking Produksi',
   digital:'Ekosistem Digital',loyalty:'S-Users Loyalty',finance:'Proyeksi Keuangan',
   vendor:'Manajemen Vendor',report:'Laporan Bulanan'
@@ -2778,13 +2617,8 @@ function openModal(id) {
   if (id === 'modalIOQSettings') {
     document.getElementById('cfg-hpp').value = config.hpp;
     document.getElementById('cfg-harga-jual').value = config.hargaJual;
-    document.getElementById('cfg-ordering-cost').value = config.orderingCost;
-    document.getElementById('cfg-holding-pct').value = config.holdingPct;
-    document.getElementById('cfg-daily-demand').value = config.dailyDemand;
-    document.getElementById('cfg-safety-stock').value = config.safetyStock;
-    document.getElementById('cfg-lead-time').value = config.leadTime;
-    document.getElementById('cfg-growth2').value = config.growth2;
-    document.getElementById('cfg-growth3').value = config.growth3;
+    document.getElementById('cfg-ordering-cost').value = config.perYear[1].S;
+    document.getElementById('cfg-holding-pct').value = ((config.perYear[1].H / (config.hpp * 12)) * 100).toFixed(2);
   }
 }
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
@@ -2872,6 +2706,7 @@ function initQRChart() {
   });
 }
 function initFinanceCharts() {
+  const calc = calcFinance();
   const ctx1 = document.getElementById('chartRevenue');
   if (ctx1) {
     destroyChart('revenue');
@@ -2880,8 +2715,8 @@ function initFinanceCharts() {
       data:{
         labels:['Tahun 1','Tahun 2','Tahun 3'],
         datasets:[
-          {label:'Revenue',data:[1317600000,1976400000,2635200000],backgroundColor:MAROON,borderRadius:6},
-          {label:'HPP',data:[837600000,1256400000,1675200000],backgroundColor:'rgba(212,168,83,0.7)',borderRadius:6}
+          {label:'Revenue',data:calc.map(c=>c.revenue),backgroundColor:MAROON,borderRadius:6},
+          {label:'HPP (COGS)',data:calc.map(c=>c.cogs),backgroundColor:'rgba(212,168,83,0.7)',borderRadius:6}
         ]
       },
       options:{responsive:true,plugins:{legend:{position:'top',labels:{font:{size:11}}}},scales:{y:{beginAtZero:true,ticks:{callback:v=>'Rp'+(v/1e9).toFixed(1)+'M'},grid:{color:'rgba(0,0,0,0.04)'}},x:{grid:{display:false}}}}
@@ -2894,7 +2729,7 @@ function initFinanceCharts() {
       type:'line',
       data:{
         labels:['Y1','Y2','Y3'],
-        datasets:[{label:'Net Profit',data:[435000000,675000000,906000000],borderColor:GREEN,backgroundColor:'rgba(46,125,50,0.08)',tension:0.4,fill:true,pointBackgroundColor:GREEN,pointRadius:6,borderWidth:2}]
+        datasets:[{label:'Net Profit',data:calc.map(c=>c.netProfit),borderColor:GREEN,backgroundColor:'rgba(46,125,50,0.08)',tension:0.4,fill:true,pointBackgroundColor:GREEN,pointRadius:6,borderWidth:2}]
       },
       options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{callback:v=>'Rp'+(v/1e9).toFixed(2)+'M'},grid:{color:'rgba(0,0,0,0.04)'}},x:{grid:{display:false}}}}
     });
@@ -2902,7 +2737,7 @@ function initFinanceCharts() {
 }
 
 // ═══════════════════════════════════
-// PERSISTENCE — SAVE & LOAD
+// PERSISTENCE — SAVE & LOAD (data operasional lain, bukan EOQ/Finance)
 // ═══════════════════════════════════
 function saveAllState() {
   localStorage.setItem('straitco_inventoryFG', JSON.stringify(inventoryFG));
@@ -2943,6 +2778,9 @@ document.addEventListener('DOMContentLoaded', () => {
   populateVendorSelects();
   renderProductionList();
   renderVendorProdCompare();
+  // Coba live-sync dari Google Sheets begitu halaman dibuka.
+  // Kalau gagal (offline/sheet tidak public), dashboard tetap jalan pakai data cadangan xlsx di atas.
+  syncFromSheets();
 });
 </script>
 </body>
